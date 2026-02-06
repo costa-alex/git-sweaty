@@ -313,7 +313,6 @@
         --label-row-height: calc(var(--cell) * 1.2);
         --label-gap: 0px;
         --label-gap-rotated: 10px;
-        --more-stats-x-label-shift: -2px;
         display: grid;
         grid-template-columns: max-content minmax(180px, 1fr);
         grid-template-rows: auto 1fr;
@@ -480,6 +479,44 @@
         min-width: max-content;
       }
 
+      .axis-matrix-area {
+        display: inline-grid;
+        align-items: start;
+        min-width: max-content;
+      }
+
+      .axis-month-row {
+        position: relative;
+        grid-column: 2;
+        grid-row: 1;
+        width: max-content;
+      }
+
+      .axis-day-col {
+        grid-column: 1;
+        grid-row: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+      }
+
+      .axis-matrix-grid {
+        grid-column: 2;
+        grid-row: 2;
+        width: max-content;
+        display: grid;
+        border-radius: 12px;
+        background: rgba(15, 23, 42, 0.8);
+      }
+
+      .axis-x-label {
+        transform-origin: 0 100%;
+      }
+
+      .axis-x-label.diagonal {
+        transform: rotate(-45deg);
+      }
+
       .axis-grid {
         display: grid;
         gap: var(--gap);
@@ -525,10 +562,6 @@
 
       .more-stats .axis-label.diagonal {
         transform: translateX(var(--axis-label-shift)) rotate(-45deg) translateY(-4px);
-      }
-
-      .more-stats .axis-grid > .axis-label:not(.y):not(.empty) {
-        --axis-label-shift: var(--more-stats-x-label-shift);
       }
 
       .more-stats .axis-label.x.diagonal {

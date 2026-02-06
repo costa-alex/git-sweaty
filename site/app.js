@@ -936,71 +936,46 @@ function buildFactBox(text) {
 function buildYearMatrix(years, colLabels, matrixValues, color, options = {}) {
   const container = document.createElement("div");
   container.className = "stat-matrix";
+  if (!years.length || !colLabels.length) {
+    return container;
+  }
 
   const scope = options.cssScope;
   const layout = getLayout(scope);
   const axisWidth = readCssVar("--axis-width", 40, scope);
   const axisGap = readCssVar("--axis-gap", 5, scope);
   const labelRowHeight = readCssVar("--label-row-height", 44, scope);
-  const baseLabelGap = readCssVar("--label-gap", 6, scope);
-  const rotatedLabelGap = readCssVar("--label-gap-rotated", baseLabelGap, scope);
-  const labelGap = options.rotateLabels ? rotatedLabelGap : baseLabelGap;
-  const axisGrid = document.createElement("div");
-  axisGrid.className = "axis-grid";
-  axisGrid.style.gridTemplateColumns = `calc(var(--axis-width) + var(--axis-gap)) repeat(${colLabels.length}, var(--cell))`;
-  axisGrid.style.gridTemplateRows = `${labelRowHeight}px ${labelGap}px repeat(${years.length}, var(--cell))`;
-  axisGrid.style.columnGap = `${layout.gap}px`;
-  axisGrid.style.rowGap = `${layout.gap}px`;
+  const matrixArea = document.createElement("div");
+  matrixArea.className = "axis-matrix-area";
+  matrixArea.style.gridTemplateColumns = `${axisWidth}px max-content`;
+  matrixArea.style.gridTemplateRows = `${labelRowHeight}px auto`;
+  matrixArea.style.columnGap = `${axisGap}px`;
 
-  const corner = document.createElement("div");
-  corner.className = "axis-label empty";
-  corner.style.gridRow = "1";
-  corner.style.gridColumn = "1";
-  axisGrid.appendChild(corner);
+  const monthRow = document.createElement("div");
+  monthRow.className = "axis-month-row";
+  monthRow.style.paddingLeft = `${layout.gridPadLeft}px`;
 
-  colLabels.forEach((label, colIndex) => {
-    const el = document.createElement("div");
-    el.className = options.alignFirstChar ? "axis-label x" : "axis-label";
-    if (options.rotateLabels) {
-      el.classList.add("diagonal");
-    }
-    if (!label) {
-      el.classList.add("empty");
-    } else {
-      el.textContent = label;
-    }
-    el.style.gridRow = "1";
-    el.style.gridColumn = String(colIndex + 2);
-    axisGrid.appendChild(el);
-  });
+  const dayCol = document.createElement("div");
+  dayCol.className = "axis-day-col";
+  dayCol.style.paddingTop = `${layout.gridPadTop}px`;
+  dayCol.style.gap = `${layout.gap}px`;
 
-  years.forEach((year, row) => {
+  years.forEach((year) => {
     const yLabel = document.createElement("div");
-    yLabel.className = "axis-label y";
+    yLabel.className = "day-label axis-y-label";
     yLabel.textContent = String(year);
-    yLabel.style.gridRow = String(row + 3);
-    yLabel.style.gridColumn = "1";
-    axisGrid.appendChild(yLabel);
-
-    colLabels.forEach((_, col) => {
-      const cell = document.createElement("div");
-      cell.className = "cell axis-cell";
-      cell.style.background = "transparent";
-      cell.style.gridRow = String(row + 3);
-      cell.style.gridColumn = String(col + 2);
-      axisGrid.appendChild(cell);
-    });
+    yLabel.style.height = `${layout.cell}px`;
+    yLabel.style.lineHeight = `${layout.cell}px`;
+    yLabel.style.width = `${axisWidth}px`;
+    dayCol.appendChild(yLabel);
   });
 
-  const gridWrap = document.createElement("div");
-  gridWrap.className = "axis-grid-wrap";
-
-  const axisBg = document.createElement("div");
-  axisBg.className = "axis-bg";
-  axisBg.style.left = "0px";
-  axisBg.style.top = "0px";
-  axisBg.style.width = "0px";
-  axisBg.style.height = "0px";
+  const grid = document.createElement("div");
+  grid.className = "axis-matrix-grid";
+  grid.style.gridTemplateColumns = `repeat(${colLabels.length}, ${layout.cell}px)`;
+  grid.style.gridTemplateRows = `repeat(${years.length}, ${layout.cell}px)`;
+  grid.style.gap = `${layout.gap}px`;
+  grid.style.padding = `${layout.gridPadTop}px ${layout.gridPadRight}px ${layout.gridPadBottom}px ${layout.gridPadLeft}px`;
 
   const max = matrixValues.reduce(
     (acc, row) => Math.max(acc, ...row),
@@ -1008,11 +983,24 @@ function buildYearMatrix(years, colLabels, matrixValues, color, options = {}) {
   );
   const tooltipLabels = options.tooltipLabels || colLabels;
 
-  const heatCells = axisGrid.querySelectorAll(".axis-cell");
+  colLabels.forEach((label, colIndex) => {
+    if (!label) return;
+    const xLabel = document.createElement("div");
+    xLabel.className = "month-label axis-x-label";
+    xLabel.textContent = label;
+    xLabel.style.left = `${colIndex * (layout.cell + layout.gap)}px`;
+    if (options.rotateLabels) {
+      xLabel.classList.add("diagonal");
+    }
+    monthRow.appendChild(xLabel);
+  });
+
   years.forEach((year, row) => {
     colLabels.forEach((_, col) => {
-      const index = row * colLabels.length + col;
-      const cell = heatCells[index];
+      const cell = document.createElement("div");
+      cell.className = "cell axis-matrix-cell";
+      cell.style.gridRow = String(row + 1);
+      cell.style.gridColumn = String(col + 1);
       const value = matrixValues[row]?.[col] || 0;
       if (options.emptyColor && value <= 0) {
         cell.style.background = options.emptyColor;
@@ -1024,41 +1012,14 @@ function buildYearMatrix(years, colLabels, matrixValues, color, options = {}) {
         const tooltipText = options.tooltipFormatter(year, label, value, row, col);
         attachTooltip(cell, tooltipText);
       }
+      grid.appendChild(cell);
     });
   });
 
-  gridWrap.appendChild(axisBg);
-  gridWrap.appendChild(axisGrid);
-  container.appendChild(gridWrap);
-
-  const updateBackground = () => {
-    if (!gridWrap.isConnected) {
-      requestAnimationFrame(updateBackground);
-      return;
-    }
-    const cells = axisGrid.querySelectorAll(".axis-cell");
-    if (!cells.length) return;
-    const firstCell = cells[0];
-    const lastCell = cells[cells.length - 1];
-    const wrapRect = gridWrap.getBoundingClientRect();
-    const firstRect = firstCell.getBoundingClientRect();
-    const lastRect = lastCell.getBoundingClientRect();
-    const left = firstRect.left - wrapRect.left - layout.gridPadLeft;
-    const top = firstRect.top - wrapRect.top - layout.gridPadTop;
-    const width = (lastRect.right - firstRect.left) + layout.gridPadLeft + layout.gridPadRight;
-    const height = (lastRect.bottom - firstRect.top) + layout.gridPadTop + layout.gridPadBottom;
-    axisBg.style.left = `${left}px`;
-    axisBg.style.top = `${top}px`;
-    axisBg.style.width = `${width}px`;
-    axisBg.style.height = `${height}px`;
-  };
-
-  requestAnimationFrame(updateBackground);
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(() => {
-      requestAnimationFrame(updateBackground);
-    });
-  }
+  matrixArea.appendChild(monthRow);
+  matrixArea.appendChild(dayCol);
+  matrixArea.appendChild(grid);
+  container.appendChild(matrixArea);
   return container;
 }
 
