@@ -31,6 +31,7 @@
         --label-row-height: 32px;
         --label-gap: 6px;
         --label-gap-rotated: 10px;
+        --stats-column-gap: 12px;
         --labeled-card-padding-top: 12px;
         --labeled-card-title-gap: 6px;
         --radius: 14px;
@@ -436,7 +437,7 @@
         display: grid;
         grid-template-columns: max-content minmax(0, 1fr);
         row-gap: 16px;
-        column-gap: 0;
+        column-gap: var(--stats-column-gap);
         align-items: start;
       }
 
@@ -451,7 +452,7 @@
       .more-stats .side-stats-column {
         margin-left: 0;
         max-width: 100%;
-        justify-self: center;
+        justify-self: end;
       }
 
       .year-card .card-stats.side-stats-column {
@@ -545,7 +546,7 @@
         --label-gap-rotated: 10px;
         display: grid;
         grid-template-columns: max-content minmax(0, 1fr);
-        column-gap: 0;
+        column-gap: var(--stats-column-gap);
         row-gap: 0;
         align-items: start;
       }
@@ -893,7 +894,7 @@
 
         .year-card .card-stats.side-stats-column {
           align-self: center;
-          justify-self: center;
+          justify-self: end;
           margin-top: 0;
           height: auto;
           align-content: start;
@@ -905,7 +906,7 @@
 
         .more-stats .side-stats-column {
           align-self: center;
-          justify-self: center;
+          justify-self: end;
           margin-top: 0;
           height: auto;
           justify-content: flex-start;
