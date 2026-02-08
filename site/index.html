@@ -32,7 +32,6 @@
         --label-gap: 6px;
         --label-gap-rotated: 10px;
         --year-stats-left-offset: calc(var(--heatmap-axis-col) - 3ch);
-        --year-stat-card-width: clamp(148px, 16vw, 188px);
         --frequency-stats-left-offset: max(0px, calc(var(--axis-width) - 4ch));
         --radius: 14px;
         --shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
@@ -441,13 +440,13 @@
       }
 
       .year-card .card-stats.side-stats-column {
-        grid-template-columns: repeat(2, var(--year-stat-card-width));
+        grid-template-columns: repeat(2, max-content);
         width: max-content;
         max-width: 100%;
       }
 
       .year-card .card-stats.side-stats-column .card-stat {
-        width: var(--year-stat-card-width);
+        width: max-content;
       }
 
       .year-card .card-stats.side-stats-column .card-stat-label,
@@ -969,8 +968,8 @@
         }
         .year-card .card-stats.side-stats-column .card-stat {
           flex: 0 0 auto;
-          width: var(--year-stat-card-width);
-          max-width: var(--year-stat-card-width);
+          width: max-content;
+          max-width: 100%;
         }
         .summary {
           grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1102,8 +1101,8 @@
           max-width: 100%;
         }
         .year-card .card-stats .card-stat {
-          width: var(--year-stat-card-width);
-          max-width: var(--year-stat-card-width);
+          width: max-content;
+          max-width: 100%;
           flex: 0 0 auto;
         }
         .year-card .card-stats .card-stat-label,
