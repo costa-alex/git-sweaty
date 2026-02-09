@@ -6,7 +6,7 @@ strava:
 
 sync:
   # Optional history limits:
-  # start_date: "2019-01-01" # YYYY-MM-DD lower bound
+  start_date: "2013-01-01" # YYYY-MM-DD lower bound
   # lookback_years: 5        # ignored when start_date is set
   recent_days: 7
   resume_backfill: true
@@ -46,5 +46,5 @@ activities:
     WeightTraining: WeightTraining
 
 units:
-  distance: "mi"   # "mi" or "km"
-  elevation: "ft"  # "ft" or "m"
+  distance: "km"   # "mi" or "km"
+  elevation: "m"  # "ft" or "m"
