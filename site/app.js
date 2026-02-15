@@ -217,6 +217,14 @@ function customDashboardLabelFromUrl(url) {
 }
 
 function resolveHeaderRepoLink(loc, fallbackRepo) {
+  const inferred = resolveGitHubRepo(loc, fallbackRepo);
+  if (inferred) {
+    return {
+      href: `https://github.com/${inferred.owner}/${inferred.repo}`,
+      text: `${inferred.owner}/${inferred.repo}`,
+    };
+  }
+
   if (!isGitHubHostedLocation(loc)) {
     const customUrl = customDashboardUrlFromLocation(loc);
     if (customUrl) {
@@ -225,12 +233,7 @@ function resolveHeaderRepoLink(loc, fallbackRepo) {
     }
   }
 
-  const inferred = resolveGitHubRepo(loc, fallbackRepo);
-  if (!inferred) return null;
-  return {
-    href: `https://github.com/${inferred.owner}/${inferred.repo}`,
-    text: `${inferred.owner}/${inferred.repo}`,
-  };
+  return null;
 }
 
 function syncRepoLink(fallbackRepo) {
