@@ -1011,6 +1011,38 @@ function isTooltipLinkTarget(target) {
   return Boolean(resolvedTarget.closest(".tooltip-link"));
 }
 
+function resolveTooltipTargetElement(target) {
+  return target?.nodeType === Node.TEXT_NODE
+    ? target.parentElement
+    : target;
+}
+
+function tooltipLinkElementFromEventTarget(target) {
+  const resolvedTarget = resolveTooltipTargetElement(target);
+  if (!resolvedTarget || typeof resolvedTarget.closest !== "function") {
+    return null;
+  }
+  const linkElement = resolvedTarget.closest(".tooltip-link");
+  return linkElement || null;
+}
+
+function handleTooltipLinkActivation(event) {
+  const linkElement = tooltipLinkElementFromEventTarget(event.target);
+  if (!linkElement) {
+    return false;
+  }
+  event.stopPropagation();
+  const directLinkTap = isTooltipLinkTarget(event.target);
+  if (!directLinkTap) {
+    event.preventDefault();
+    linkElement.click();
+  }
+  window.setTimeout(() => {
+    dismissTooltipState();
+  }, 0);
+  return true;
+}
+
 function getTooltipEventPoint(event, fallbackElement) {
   const clientX = Number(event?.clientX);
   const clientY = Number(event?.clientY);
@@ -4105,11 +4137,7 @@ async function init() {
 
   if (!isTouch) {
     tooltip.addEventListener("click", (event) => {
-      if (!isTooltipLinkTarget(event.target)) return;
-      event.stopPropagation();
-      window.setTimeout(() => {
-        dismissTooltipState();
-      }, 0);
+      handleTooltipLinkActivation(event);
     });
 
     document.addEventListener("pointerdown", (event) => {
@@ -4152,16 +4180,12 @@ async function init() {
     });
   } else {
     tooltip.addEventListener("pointerdown", (event) => {
-      if (isTooltipLinkTarget(event.target)) {
-        event.stopPropagation();
-      }
+      event.stopPropagation();
     });
     tooltip.addEventListener("click", (event) => {
-      if (isTooltipLinkTarget(event.target)) {
+      if (!handleTooltipLinkActivation(event)) {
         event.stopPropagation();
-        window.setTimeout(() => {
-          dismissTooltipState();
-        }, 0);
+        return;
       }
     });
 
@@ -4169,10 +4193,6 @@ async function init() {
       if (!tooltip.classList.contains("visible")) return;
       const target = event.target;
       if (tooltip.contains(target)) {
-        if (isTooltipLinkTarget(target)) {
-          return;
-        }
-        dismissTooltipState();
         return;
       }
       if (!target.classList.contains("cell")) {
