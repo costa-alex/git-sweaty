@@ -77,6 +77,8 @@ REPO_SSH_RE = re.compile(
 )
 REPO_SLUG_RE = re.compile(r"^(?P<owner>[^/\s]+)/(?P<repo>[^/\s]+)$")
 STRAVA_HOST_RE = re.compile(r"(^|\.)strava\.com$", re.IGNORECASE)
+TRUTHY_BOOL_TEXT = {"1", "true", "yes", "y", "on"}
+FALSEY_BOOL_TEXT = {"0", "false", "no", "n", "off", ""}
 
 
 @dataclass
@@ -567,6 +569,26 @@ def _existing_dashboard_week_start(repo: str) -> Optional[str]:
         return None
 
 
+def _parse_bool_text(value: Optional[str], *, field_name: str) -> bool:
+    normalized = str(value or "").strip().lower()
+    if normalized in TRUTHY_BOOL_TEXT:
+        return True
+    if normalized in FALSEY_BOOL_TEXT:
+        return False
+    allowed_values = ", ".join(sorted(TRUTHY_BOOL_TEXT | FALSEY_BOOL_TEXT))
+    raise ValueError(f"Unsupported value for {field_name}: {value!r}. Expected one of: {allowed_values}.")
+
+
+def _existing_dashboard_strava_activity_links(repo: str) -> Optional[bool]:
+    value = _get_variable("DASHBOARD_STRAVA_ACTIVITY_LINKS", repo)
+    if value is None:
+        return None
+    try:
+        return _parse_bool_text(value, field_name="DASHBOARD_STRAVA_ACTIVITY_LINKS")
+    except ValueError:
+        return None
+
+
 def _prompt_full_backfill_choice(source: str) -> bool:
     print(
         "\nThis repository is already configured for "
@@ -964,6 +986,19 @@ def _prompt_use_strava_profile_link(default_enabled: bool) -> bool:
     return choice == "yes"
 
 
+def _prompt_use_strava_activity_links(default_enabled: bool) -> bool:
+    print("\nOptional: include links to Strava activities in yearly heatmap tooltips.")
+    print("Desktop tip: click a heatmap dot to pin the tooltip so links are clickable.")
+    default_choice = "y" if default_enabled else "n"
+    choice = _prompt_choice(
+        "Show Strava activity links in tooltip details? [y/n]: ",
+        {"y": "yes", "yes": "yes", "n": "no", "no": "no"},
+        default=default_choice,
+        invalid_message="Please enter 'y' or 'n'.",
+    )
+    return choice == "yes"
+
+
 def _resolve_strava_profile_url(
     args: argparse.Namespace,
     interactive: bool,
@@ -991,6 +1026,21 @@ def _resolve_strava_profile_url(
         return candidate if enabled else ""
 
     return candidate
+
+
+def _resolve_strava_activity_links(
+    args: argparse.Namespace,
+    interactive: bool,
+    repo: str,
+) -> bool:
+    explicit = getattr(args, "strava_activity_links", None)
+    if explicit is not None:
+        return _parse_bool_text(explicit, field_name="--strava-activity-links")
+
+    existing = _existing_dashboard_strava_activity_links(repo)
+    if interactive:
+        return _prompt_use_strava_activity_links(default_enabled=bool(existing))
+    return bool(existing)
 
 
 def _iter_exception_chain(exc: Exception) -> Iterator[BaseException]:
@@ -1672,6 +1722,12 @@ def parse_args() -> argparse.Namespace:
         help="Optional Strava profile URL override shown in the dashboard header (auto-detected by default).",
     )
     parser.add_argument(
+        "--strava-activity-links",
+        choices=["yes", "no", "true", "false", "1", "0"],
+        default=None,
+        help="Whether to show Strava activity links in yearly heatmap tooltip details.",
+    )
+    parser.add_argument(
         "--custom-domain",
         default=None,
         help="Optional custom GitHub Pages domain host (for example strava.example.com).",
@@ -1745,6 +1801,7 @@ def main() -> int:
     configured_secret_names: list[str] = []
     athlete_name = ""
     strava_profile_url = ""
+    strava_activity_links_enabled = False
     strava_rotation_secret_ok: Optional[bool] = None
     strava_rotation_secret_detail = ""
     if source == "strava":
@@ -1794,6 +1851,7 @@ def main() -> int:
             [str(athlete.get("firstname", "")).strip(), str(athlete.get("lastname", "")).strip()]
         ).strip()
         strava_profile_url = _resolve_strava_profile_url(args, interactive, repo, tokens=tokens)
+        strava_activity_links_enabled = _resolve_strava_activity_links(args, interactive, repo)
     elif source == "garmin":
         token_store_b64, garmin_email, garmin_password = _resolve_garmin_auth_values(args, interactive)
         if token_store_b64:
@@ -1842,9 +1900,12 @@ def main() -> int:
     ]
     if source == "strava":
         variable_pairs.append(("DASHBOARD_STRAVA_PROFILE_URL", strava_profile_url))
+        variable_pairs.append(
+            ("DASHBOARD_STRAVA_ACTIVITY_LINKS", "true" if strava_activity_links_enabled else "")
+        )
     for name, value in variable_pairs:
         try:
-            if name == "DASHBOARD_STRAVA_PROFILE_URL" and not value:
+            if name in {"DASHBOARD_STRAVA_PROFILE_URL", "DASHBOARD_STRAVA_ACTIVITY_LINKS"} and not value:
                 _clear_variable(name, repo)
             else:
                 _set_variable(name, value, repo)
@@ -1858,6 +1919,8 @@ def main() -> int:
     )
     if source == "strava" and strava_profile_url:
         variable_summary = f"{variable_summary}, DASHBOARD_STRAVA_PROFILE_URL={strava_profile_url}"
+    if source == "strava" and strava_activity_links_enabled:
+        variable_summary = f"{variable_summary}, DASHBOARD_STRAVA_ACTIVITY_LINKS=true"
 
     if variable_errors:
         _add_step(

@@ -66,6 +66,7 @@ let pendingAlignmentFrame = null;
 let pendingSummaryTailFrame = null;
 let persistentSideStatCardWidth = 0;
 let persistentSideStatCardMinHeight = 0;
+let pinnedTooltipCell = null;
 
 function resetPersistentSideStatSizing() {
   persistentSideStatCardWidth = 0;
@@ -375,6 +376,35 @@ function parseStravaProfileUrl(value) {
   return {
     href: `${parsed.protocol}//${parsed.host}${path}${parsed.search}`,
     label: "Strava",
+  };
+}
+
+function parseStravaActivityUrl(value) {
+  let raw = String(value || "").trim();
+  if (!raw) return null;
+  if (!/^https?:\/\//i.test(raw)) {
+    raw = `https://${raw.replace(/^\/+/, "")}`;
+  }
+
+  let parsed;
+  try {
+    parsed = new URL(raw);
+  } catch (_error) {
+    return null;
+  }
+
+  const host = String(parsed.hostname || "").toLowerCase();
+  if (!(host === "strava.com" || host.endsWith(".strava.com"))) {
+    return null;
+  }
+
+  const path = String(parsed.pathname || "").trim().replace(/\/+$/, "");
+  if (!/^\/activities\/[^/]+$/i.test(path)) {
+    return null;
+  }
+
+  return {
+    href: `${parsed.protocol}//${parsed.host}${path}${parsed.search}`,
   };
 }
 
@@ -852,8 +882,84 @@ function updateTouchTooltipWrapMode() {
   }
 }
 
-function showTooltip(text, x, y) {
-  tooltip.textContent = text;
+function normalizeTooltipHref(value) {
+  const parsed = parseStravaActivityUrl(value);
+  return parsed?.href || "";
+}
+
+function normalizeTooltipLine(line) {
+  if (Array.isArray(line)) {
+    return line.map((segment) => {
+      if (segment && typeof segment === "object") {
+        return {
+          text: String(segment.text ?? ""),
+          href: normalizeTooltipHref(segment.href),
+        };
+      }
+      return { text: String(segment ?? ""), href: "" };
+    });
+  }
+  return [{ text: String(line ?? ""), href: "" }];
+}
+
+function normalizeTooltipContent(content) {
+  if (content && typeof content === "object" && Array.isArray(content.lines)) {
+    return content.lines.map((line) => normalizeTooltipLine(line));
+  }
+  if (Array.isArray(content)) {
+    return content.map((line) => normalizeTooltipLine(line));
+  }
+  return String(content ?? "").split("\n").map((line) => normalizeTooltipLine(line));
+}
+
+function renderTooltipContent(content) {
+  const normalizedLines = normalizeTooltipContent(content);
+  tooltip.innerHTML = "";
+  let hasLinks = false;
+  normalizedLines.forEach((line) => {
+    const lineEl = document.createElement("div");
+    lineEl.className = "tooltip-line";
+    if (!line.length) {
+      lineEl.textContent = "";
+      tooltip.appendChild(lineEl);
+      return;
+    }
+    line.forEach((segment) => {
+      const text = String(segment?.text ?? "");
+      const href = normalizeTooltipHref(segment?.href);
+      if (href) {
+        hasLinks = true;
+        const link = document.createElement("a");
+        link.className = "tooltip-link";
+        link.href = href;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = text;
+        lineEl.appendChild(link);
+      } else {
+        lineEl.appendChild(document.createTextNode(text));
+      }
+    });
+    tooltip.appendChild(lineEl);
+  });
+  return { hasLinks };
+}
+
+function isTooltipPinned() {
+  return Boolean(pinnedTooltipCell);
+}
+
+function clearPinnedTooltipCell() {
+  if (!pinnedTooltipCell) return;
+  pinnedTooltipCell.classList.remove("active");
+  pinnedTooltipCell = null;
+}
+
+function showTooltip(content, x, y, options = {}) {
+  const { interactive = false } = options;
+  const rendered = renderTooltipContent(content);
+  const allowInteraction = rendered.hasLinks && (isTouch || interactive);
+  tooltip.classList.toggle("interactive", allowInteraction);
   const tooltipScale = getTooltipScale();
   if (isTouch) {
     tooltip.classList.add("touch");
@@ -879,6 +985,17 @@ function showTooltip(text, x, y) {
 function hideTooltip() {
   tooltip.classList.remove("visible");
   tooltip.classList.remove("nowrap");
+  tooltip.classList.remove("interactive");
+}
+
+function clearActiveTouchCell() {
+  const active = document.querySelector(".cell.active");
+  if (active) active.classList.remove("active");
+}
+
+function isTooltipLinkTarget(target) {
+  if (!target || typeof target.closest !== "function") return false;
+  return Boolean(target.closest(".tooltip-link"));
 }
 
 function getTooltipEventPoint(event, fallbackElement) {
@@ -902,12 +1019,17 @@ function attachTooltip(cell, text) {
   if (!text) return;
   if (!isTouch) {
     cell.addEventListener("mouseenter", (event) => {
+      if (isTooltipPinned()) return;
       showTooltip(text, event.clientX, event.clientY);
     });
     cell.addEventListener("mousemove", (event) => {
+      if (isTooltipPinned()) return;
       showTooltip(text, event.clientX, event.clientY);
     });
-    cell.addEventListener("mouseleave", hideTooltip);
+    cell.addEventListener("mouseleave", () => {
+      if (isTooltipPinned()) return;
+      hideTooltip();
+    });
     return;
   }
   cell.addEventListener("click", (event) => {
@@ -916,8 +1038,7 @@ function attachTooltip(cell, text) {
       hideTooltip();
       return;
     }
-    const active = document.querySelector(".cell.active");
-    if (active) active.classList.remove("active");
+    clearActiveTouchCell();
     cell.classList.add("active");
     const point = getTooltipEventPoint(event, cell);
     showTooltip(text, point.x, point.y);
@@ -1205,6 +1326,106 @@ function formatTypeBreakdownLines(breakdown, types) {
   return lines;
 }
 
+function createTooltipTextLine(text) {
+  return [{ text: String(text ?? "") }];
+}
+
+function createTooltipLinkedTypeLine(prefix, label, suffix, href) {
+  const segments = [];
+  if (prefix) segments.push({ text: prefix });
+  if (href) {
+    segments.push({ text: label, href });
+  } else {
+    segments.push({ text: label });
+  }
+  if (suffix) segments.push({ text: suffix });
+  return segments;
+}
+
+function activityTypeOrderForTooltip(typeBreakdown, types) {
+  const typeCounts = typeBreakdown?.typeCounts || {};
+  const selectedTypes = Array.isArray(types) ? types : [];
+  const ordered = [];
+  const seen = new Set();
+
+  selectedTypes.forEach((type) => {
+    if (Number(typeCounts[type] || 0) <= 0) return;
+    ordered.push(type);
+    seen.add(type);
+  });
+
+  Object.keys(typeCounts)
+    .filter((type) => Number(typeCounts[type] || 0) > 0 && !seen.has(type))
+    .sort((a, b) => String(a).localeCompare(String(b)))
+    .forEach((type) => {
+      ordered.push(type);
+    });
+
+  return ordered;
+}
+
+function flattenTooltipActivityLinks(activityLinksByType) {
+  const links = [];
+  Object.values(activityLinksByType || {}).forEach((entries) => {
+    if (!Array.isArray(entries)) return;
+    entries.forEach((entry) => {
+      const href = normalizeTooltipHref(entry?.href);
+      if (!href) return;
+      links.push({ href, name: String(entry?.name || "").trim() });
+    });
+  });
+  return links;
+}
+
+function firstTooltipActivityLink(activityLinksByType, preferredType) {
+  if (!activityLinksByType || typeof activityLinksByType !== "object") {
+    return "";
+  }
+  const preferred = String(preferredType || "").trim();
+  if (preferred && preferred !== "all") {
+    const entries = Array.isArray(activityLinksByType[preferred]) ? activityLinksByType[preferred] : [];
+    if (entries.length === 1) {
+      return normalizeTooltipHref(entries[0]?.href);
+    }
+    return "";
+  }
+  const allLinks = flattenTooltipActivityLinks(activityLinksByType);
+  return allLinks.length === 1 ? String(allLinks[0].href || "") : "";
+}
+
+function formatTypeBreakdownLinesWithLinks(typeBreakdown, types, activityLinksByType) {
+  const lines = [];
+  const orderedTypes = activityTypeOrderForTooltip(typeBreakdown, types);
+  const typeCounts = typeBreakdown?.typeCounts || {};
+
+  orderedTypes.forEach((activityType) => {
+    const count = Number(typeCounts[activityType] || 0);
+    if (count <= 0) return;
+
+    const typeLabel = displayType(activityType);
+    const links = Array.isArray(activityLinksByType?.[activityType])
+      ? activityLinksByType[activityType]
+      : [];
+    const hasSingleLinkedType = count === 1 && links.length === 1 && normalizeTooltipHref(links[0]?.href);
+
+    if (hasSingleLinkedType) {
+      lines.push(createTooltipLinkedTypeLine("", typeLabel, `: ${count}`, links[0].href));
+      return;
+    }
+
+    lines.push(createTooltipTextLine(`${typeLabel}: ${count}`));
+    if (count > 1 && links.length > 1) {
+      links.forEach((entry, index) => {
+        const fallbackName = `${typeLabel} ${index + 1}`;
+        const name = String(entry?.name || "").trim() || fallbackName;
+        lines.push(createTooltipLinkedTypeLine("    - ", name, "", entry?.href || ""));
+      });
+    }
+  });
+
+  return lines;
+}
+
 function getSingleActivityTooltipTypeLabel(typeBreakdown, entry, typeLabels) {
   if (Number(entry?.count || 0) !== 1) {
     return "";
@@ -1246,6 +1467,7 @@ function formatTooltipBreakdown(total, breakdown, types) {
 function buildCombinedTypeDetailsByDate(payload, types, years) {
   const detailsByDate = {};
   const typeBreakdownsByDate = {};
+  const activityLinksByDateType = {};
   const activities = getFilteredActivities(payload, types, years);
 
   activities.forEach((activity) => {
@@ -1265,6 +1487,19 @@ function buildCombinedTypeDetailsByDate(payload, types, years) {
     const activityType = String(activity.type || "");
     const subtypeLabel = getActivitySubtypeLabel(activity);
     addTooltipBreakdownCount(typeBreakdownsByDate[dateStr], activityType, subtypeLabel);
+    const parsedActivityLink = parseStravaActivityUrl(activity?.url || activity?.activity_url);
+    if (parsedActivityLink?.href && activityType) {
+      if (!activityLinksByDateType[dateStr]) {
+        activityLinksByDateType[dateStr] = {};
+      }
+      if (!activityLinksByDateType[dateStr][activityType]) {
+        activityLinksByDateType[dateStr][activityType] = [];
+      }
+      activityLinksByDateType[dateStr][activityType].push({
+        href: parsedActivityLink.href,
+        name: String(activity?.name || activity?.title || "").trim(),
+      });
+    }
     if (isOtherSportsType(activityType)) {
       details.hasOtherSports = true;
       if (subtypeLabel) {
@@ -1302,7 +1537,22 @@ function buildCombinedTypeDetailsByDate(payload, types, years) {
     typeLabelsByDate[dateStr] = labels;
   });
 
-  return { typeLabelsByDate, typeBreakdownsByDate };
+  Object.values(activityLinksByDateType).forEach((linksByType) => {
+    Object.values(linksByType).forEach((activitiesForType) => {
+      activitiesForType.sort((a, b) => {
+        const nameA = String(a?.name || "").trim();
+        const nameB = String(b?.name || "").trim();
+        if (nameA && nameB && nameA !== nameB) {
+          return nameA.localeCompare(nameB);
+        }
+        if (nameA && !nameB) return -1;
+        if (!nameA && nameB) return 1;
+        return String(a?.href || "").localeCompare(String(b?.href || ""));
+      });
+    });
+  });
+
+  return { typeLabelsByDate, typeBreakdownsByDate, activityLinksByDateType };
 }
 
 function centerSummaryTypeCardTailRow(summaryEl) {
@@ -1696,27 +1946,35 @@ function buildHeatmapArea(aggregates, year, units, colors, type, layout, options
 
     const typeBreakdown = type === "all" ? options.typeBreakdownsByDate?.[dateStr] : null;
     const typeLabels = type === "all" ? options.typeLabelsByDate?.[dateStr] : null;
+    const activityLinksByType = options.activityLinksByDateType?.[dateStr] || {};
     const singleTypeLabel = type === "all"
       ? getSingleActivityTooltipTypeLabel(typeBreakdown, entry, typeLabels)
+      : (Number(entry.count || 0) === 1 ? displayType(type) : "");
+    const singleActivityLink = Number(entry.count || 0) === 1
+      ? firstTooltipActivityLink(activityLinksByType, type)
       : "";
-    const lines = [
-      dateStr,
-      singleTypeLabel
-        ? `1 ${singleTypeLabel} Activity`
-        : formatActivityCountLabel(entry.count, type === "all" ? [] : [type]),
-    ];
+    const lines = [createTooltipTextLine(dateStr)];
+    if (singleTypeLabel) {
+      lines.push(createTooltipLinkedTypeLine("1 ", singleTypeLabel, " Activity", singleActivityLink));
+    } else {
+      lines.push(createTooltipTextLine(formatActivityCountLabel(entry.count, type === "all" ? [] : [type])));
+    }
 
     const showDistanceElevation = (entry.distance || 0) > 0 || (entry.elevation_gain || 0) > 0;
 
     if (type === "all") {
       if (!singleTypeLabel) {
-        const breakdownLines = formatTypeBreakdownLines(typeBreakdown, options.selectedTypes || []);
+        const breakdownLines = formatTypeBreakdownLinesWithLinks(
+          typeBreakdown,
+          options.selectedTypes || [],
+          activityLinksByType,
+        );
         if (breakdownLines.length) {
           lines.push(...breakdownLines);
         } else if (Array.isArray(typeLabels) && typeLabels.length) {
-          lines.push(`Types: ${typeLabels.join(", ")}`);
+          lines.push(createTooltipTextLine(`Types: ${typeLabels.join(", ")}`));
         } else if (entry.types && entry.types.length) {
-          lines.push(`Types: ${entry.types.map(displayType).join(", ")}`);
+          lines.push(createTooltipTextLine(`Types: ${entry.types.map(displayType).join(", ")}`));
         }
       }
     }
@@ -1728,20 +1986,44 @@ function buildHeatmapArea(aggregates, year, units, colors, type, layout, options
       const elevation = units.elevation === "m"
         ? `${Math.round(entry.elevation_gain)} m`
         : `${Math.round(entry.elevation_gain * 3.28084)} ft`;
-      lines.push(`Distance: ${distance}`);
-      lines.push(`Elevation: ${elevation}`);
+      lines.push(createTooltipTextLine(`Distance: ${distance}`));
+      lines.push(createTooltipTextLine(`Elevation: ${elevation}`));
     }
 
-    lines.push(`Duration: ${duration}`);
-    const tooltipText = lines.join("\n");
+    lines.push(createTooltipTextLine(`Duration: ${duration}`));
+    const tooltipContent = { lines };
+    const canPinTooltip = Boolean(flattenTooltipActivityLinks(activityLinksByType).length);
     if (!isTouch) {
       cell.addEventListener("mouseenter", (event) => {
-        showTooltip(tooltipText, event.clientX, event.clientY);
+        if (isTooltipPinned()) return;
+        showTooltip(tooltipContent, event.clientX, event.clientY);
       });
       cell.addEventListener("mousemove", (event) => {
-        showTooltip(tooltipText, event.clientX, event.clientY);
+        if (isTooltipPinned()) return;
+        showTooltip(tooltipContent, event.clientX, event.clientY);
       });
-      cell.addEventListener("mouseleave", hideTooltip);
+      cell.addEventListener("mouseleave", () => {
+        if (isTooltipPinned()) return;
+        hideTooltip();
+      });
+      if (canPinTooltip) {
+        cell.addEventListener("click", (event) => {
+          if (pinnedTooltipCell === cell) {
+            clearPinnedTooltipCell();
+            hideTooltip();
+            return;
+          }
+          clearPinnedTooltipCell();
+          pinnedTooltipCell = cell;
+          cell.classList.add("active");
+          const point = getTooltipEventPoint(event, cell);
+          showTooltip(tooltipContent, point.x, point.y, { interactive: true });
+        });
+      } else {
+        cell.addEventListener("click", () => {
+          clearPinnedTooltipCell();
+        });
+      }
     } else {
       cell.addEventListener("click", (event) => {
         if (cell.classList.contains("active")) {
@@ -1753,7 +2035,7 @@ function buildHeatmapArea(aggregates, year, units, colors, type, layout, options
         if (active) active.classList.remove("active");
         cell.classList.add("active");
         const point = getTooltipEventPoint(event, cell);
-        showTooltip(tooltipText, point.x, point.y);
+        showTooltip(tooltipContent, point.x, point.y);
       });
     }
 
@@ -3360,6 +3642,8 @@ async function init() {
     if (menuOnly) {
       return;
     }
+    clearPinnedTooltipCell();
+    hideTooltip();
 
     const years = selectedYearsList(visibleYears);
     years.sort((a, b) => b - a);
@@ -3427,6 +3711,11 @@ async function init() {
     if (heatmaps) {
       heatmaps.innerHTML = "";
       const showMoreStats = true;
+      const {
+        typeLabelsByDate,
+        typeBreakdownsByDate,
+        activityLinksByDateType,
+      } = buildCombinedTypeDetailsByDate(payload, types, years);
       if (showCombinedTypes) {
         const section = document.createElement("div");
         section.className = "type-section";
@@ -3434,7 +3723,6 @@ async function init() {
         list.className = "type-list";
         const yearTotals = getTypesYearTotals(payload, types, years);
         const cardYears = years.filter((year) => (yearTotals.get(year) || 0) > 0);
-        const { typeLabelsByDate, typeBreakdownsByDate } = buildCombinedTypeDetailsByDate(payload, types, cardYears);
         const combinedSelectionKey = `combined:${types.join("|")}`;
         if (showMoreStats) {
           const frequencyCard = buildStatsOverview(payload, types, cardYears, frequencyCardColor, {
@@ -3489,6 +3777,7 @@ async function init() {
               selectedTypes: types,
               typeBreakdownsByDate,
               typeLabelsByDate,
+              activityLinksByDateType,
             },
           );
           setCardScrollKey(card, `${combinedSelectionKey}:year:${year}`);
@@ -3532,6 +3821,7 @@ async function init() {
               cardMetricYear: year,
               initialMetricKey: getInitialYearMetricKey(year),
               onYearMetricStateChange,
+              activityLinksByDateType,
             });
             setCardScrollKey(card, `${typeCardKey}:year:${year}`);
             trackYearMetricAvailability(year, nextVisibleYearMetricYears);
@@ -3794,27 +4084,51 @@ async function init() {
     }, 150);
   });
 
-  if (isTouch) {
+  if (!isTouch) {
+    document.addEventListener("pointerdown", (event) => {
+      if (!isTooltipPinned()) return;
+      const target = event.target;
+      if (tooltip.contains(target)) {
+        return;
+      }
+      if (pinnedTooltipCell && pinnedTooltipCell.contains(target)) {
+        return;
+      }
+      clearPinnedTooltipCell();
+      hideTooltip();
+    });
+  } else {
+    tooltip.addEventListener("pointerdown", (event) => {
+      if (isTooltipLinkTarget(event.target)) {
+        event.stopPropagation();
+      }
+    });
+    tooltip.addEventListener("click", (event) => {
+      if (isTooltipLinkTarget(event.target)) {
+        event.stopPropagation();
+      }
+    });
+
     document.addEventListener("pointerdown", (event) => {
       if (!tooltip.classList.contains("visible")) return;
       const target = event.target;
       if (tooltip.contains(target)) {
+        if (isTooltipLinkTarget(target)) {
+          return;
+        }
         hideTooltip();
-        const active = document.querySelector(".cell.active");
-        if (active) active.classList.remove("active");
+        clearActiveTouchCell();
         return;
       }
       if (!target.classList.contains("cell")) {
         hideTooltip();
-        const active = document.querySelector(".cell.active");
-        if (active) active.classList.remove("active");
+        clearActiveTouchCell();
       }
     });
 
     const dismissTooltipOnTouchScroll = () => {
       hideTooltip();
-      const active = document.querySelector(".cell.active");
-      if (active) active.classList.remove("active");
+      clearActiveTouchCell();
     };
 
     document.addEventListener(

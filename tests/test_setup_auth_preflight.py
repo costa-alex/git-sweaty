@@ -234,6 +234,50 @@ class SetupAuthDispatchTests(unittest.TestCase):
         self.assertEqual(value, "sunday")
         prompt_mock.assert_called_once_with("sunday")
 
+    def test_existing_dashboard_strava_activity_links_parses_truthy_value(self) -> None:
+        with mock.patch(
+            "setup_auth._get_variable",
+            return_value=" YES ",
+        ):
+            value = setup_auth._existing_dashboard_strava_activity_links("owner/repo")
+        self.assertTrue(value)
+
+    def test_existing_dashboard_strava_activity_links_ignores_unknown_values(self) -> None:
+        with mock.patch(
+            "setup_auth._get_variable",
+            return_value="sometimes",
+        ):
+            value = setup_auth._existing_dashboard_strava_activity_links("owner/repo")
+        self.assertIsNone(value)
+
+    def test_resolve_strava_activity_links_non_interactive_prefers_existing_value(self) -> None:
+        args = Namespace(strava_activity_links=None)
+        with mock.patch("setup_auth._existing_dashboard_strava_activity_links", return_value=True):
+            value = setup_auth._resolve_strava_activity_links(args, interactive=False, repo="owner/repo")
+        self.assertTrue(value)
+
+    def test_resolve_strava_activity_links_non_interactive_defaults_to_disabled(self) -> None:
+        args = Namespace(strava_activity_links=None)
+        with mock.patch("setup_auth._existing_dashboard_strava_activity_links", return_value=None):
+            value = setup_auth._resolve_strava_activity_links(args, interactive=False, repo="owner/repo")
+        self.assertFalse(value)
+
+    def test_resolve_strava_activity_links_uses_explicit_argument(self) -> None:
+        args = Namespace(strava_activity_links="yes")
+        with mock.patch("setup_auth._existing_dashboard_strava_activity_links", return_value=False):
+            value = setup_auth._resolve_strava_activity_links(args, interactive=False, repo="owner/repo")
+        self.assertTrue(value)
+
+    def test_resolve_strava_activity_links_interactive_prompts_with_existing_default(self) -> None:
+        args = Namespace(strava_activity_links=None)
+        with (
+            mock.patch("setup_auth._existing_dashboard_strava_activity_links", return_value=True),
+            mock.patch("setup_auth._prompt_use_strava_activity_links", return_value=False) as prompt_mock,
+        ):
+            value = setup_auth._resolve_strava_activity_links(args, interactive=True, repo="owner/repo")
+        self.assertFalse(value)
+        prompt_mock.assert_called_once_with(default_enabled=True)
+
     def test_normalize_strava_profile_url_accepts_strava_host(self) -> None:
         value = setup_auth._normalize_strava_profile_url("www.strava.com/athletes/123")
         self.assertEqual(value, "https://www.strava.com/athletes/123")
@@ -463,6 +507,7 @@ class SetupAuthMainFlowTests(unittest.TestCase):
             timeout=setup_auth.DEFAULT_TIMEOUT,
             scope="read,activity:read_all",
             strava_profile_url=None,
+            strava_activity_links=None,
             custom_domain=None,
             clear_custom_domain=False,
             no_browser=True,
@@ -563,6 +608,9 @@ class SetupAuthMainFlowTests(unittest.TestCase):
                     return_value="https://www.strava.com/athletes/123",
                 )
             )
+            resolve_activity_links_mock = stack.enter_context(
+                mock.patch("setup_auth._resolve_strava_activity_links", return_value=True)
+            )
             set_variable_mock = stack.enter_context(mock.patch("setup_auth._set_variable"))
             stack.enter_context(mock.patch("setup_auth._try_enable_actions_permissions", return_value=(True, "ok")))
             stack.enter_context(mock.patch("setup_auth._try_enable_workflows", return_value=(True, "ok")))
@@ -584,6 +632,11 @@ class SetupAuthMainFlowTests(unittest.TestCase):
             "owner/repo",
             tokens={"refresh_token": "refresh-token", "athlete": {}},
         )
+        resolve_activity_links_mock.assert_called_once_with(
+            args,
+            True,
+            "owner/repo",
+        )
         self.assertIn(
             mock.call(
                 "DASHBOARD_STRAVA_PROFILE_URL",
@@ -604,6 +657,14 @@ class SetupAuthMainFlowTests(unittest.TestCase):
             mock.call(
                 "DASHBOARD_WEEK_START",
                 "sunday",
+                "owner/repo",
+            ),
+            set_variable_mock.mock_calls,
+        )
+        self.assertIn(
+            mock.call(
+                "DASHBOARD_STRAVA_ACTIVITY_LINKS",
+                "true",
                 "owner/repo",
             ),
             set_variable_mock.mock_calls,
@@ -640,7 +701,9 @@ class SetupAuthMainFlowTests(unittest.TestCase):
             stack.enter_context(mock.patch("setup_auth._set_secret"))
             stack.enter_context(mock.patch("setup_auth._try_set_strava_secret_update_token", return_value=(True, "ok")))
             stack.enter_context(mock.patch("setup_auth._resolve_strava_profile_url", return_value=""))
+            stack.enter_context(mock.patch("setup_auth._resolve_strava_activity_links", return_value=False))
             stack.enter_context(mock.patch("setup_auth._set_variable"))
+            stack.enter_context(mock.patch("setup_auth._clear_variable"))
             stack.enter_context(mock.patch("setup_auth._try_enable_actions_permissions", return_value=(True, "ok")))
             stack.enter_context(mock.patch("setup_auth._try_enable_workflows", return_value=(True, "ok")))
             stack.enter_context(mock.patch("setup_auth._try_configure_pages", return_value=(True, "ok")))
@@ -691,7 +754,9 @@ class SetupAuthMainFlowTests(unittest.TestCase):
             stack.enter_context(mock.patch("setup_auth._set_secret"))
             stack.enter_context(mock.patch("setup_auth._try_set_strava_secret_update_token", return_value=(True, "ok")))
             stack.enter_context(mock.patch("setup_auth._resolve_strava_profile_url", return_value=""))
+            stack.enter_context(mock.patch("setup_auth._resolve_strava_activity_links", return_value=False))
             stack.enter_context(mock.patch("setup_auth._set_variable"))
+            stack.enter_context(mock.patch("setup_auth._clear_variable"))
             stack.enter_context(mock.patch("setup_auth._try_enable_actions_permissions", return_value=(True, "ok")))
             stack.enter_context(mock.patch("setup_auth._try_enable_workflows", return_value=(True, "ok")))
             stack.enter_context(mock.patch("setup_auth._try_configure_pages", return_value=(True, "ok")))

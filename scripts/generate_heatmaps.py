@@ -126,7 +126,11 @@ def _color_scale(accent: str) -> List[str]:
     return [DEFAULT_COLORS[0], DEFAULT_COLORS[1], DEFAULT_COLORS[2], DEFAULT_COLORS[3], accent]
 
 
-def _load_activities() -> List[Dict]:
+def _load_activities(
+    *,
+    source: str = "strava",
+    include_strava_activity_urls: bool = False,
+) -> List[Dict]:
     if not os.path.exists(ACTIVITIES_PATH):
         return []
     items = read_json(ACTIVITIES_PATH) or []
@@ -145,13 +149,21 @@ def _load_activities() -> List[Dict]:
             hour = parse_iso_datetime(start_date_local).hour
         except Exception:
             hour = None
-        activities.append({
+        activity = {
             "date": date_str,
             "year": int(year),
             "type": activity_type,
             "subtype": str(subtype),
             "hour": hour,
-        })
+        }
+        if source == "strava" and include_strava_activity_urls:
+            url = _strava_activity_url_from_id(item.get("id"))
+            if url:
+                activity["url"] = url
+                activity_name = str(item.get("name") or "").strip()
+                if activity_name:
+                    activity["name"] = activity_name
+        activities.append(activity)
     return activities
 
 
@@ -216,6 +228,26 @@ def _strava_profile_url_from_config(config: Dict) -> Optional[str]:
             "",
         )
     )
+
+
+def _strava_activity_links_enabled_from_config(config: Dict) -> bool:
+    value = (config.get("strava", {}) or {}).get("include_activity_urls", False)
+    if isinstance(value, bool):
+        return value
+    normalized = str(value or "").strip().lower()
+    return normalized in {"1", "true", "yes", "y", "on"}
+
+
+def _strava_activity_url_from_id(activity_id: object) -> Optional[str]:
+    raw = str(activity_id or "").strip()
+    if not raw:
+        return None
+    if "/" in raw or "\\" in raw:
+        return None
+    encoded = urllib.parse.quote(raw, safe="")
+    if not encoded:
+        return None
+    return f"https://www.strava.com/activities/{encoded}"
 
 
 def _svg_for_year(
@@ -384,6 +416,7 @@ def generate(write_svgs: bool = True):
                     f.write(svg)
 
     source = normalize_source(config.get("source", "strava"))
+    include_strava_activity_urls = source == "strava" and _strava_activity_links_enabled_from_config(config)
     site_payload = {
         "source": source,
         "generated_at": utc_now().isoformat(),
@@ -394,7 +427,10 @@ def generate(write_svgs: bool = True):
         "aggregates": aggregate_years,
         "units": units,
         "week_start": week_start,
-        "activities": _load_activities(),
+        "activities": _load_activities(
+            source=source,
+            include_strava_activity_urls=include_strava_activity_urls,
+        ),
     }
     strava_profile_url = _strava_profile_url_from_config(config)
     if source == "strava" and strava_profile_url:
