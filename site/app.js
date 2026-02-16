@@ -63,6 +63,7 @@ const BREAKPOINTS = Object.freeze({
   NARROW_LAYOUT_MAX: 900,
 });
 let pendingAlignmentFrame = null;
+let pendingSummaryTailFrame = null;
 let persistentSideStatCardWidth = 0;
 let persistentSideStatCardMinHeight = 0;
 
@@ -114,6 +115,16 @@ function requestLayoutAlignment() {
   pendingAlignmentFrame = window.requestAnimationFrame(() => {
     pendingAlignmentFrame = null;
     alignStackedStatsToYAxisLabels();
+  });
+}
+
+function requestSummaryTypeTailCentering() {
+  if (pendingSummaryTailFrame !== null) {
+    window.cancelAnimationFrame(pendingSummaryTailFrame);
+  }
+  pendingSummaryTailFrame = window.requestAnimationFrame(() => {
+    pendingSummaryTailFrame = null;
+    centerSummaryTypeCardTailRow(summary);
   });
 }
 
@@ -1294,6 +1305,90 @@ function buildCombinedTypeDetailsByDate(payload, types, years) {
   return { typeLabelsByDate, typeBreakdownsByDate };
 }
 
+function centerSummaryTypeCardTailRow(summaryEl) {
+  if (!summaryEl) return;
+  const allCards = Array.from(summaryEl.children || []);
+  if (!allCards.length) return;
+
+  const typeCards = allCards.filter((card) => card.classList.contains("summary-type-card"));
+  typeCards.forEach((card) => {
+    card.style.removeProperty("grid-column");
+    card.style.removeProperty("transform");
+  });
+  if (!typeCards.length) return;
+
+  const styles = getComputedStyle(summaryEl);
+  const gap = parseFloat(styles.columnGap || styles.gap || "0") || 0;
+  const cardRects = allCards.map((card) => card.getBoundingClientRect());
+  const firstRowTop = cardRects[0]?.top;
+  if (!Number.isFinite(firstRowTop)) return;
+
+  const ROW_TOLERANCE = 1;
+  let columns = 0;
+  for (let idx = 0; idx < cardRects.length; idx += 1) {
+    const top = cardRects[idx]?.top;
+    if (!Number.isFinite(top) || Math.abs(top - firstRowTop) > ROW_TOLERANCE) {
+      break;
+    }
+    columns += 1;
+  }
+
+  if (columns <= 3) {
+    summaryEl.style.setProperty("width", "100%");
+    summaryEl.style.setProperty("max-width", "none");
+  } else {
+    summaryEl.style.removeProperty("width");
+    summaryEl.style.removeProperty("max-width");
+  }
+
+  if (columns <= 1) return;
+
+  const totalCardCount = allCards.length;
+  const tailCount = totalCardCount % columns;
+  if (tailCount <= 0) return;
+
+  let trailingTypeCardCount = 0;
+  for (let idx = totalCardCount - 1; idx >= 0; idx -= 1) {
+    if (!allCards[idx].classList.contains("summary-type-card")) {
+      break;
+    }
+    trailingTypeCardCount += 1;
+  }
+  // Only reposition when the incomplete final row is made of type cards.
+  if (trailingTypeCardCount < tailCount) return;
+
+  let columnStep = 0;
+  if (columns >= 2) {
+    const firstLeft = cardRects[0]?.left;
+    for (let idx = 1; idx < columns; idx += 1) {
+      const left = cardRects[idx]?.left;
+      if (!Number.isFinite(firstLeft) || !Number.isFinite(left)) continue;
+      const delta = left - firstLeft;
+      if (delta > 0.5) {
+        columnStep = delta;
+        break;
+      }
+    }
+  }
+  if (!(columnStep > 0.5)) {
+    const fallbackWidth = cardRects[0]?.width || 0;
+    columnStep = fallbackWidth + gap;
+  }
+
+  const startColumn = Math.floor((columns - tailCount) / 2) + 1;
+  const horizontalShift = (columns - tailCount) % 2 === 1 && columnStep > 0
+    ? columnStep / 2
+    : 0;
+
+  for (let idx = 0; idx < tailCount; idx += 1) {
+    const card = allCards[totalCardCount - tailCount + idx];
+    card.style.gridColumn = String(startColumn + idx);
+    if (horizontalShift > 0.5) {
+      card.style.transform = `translateX(${horizontalShift}px)`;
+    }
+  }
+}
+
 function buildSummary(
   payload,
   types,
@@ -1449,16 +1544,6 @@ function buildSummary(
   });
 
   if (showTypeBreakdown && visibleTypeCardsList.length) {
-    const typeCardCount = visibleTypeCardsList.length;
-    const centerTailCards = typeCardCount > 5 ? typeCardCount % 5 : 0;
-    summary.classList.toggle("summary-center-two-types", visibleTypeCardsList.length === 2);
-    summary.classList.toggle("summary-center-three-types", visibleTypeCardsList.length === 3);
-    summary.classList.toggle("summary-center-four-types", visibleTypeCardsList.length === 4);
-    summary.classList.toggle("summary-center-tail-one", centerTailCards === 1);
-    summary.classList.toggle("summary-center-tail-two", centerTailCards === 2);
-    summary.classList.toggle("summary-center-tail-three", centerTailCards === 3);
-    summary.classList.toggle("summary-center-tail-four", centerTailCards === 4);
-
     visibleTypeCardsList.forEach((type) => {
       const typeCard = document.createElement("button");
       typeCard.type = "button";
@@ -1497,6 +1582,7 @@ function buildSummary(
       }
       summary.appendChild(typeCard);
     });
+    centerSummaryTypeCardTailRow(summary);
   }
 }
 
@@ -3688,6 +3774,7 @@ async function init() {
   }
 
   window.addEventListener("resize", () => {
+    requestSummaryTypeTailCentering();
     if (resizeTimer) {
       window.clearTimeout(resizeTimer);
     }
