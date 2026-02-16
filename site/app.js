@@ -936,12 +936,6 @@ function renderTooltipContent(content) {
         link.target = "_blank";
         link.rel = "noopener noreferrer";
         link.textContent = text;
-        if (isTouch) {
-          link.addEventListener("touchend", (event) => {
-            event.stopPropagation();
-            markTouchTooltipInteractionBlock(650);
-          });
-        }
         lineEl.appendChild(link);
       } else {
         lineEl.appendChild(document.createTextNode(text));
@@ -1064,11 +1058,22 @@ function tooltipLinkElementFromEventTarget(target) {
 
 function openTooltipLinkInNewTab(linkElement) {
   const href = normalizeTooltipHref(linkElement?.href || linkElement?.getAttribute?.("href"));
-  if (!href) return;
-  const opened = window.open(href, "_blank", "noopener,noreferrer");
-  if (opened) {
-    opened.opener = null;
+  if (!href) return false;
+  let opened = null;
+  try {
+    opened = window.open(href, "_blank", "noopener,noreferrer");
+  } catch (_) {
+    opened = null;
   }
+  if (opened && typeof opened === "object") {
+    try {
+      opened.opener = null;
+    } catch (_) {
+      // Ignore cross-origin access errors; noopener is already requested.
+    }
+    return true;
+  }
+  return false;
 }
 
 function handleTooltipLinkActivation(event) {
@@ -1078,12 +1083,13 @@ function handleTooltipLinkActivation(event) {
   }
   event.stopPropagation();
   if (isTouch) {
+    event.preventDefault();
     // Guard against mobile click-through/ghost taps that can hit the active cell.
-    markTouchTooltipInteractionBlock(650);
+    markTouchTooltipInteractionBlock(1200);
+    openTooltipLinkInNewTab(linkElement);
     return true;
   }
-  event.preventDefault();
-  openTooltipLinkInNewTab(linkElement);
+  // Desktop: rely on native anchor behavior (target=_blank) for consistent new-tab navigation.
   window.setTimeout(() => {
     dismissTooltipState();
   }, 0);
@@ -4234,12 +4240,20 @@ async function init() {
       dismissTooltipState();
     });
   } else {
+    tooltip.addEventListener(
+      "touchstart",
+      (event) => {
+        event.stopPropagation();
+        markTouchTooltipInteractionBlock(1200);
+      },
+      { passive: true },
+    );
     tooltip.addEventListener("pointerdown", (event) => {
       event.stopPropagation();
-      markTouchTooltipInteractionBlock();
+      markTouchTooltipInteractionBlock(1200);
     });
     tooltip.addEventListener("click", (event) => {
-      markTouchTooltipInteractionBlock();
+      markTouchTooltipInteractionBlock(1200);
       if (!handleTooltipLinkActivation(event)) {
         event.stopPropagation();
         return;
