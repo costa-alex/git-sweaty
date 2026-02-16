@@ -1044,6 +1044,15 @@ function tooltipLinkElementFromEventTarget(target) {
   return linkElement || null;
 }
 
+function openTooltipLinkOnTouch(linkElement) {
+  const href = normalizeTooltipHref(linkElement?.href || linkElement?.getAttribute?.("href"));
+  if (!href) return;
+  const popup = window.open(href, "_blank", "noopener,noreferrer");
+  if (!popup) {
+    window.location.assign(href);
+  }
+}
+
 function handleTooltipLinkActivation(event) {
   const linkElement = tooltipLinkElementFromEventTarget(event.target);
   if (!linkElement) {
@@ -1053,6 +1062,9 @@ function handleTooltipLinkActivation(event) {
   if (isTouch) {
     // Guard against mobile click-through/ghost taps that can hit the active cell.
     markTouchTooltipInteractionBlock(650);
+    event.preventDefault();
+    openTooltipLinkOnTouch(linkElement);
+    return true;
   }
   const directLinkTap = isTooltipLinkTarget(event.target);
   if (!directLinkTap) {
@@ -4235,6 +4247,9 @@ async function init() {
     });
 
     const dismissTooltipOnTouchScroll = () => {
+      if (nowMs() <= touchTooltipInteractionBlockUntil) {
+        return;
+      }
       dismissTooltipState();
     };
 
