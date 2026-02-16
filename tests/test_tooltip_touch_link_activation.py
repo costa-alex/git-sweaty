@@ -24,6 +24,9 @@ class TooltipTouchLinkActivationTests(unittest.TestCase):
             "tooltip_link_from_event_target": r"function tooltipLinkElementFromEventTarget\(target\)\s*{[\s\S]*?\n}\n",
             "remember_tooltip_pointer_type": r"function rememberTooltipPointerType\(event\)\s*{[\s\S]*?\n}\n",
             "is_touch_tooltip_activation_event": r"function isTouchTooltipActivationEvent\(event\)\s*{[\s\S]*?\n}\n",
+            "now_ms": r"function nowMs\(\)\s*{[\s\S]*?\n}\n",
+            "mark_touch_tooltip_link_click_suppress": r"function markTouchTooltipLinkClickSuppress\(durationMs = 1200\)\s*{[\s\S]*?\n}\n",
+            "should_suppress_touch_tooltip_link_click": r"function shouldSuppressTouchTooltipLinkClick\(\)\s*{[\s\S]*?\n}\n",
             "open_tooltip_link_in_new_tab": r"function openTooltipLinkInNewTab\(linkElement\)\s*{[\s\S]*?\n}\n",
             "open_tooltip_link_in_current_tab": r"function openTooltipLinkInCurrentTab\(linkElement\)\s*{[\s\S]*?\n}\n",
             "handle_tooltip_link_activation": r"function handleTooltipLinkActivation\(event\)\s*{[\s\S]*?\n}\n",
@@ -45,6 +48,7 @@ class TooltipTouchLinkActivationTests(unittest.TestCase):
             "let assignedHref = null;\n"
             "let dismissCalls = 0;\n"
             "let lastTooltipPointerType = '';\n"
+            "let touchTooltipLinkClickSuppressUntil = 0;\n"
             "const window = {\n"
             "  open: (href, target, features) => {\n"
             "    openCalls.push({ href, target, features });\n"
@@ -69,6 +73,9 @@ class TooltipTouchLinkActivationTests(unittest.TestCase):
             f"{self.sources['tooltip_link_from_event_target']}\n"
             f"{self.sources['remember_tooltip_pointer_type']}\n"
             f"{self.sources['is_touch_tooltip_activation_event']}\n"
+            f"{self.sources['now_ms']}\n"
+            f"{self.sources['mark_touch_tooltip_link_click_suppress']}\n"
+            f"{self.sources['should_suppress_touch_tooltip_link_click']}\n"
             f"{self.sources['open_tooltip_link_in_new_tab']}\n"
             f"{self.sources['open_tooltip_link_in_current_tab']}\n"
             f"{self.sources['handle_tooltip_link_activation']}\n"

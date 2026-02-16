@@ -71,6 +71,7 @@ let persistentSideStatCardMinHeight = 0;
 let pinnedTooltipCell = null;
 let touchTooltipInteractionBlockUntil = 0;
 let lastTooltipPointerType = "";
+let touchTooltipLinkClickSuppressUntil = 0;
 
 function resetPersistentSideStatSizing() {
   persistentSideStatCardWidth = 0;
@@ -980,6 +981,29 @@ function renderTooltipContent(content) {
             markTouchTooltipInteractionBlock(1600);
           }
         });
+        link.addEventListener(
+          "touchend",
+          (event) => {
+            rememberTooltipPointerType(event);
+            if (!isTouchTooltipActivationEvent(event)) {
+              return;
+            }
+            event.preventDefault();
+            event.stopPropagation();
+            markTouchTooltipInteractionBlock(1600);
+            markTouchTooltipLinkClickSuppress(1200);
+            openTooltipLinkInCurrentTab(link);
+          },
+          { passive: false },
+        );
+        link.addEventListener("click", (event) => {
+          if (shouldSuppressTouchTooltipLinkClick() && isTouchTooltipActivationEvent(event)) {
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+          }
+          handleTooltipLinkActivation(event);
+        });
         link.textContent = text;
         lineEl.appendChild(link);
       } else {
@@ -1049,6 +1073,17 @@ function nowMs() {
   return (window.performance && typeof window.performance.now === "function")
     ? window.performance.now()
     : Date.now();
+}
+
+function markTouchTooltipLinkClickSuppress(durationMs = 1200) {
+  if (!useTouchInteractions) return;
+  const blockUntil = nowMs() + Math.max(0, Number(durationMs) || 0);
+  touchTooltipLinkClickSuppressUntil = Math.max(touchTooltipLinkClickSuppressUntil, blockUntil);
+}
+
+function shouldSuppressTouchTooltipLinkClick() {
+  if (!useTouchInteractions) return false;
+  return nowMs() <= touchTooltipLinkClickSuppressUntil;
 }
 
 function markTouchTooltipInteractionBlock(durationMs = 450) {
@@ -1140,9 +1175,14 @@ function handleTooltipLinkActivation(event) {
   rememberTooltipPointerType(event);
   event.stopPropagation();
   if (isTouchTooltipActivationEvent(event)) {
+    if (shouldSuppressTouchTooltipLinkClick()) {
+      event.preventDefault();
+      return true;
+    }
     // Mobile/touch: force same-tab navigation so iOS can hand off universal links to Strava.
     event.preventDefault();
     markTouchTooltipInteractionBlock(1600);
+    markTouchTooltipLinkClickSuppress(1200);
     openTooltipLinkInCurrentTab(linkElement);
     return true;
   }
