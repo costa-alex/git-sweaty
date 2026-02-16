@@ -68,6 +68,7 @@ let persistentSideStatCardWidth = 0;
 let persistentSideStatCardMinHeight = 0;
 let pinnedTooltipCell = null;
 let touchTooltipInteractionBlockUntil = 0;
+let touchTooltipLinkHandledAt = 0;
 
 function resetPersistentSideStatSizing() {
   persistentSideStatCardWidth = 0;
@@ -936,6 +937,15 @@ function renderTooltipContent(content) {
         link.target = "_blank";
         link.rel = "noopener noreferrer";
         link.textContent = text;
+        if (isTouch) {
+          link.addEventListener("touchend", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            touchTooltipLinkHandledAt = nowMs();
+            markTouchTooltipInteractionBlock(650);
+            openTooltipLinkOnTouch(link);
+          }, { passive: false });
+        }
         lineEl.appendChild(link);
       } else {
         lineEl.appendChild(document.createTextNode(text));
@@ -964,7 +974,7 @@ function showTooltip(content, x, y, options = {}) {
   const tooltipScale = getTooltipScale();
   if (isTouch) {
     tooltip.classList.add("touch");
-    tooltip.style.transform = `scale(${tooltipScale})`;
+    tooltip.style.transform = "none";
     tooltip.style.transformOrigin = "top left";
   } else {
     tooltip.classList.remove("touch");
@@ -1017,6 +1027,18 @@ function shouldIgnoreTouchCellClick() {
   return nowMs() <= touchTooltipInteractionBlockUntil;
 }
 
+function isPointInsideTooltip(event) {
+  if (!tooltip.classList.contains("visible")) return false;
+  const clientX = Number(event?.clientX);
+  const clientY = Number(event?.clientY);
+  if (!Number.isFinite(clientX) || !Number.isFinite(clientY)) return false;
+  const rect = tooltip.getBoundingClientRect();
+  return clientX >= rect.left
+    && clientX <= rect.right
+    && clientY >= rect.top
+    && clientY <= rect.bottom;
+}
+
 function hasActiveTooltipCell() {
   return Boolean(document.querySelector(".cell.active"));
 }
@@ -1060,9 +1082,14 @@ function handleTooltipLinkActivation(event) {
   }
   event.stopPropagation();
   if (isTouch) {
+    if ((nowMs() - touchTooltipLinkHandledAt) <= 800) {
+      event.preventDefault();
+      return true;
+    }
     // Guard against mobile click-through/ghost taps that can hit the active cell.
     markTouchTooltipInteractionBlock(650);
     event.preventDefault();
+    touchTooltipLinkHandledAt = nowMs();
     openTooltipLinkOnTouch(linkElement);
     return true;
   }
@@ -1117,7 +1144,7 @@ function attachTooltip(cell, text) {
     return;
   }
   cell.addEventListener("click", (event) => {
-    if (shouldIgnoreTouchCellClick()) {
+    if (shouldIgnoreTouchCellClick() || isPointInsideTooltip(event)) {
       event.stopPropagation();
       return;
     }
@@ -2117,7 +2144,7 @@ function buildHeatmapArea(aggregates, year, units, colors, type, layout, options
       }
     } else {
       cell.addEventListener("click", (event) => {
-        if (shouldIgnoreTouchCellClick()) {
+        if (shouldIgnoreTouchCellClick() || isPointInsideTooltip(event)) {
           event.stopPropagation();
           return;
         }
