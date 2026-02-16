@@ -67,6 +67,7 @@ let pendingSummaryTailFrame = null;
 let persistentSideStatCardWidth = 0;
 let persistentSideStatCardMinHeight = 0;
 let pinnedTooltipCell = null;
+let touchTooltipInteractionBlockUntil = 0;
 
 function resetPersistentSideStatSizing() {
   persistentSideStatCardWidth = 0;
@@ -999,6 +1000,23 @@ function dismissTooltipState() {
   hideTooltip();
 }
 
+function nowMs() {
+  return (window.performance && typeof window.performance.now === "function")
+    ? window.performance.now()
+    : Date.now();
+}
+
+function markTouchTooltipInteractionBlock(durationMs = 450) {
+  if (!isTouch) return;
+  const blockUntil = nowMs() + Math.max(0, Number(durationMs) || 0);
+  touchTooltipInteractionBlockUntil = Math.max(touchTooltipInteractionBlockUntil, blockUntil);
+}
+
+function shouldIgnoreTouchCellClick() {
+  if (!isTouch) return false;
+  return nowMs() <= touchTooltipInteractionBlockUntil;
+}
+
 function hasActiveTooltipCell() {
   return Boolean(document.querySelector(".cell.active"));
 }
@@ -1032,14 +1050,20 @@ function handleTooltipLinkActivation(event) {
     return false;
   }
   event.stopPropagation();
+  if (isTouch) {
+    // Guard against mobile click-through/ghost taps that can hit the active cell.
+    markTouchTooltipInteractionBlock(650);
+  }
   const directLinkTap = isTooltipLinkTarget(event.target);
   if (!directLinkTap) {
     event.preventDefault();
     linkElement.click();
   }
-  window.setTimeout(() => {
-    dismissTooltipState();
-  }, 0);
+  if (!isTouch) {
+    window.setTimeout(() => {
+      dismissTooltipState();
+    }, 0);
+  }
   return true;
 }
 
@@ -1081,6 +1105,10 @@ function attachTooltip(cell, text) {
     return;
   }
   cell.addEventListener("click", (event) => {
+    if (shouldIgnoreTouchCellClick()) {
+      event.stopPropagation();
+      return;
+    }
     if (cell.classList.contains("active")) {
       cell.classList.remove("active");
       hideTooltip();
@@ -2077,6 +2105,10 @@ function buildHeatmapArea(aggregates, year, units, colors, type, layout, options
       }
     } else {
       cell.addEventListener("click", (event) => {
+        if (shouldIgnoreTouchCellClick()) {
+          event.stopPropagation();
+          return;
+        }
         if (cell.classList.contains("active")) {
           cell.classList.remove("active");
           hideTooltip();
@@ -4181,8 +4213,10 @@ async function init() {
   } else {
     tooltip.addEventListener("pointerdown", (event) => {
       event.stopPropagation();
+      markTouchTooltipInteractionBlock();
     });
     tooltip.addEventListener("click", (event) => {
+      markTouchTooltipInteractionBlock();
       if (!handleTooltipLinkActivation(event)) {
         event.stopPropagation();
         return;
