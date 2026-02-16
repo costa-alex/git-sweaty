@@ -59,6 +59,8 @@ const footerHostedLink = document.getElementById("footerHostedLink");
 const footerPoweredLabel = document.getElementById("footerPoweredLabel");
 const dashboardTitle = document.getElementById("dashboardTitle");
 const isTouch = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+const hasTouchInput = Number(window.navigator?.maxTouchPoints || 0) > 0;
+const useTouchInteractions = isTouch || hasTouchInput;
 const BREAKPOINTS = Object.freeze({
   NARROW_LAYOUT_MAX: 900,
 });
@@ -132,7 +134,7 @@ function requestSummaryTypeTailCentering() {
 }
 
 function schedulePostInteractionAlignment() {
-  if (isTouch) return;
+  if (useTouchInteractions) return;
   requestLayoutAlignment();
 }
 
@@ -854,7 +856,7 @@ function positionTooltip(x, y) {
   const maxX = Math.max(minX, viewport.offsetLeft + viewport.width - rect.width - padding);
   const maxY = Math.max(minY, viewport.offsetTop + viewport.height - rect.height - padding);
   const left = clamp(anchorX + 12, minX, maxX);
-  const preferredTop = isTouch ? (anchorY - rect.height - 12) : (anchorY + 12);
+  const preferredTop = useTouchInteractions ? (anchorY - rect.height - 12) : (anchorY + 12);
   const top = clamp(preferredTop, minY, maxY);
   tooltip.style.left = `${left}px`;
   tooltip.style.top = `${top}px`;
@@ -862,7 +864,7 @@ function positionTooltip(x, y) {
 }
 
 function updateTouchTooltipWrapMode() {
-  if (!isTouch) return;
+  if (!useTouchInteractions) return;
   const padding = 12;
   const viewport = getViewportMetrics();
   const availableWidth = Math.max(0, viewport.width - (padding * 2));
@@ -937,7 +939,7 @@ function isTouchTooltipActivationEvent(event) {
   if (event?.sourceCapabilities && event.sourceCapabilities.firesTouchEvents === true) {
     return true;
   }
-  return isTouch;
+  return useTouchInteractions;
 }
 
 function renderTooltipContent(content) {
@@ -960,8 +962,8 @@ function renderTooltipContent(content) {
         const link = document.createElement("a");
         link.className = "tooltip-link";
         link.href = href;
-        link.target = "_self";
-        link.rel = "noreferrer";
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
         link.addEventListener(
           "touchstart",
           (event) => {
@@ -1002,10 +1004,10 @@ function clearPinnedTooltipCell() {
 function showTooltip(content, x, y, options = {}) {
   const { interactive = false } = options;
   const rendered = renderTooltipContent(content);
-  const allowInteraction = rendered.hasLinks && (isTouch || interactive);
+  const allowInteraction = rendered.hasLinks && (useTouchInteractions || interactive);
   tooltip.classList.toggle("interactive", allowInteraction);
   const tooltipScale = getTooltipScale();
-  if (isTouch) {
+  if (useTouchInteractions) {
     tooltip.classList.add("touch");
     tooltip.style.transform = "none";
     tooltip.style.transformOrigin = "top left";
@@ -1015,12 +1017,12 @@ function showTooltip(content, x, y, options = {}) {
     tooltip.style.transformOrigin = "top left";
   }
   tooltip.classList.add("visible");
-  if (isTouch) {
+  if (useTouchInteractions) {
     updateTouchTooltipWrapMode();
   }
   requestAnimationFrame(() => {
     positionTooltip(x, y);
-    if (isTouch) {
+    if (useTouchInteractions) {
       requestAnimationFrame(() => positionTooltip(x, y));
     }
   });
@@ -1050,13 +1052,13 @@ function nowMs() {
 }
 
 function markTouchTooltipInteractionBlock(durationMs = 450) {
-  if (!isTouch) return;
+  if (!useTouchInteractions) return;
   const blockUntil = nowMs() + Math.max(0, Number(durationMs) || 0);
   touchTooltipInteractionBlockUntil = Math.max(touchTooltipInteractionBlockUntil, blockUntil);
 }
 
 function shouldIgnoreTouchCellClick() {
-  if (!isTouch) return false;
+  if (!useTouchInteractions) return false;
   return nowMs() <= touchTooltipInteractionBlockUntil;
 }
 
@@ -1187,7 +1189,7 @@ function attachTooltip(cell, text) {
     if (hasActiveTooltipCell()) return;
     hideTooltip();
   });
-  if (!isTouch) {
+  if (!useTouchInteractions) {
     return;
   }
   cell.addEventListener("click", (event) => {
@@ -2170,7 +2172,7 @@ function buildHeatmapArea(aggregates, year, units, colors, type, layout, options
       if (hasActiveTooltipCell()) return;
       hideTooltip();
     });
-    if (!isTouch) {
+    if (!useTouchInteractions) {
       if (canPinTooltip) {
         cell.addEventListener("click", (event) => {
           if (pinnedTooltipCell === cell) {
@@ -2311,7 +2313,7 @@ function attachSingleSelectCardToggle(button, options = {}) {
       onToggleComplete();
     }
   });
-  if (!isTouch) {
+  if (!useTouchInteractions) {
     button.addEventListener("pointerleave", () => {
       button.classList.remove(clearedClassName);
     });
@@ -4253,7 +4255,7 @@ async function init() {
     }, 150);
   });
 
-  if (!isTouch) {
+  if (!useTouchInteractions) {
     tooltip.addEventListener("click", (event) => {
       handleTooltipLinkActivation(event);
     });
