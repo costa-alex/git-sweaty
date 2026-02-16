@@ -68,6 +68,7 @@ let persistentSideStatCardWidth = 0;
 let persistentSideStatCardMinHeight = 0;
 let pinnedTooltipCell = null;
 let touchTooltipInteractionBlockUntil = 0;
+let lastTooltipPointerType = "";
 
 function resetPersistentSideStatSizing() {
   persistentSideStatCardWidth = 0;
@@ -913,6 +914,32 @@ function normalizeTooltipContent(content) {
   return String(content ?? "").split("\n").map((line) => normalizeTooltipLine(line));
 }
 
+function rememberTooltipPointerType(event) {
+  const pointerType = String(event?.pointerType || "").trim().toLowerCase();
+  if (pointerType) {
+    lastTooltipPointerType = pointerType;
+    return;
+  }
+  const type = String(event?.type || "").trim().toLowerCase();
+  if (type.startsWith("touch")) {
+    lastTooltipPointerType = "touch";
+  }
+}
+
+function isTouchTooltipActivationEvent(event) {
+  const pointerType = String(event?.pointerType || "").trim().toLowerCase();
+  if (pointerType) {
+    return pointerType === "touch" || pointerType === "pen";
+  }
+  if (lastTooltipPointerType) {
+    return lastTooltipPointerType === "touch" || lastTooltipPointerType === "pen";
+  }
+  if (event?.sourceCapabilities && event.sourceCapabilities.firesTouchEvents === true) {
+    return true;
+  }
+  return isTouch;
+}
+
 function renderTooltipContent(content) {
   const normalizedLines = normalizeTooltipContent(content);
   tooltip.innerHTML = "";
@@ -933,26 +960,24 @@ function renderTooltipContent(content) {
         const link = document.createElement("a");
         link.className = "tooltip-link";
         link.href = href;
-        if (isTouch) {
-          // Let mobile browsers handle Strava universal links natively.
-          link.target = "_self";
-          link.rel = "noreferrer";
-          link.addEventListener(
-            "touchstart",
-            (event) => {
-              event.stopPropagation();
-              markTouchTooltipInteractionBlock(1600);
-            },
-            { passive: true },
-          );
-          link.addEventListener("pointerdown", (event) => {
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.addEventListener(
+          "touchstart",
+          (event) => {
+            rememberTooltipPointerType(event);
             event.stopPropagation();
             markTouchTooltipInteractionBlock(1600);
-          });
-        } else {
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-        }
+          },
+          { passive: true },
+        );
+        link.addEventListener("pointerdown", (event) => {
+          rememberTooltipPointerType(event);
+          event.stopPropagation();
+          if (isTouchTooltipActivationEvent(event)) {
+            markTouchTooltipInteractionBlock(1600);
+          }
+        });
         link.textContent = text;
         lineEl.appendChild(link);
       } else {
@@ -1099,13 +1124,16 @@ function handleTooltipLinkActivation(event) {
   if (!linkElement) {
     return false;
   }
+  rememberTooltipPointerType(event);
   event.stopPropagation();
-  if (isTouch) {
-    // Mobile: allow native anchor navigation so universal links can open Strava directly.
+  if (isTouchTooltipActivationEvent(event)) {
+    // Mobile/touch: allow native anchor navigation for universal-link app handoff.
     markTouchTooltipInteractionBlock(1600);
     return true;
   }
-  // Desktop: rely on native anchor behavior (target=_blank) for consistent new-tab navigation.
+  // Desktop/mouse: open explicitly in a new tab and never navigate current tab.
+  event.preventDefault();
+  openTooltipLinkInNewTab(linkElement);
   window.setTimeout(() => {
     dismissTooltipState();
   }, 0);
@@ -4259,14 +4287,18 @@ async function init() {
     tooltip.addEventListener(
       "touchstart",
       (event) => {
+        rememberTooltipPointerType(event);
         event.stopPropagation();
         markTouchTooltipInteractionBlock(1200);
       },
       { passive: true },
     );
     tooltip.addEventListener("pointerdown", (event) => {
+      rememberTooltipPointerType(event);
       event.stopPropagation();
-      markTouchTooltipInteractionBlock(1200);
+      if (isTouchTooltipActivationEvent(event)) {
+        markTouchTooltipInteractionBlock(1200);
+      }
     });
     tooltip.addEventListener("click", (event) => {
       if (!handleTooltipLinkActivation(event)) {

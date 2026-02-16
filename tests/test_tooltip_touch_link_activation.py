@@ -22,6 +22,8 @@ class TooltipTouchLinkActivationTests(unittest.TestCase):
             "normalize_tooltip_href": r"function normalizeTooltipHref\(value\)\s*{[\s\S]*?\n}\n",
             "resolve_tooltip_target_element": r"function resolveTooltipTargetElement\(target\)\s*{[\s\S]*?\n}\n",
             "tooltip_link_from_event_target": r"function tooltipLinkElementFromEventTarget\(target\)\s*{[\s\S]*?\n}\n",
+            "remember_tooltip_pointer_type": r"function rememberTooltipPointerType\(event\)\s*{[\s\S]*?\n}\n",
+            "is_touch_tooltip_activation_event": r"function isTouchTooltipActivationEvent\(event\)\s*{[\s\S]*?\n}\n",
             "open_tooltip_link_in_new_tab": r"function openTooltipLinkInNewTab\(linkElement\)\s*{[\s\S]*?\n}\n",
             "handle_tooltip_link_activation": r"function handleTooltipLinkActivation\(event\)\s*{[\s\S]*?\n}\n",
         }
@@ -41,6 +43,7 @@ class TooltipTouchLinkActivationTests(unittest.TestCase):
             "const openCalls = [];\n"
             "let assignedHref = null;\n"
             "let dismissCalls = 0;\n"
+            "let lastTooltipPointerType = '';\n"
             "const window = {\n"
             "  open: (href, target, features) => {\n"
             "    openCalls.push({ href, target, features });\n"
@@ -59,6 +62,8 @@ class TooltipTouchLinkActivationTests(unittest.TestCase):
             f"{self.sources['normalize_tooltip_href']}\n"
             f"{self.sources['resolve_tooltip_target_element']}\n"
             f"{self.sources['tooltip_link_from_event_target']}\n"
+            f"{self.sources['remember_tooltip_pointer_type']}\n"
+            f"{self.sources['is_touch_tooltip_activation_event']}\n"
             f"{self.sources['open_tooltip_link_in_new_tab']}\n"
             f"{self.sources['handle_tooltip_link_activation']}\n"
             "const linkElement = {\n"
@@ -141,12 +146,18 @@ class TooltipTouchLinkActivationTests(unittest.TestCase):
             }
         )
         self.assertTrue(result["activated"])
-        self.assertFalse(result["defaultPrevented"])
+        self.assertTrue(result["defaultPrevented"])
         self.assertTrue(result["propagationStopped"])
         self.assertEqual(result["markCalls"], [])
         self.assertEqual(result["dismissCalls"], 1)
         self.assertEqual(result["assignedHref"], None)
-        self.assertEqual(result["openCalls"], [])
+        self.assertEqual(result["openCalls"], [
+            {
+                "href": href,
+                "target": "_blank",
+                "features": "noopener,noreferrer",
+            }
+        ])
 
     def test_returns_false_when_event_target_is_not_tooltip_link(self) -> None:
         result = self._run_js(
