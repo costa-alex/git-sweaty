@@ -54773,5 +54773,31 @@
     "start_date_local": "2026-02-16T12:48:07Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-02-23",
+    "distance": 5115.6,
+    "elevation_gain": 15.0,
+    "id": "17491048777",
+    "moving_time": 1799.0,
+    "name": "\u201cCorrida\u201d matinal \ud83d\udc37",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-02-23T06:40:38Z",
+    "type": "Run",
+    "year": 2026
+  },
+  {
+    "date": "2026-02-23",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "17491887141",
+    "moving_time": 1892.0,
+    "name": "Treino com pesos matinal",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-02-23T09:01:24Z",
+    "type": "WeightTraining",
+    "year": 2026
   }
 ]

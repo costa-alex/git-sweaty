@@ -36518,6 +36518,24 @@
       "type": "Swim",
       "url": "https://www.strava.com/activities/17415900659",
       "year": 2026
+    },
+    {
+      "date": "2026-02-23",
+      "hour": 6,
+      "name": "\u201cCorrida\u201d matinal \ud83d\udc37",
+      "subtype": "Run",
+      "type": "Run",
+      "url": "https://www.strava.com/activities/17491048777",
+      "year": 2026
+    },
+    {
+      "date": "2026-02-23",
+      "hour": 9,
+      "name": "Treino com pesos matinal",
+      "subtype": "WeightTraining",
+      "type": "WeightTraining",
+      "url": "https://www.strava.com/activities/17491887141",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -71201,6 +71219,15 @@
           "distance": 12035.1,
           "elevation_gain": 155.0,
           "moving_time": 4215.0
+        },
+        "2026-02-23": {
+          "activity_ids": [
+            "17491048777"
+          ],
+          "count": 1,
+          "distance": 5115.6,
+          "elevation_gain": 15.0,
+          "moving_time": 1799.0
         }
       },
       "Swim": {
@@ -71668,11 +71695,20 @@
           "distance": 0.0,
           "elevation_gain": 0.0,
           "moving_time": 1993.0
+        },
+        "2026-02-23": {
+          "activity_ids": [
+            "17491887141"
+          ],
+          "count": 1,
+          "distance": 0.0,
+          "elevation_gain": 0.0,
+          "moving_time": 1892.0
         }
       }
     }
   },
-  "generated_at": "2026-02-22T15:32:13.989249+00:00",
+  "generated_at": "2026-02-23T15:54:01.404146+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
