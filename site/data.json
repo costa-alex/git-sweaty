@@ -36536,6 +36536,15 @@
       "type": "WeightTraining",
       "url": "https://www.strava.com/activities/17491887141",
       "year": 2026
+    },
+    {
+      "date": "2026-02-24",
+      "hour": 6,
+      "name": "TrainingPeaks Virtual - Workout: Cumberland -3",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/17502410374",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -71574,6 +71583,15 @@
           "distance": 52562.9,
           "elevation_gain": 0.0,
           "moving_time": 5417.0
+        },
+        "2026-02-24": {
+          "activity_ids": [
+            "17502410374"
+          ],
+          "count": 1,
+          "distance": 43353.3,
+          "elevation_gain": 0.0,
+          "moving_time": 4514.0
         }
       },
       "Walk": {
@@ -71708,7 +71726,7 @@
       }
     }
   },
-  "generated_at": "2026-02-23T15:54:01.404146+00:00",
+  "generated_at": "2026-02-24T16:05:29.458611+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
