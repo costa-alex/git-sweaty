@@ -36626,6 +36626,24 @@
       "type": "Swim",
       "url": "https://www.strava.com/activities/17575744611",
       "year": 2026
+    },
+    {
+      "date": "2026-03-03",
+      "hour": 6,
+      "name": "TrainingPeaks Virtual - Workout: Anticosti",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/17584541339",
+      "year": 2026
+    },
+    {
+      "date": "2026-03-03",
+      "hour": 9,
+      "name": "Commute \ud83c\udfe0-\ud83c\udfe2",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/17585689148",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -71297,6 +71315,15 @@
           "distance": 20741.9,
           "elevation_gain": 284.0,
           "moving_time": 3807.0
+        },
+        "2026-03-03": {
+          "activity_ids": [
+            "17585689148"
+          ],
+          "count": 1,
+          "distance": 10457.9,
+          "elevation_gain": 212.4,
+          "moving_time": 1869.0
         }
       },
       "Ride": {
@@ -71746,6 +71773,15 @@
           "distance": 18248.3,
           "elevation_gain": 0.0,
           "moving_time": 5470.0
+        },
+        "2026-03-03": {
+          "activity_ids": [
+            "17584541339"
+          ],
+          "count": 1,
+          "distance": 33509.7,
+          "elevation_gain": 0.0,
+          "moving_time": 3682.0
         }
       },
       "Walk": {
@@ -71880,7 +71916,7 @@
       }
     }
   },
-  "generated_at": "2026-03-02T15:49:30.181684+00:00",
+  "generated_at": "2026-03-03T15:53:36.867759+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
