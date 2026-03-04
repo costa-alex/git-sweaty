@@ -7,6 +7,7 @@ from datetime import date, timedelta
 from typing import Callable, Dict, List, Optional
 
 from activity_types import build_type_meta, featured_types_from_config, ordered_types
+from repo_helpers import choose_repo_slug_from_env, normalize_repo_slug
 from utils import (
     ensure_dir,
     format_distance,
@@ -47,8 +48,8 @@ DAY_LABELS_BY_WEEK_START = {
     "sunday": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
     "monday": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
 }
-REPO_SLUG_RE = re.compile(r"^[^/\s]+/[^/\s]+$")
 STRAVA_HOST_RE = re.compile(r"(^|\.)strava\.com$", re.IGNORECASE)
+GARMIN_CONNECT_HOST_RE = re.compile(r"(^|\.)connect\.garmin\.com$", re.IGNORECASE)
 
 
 def _year_range_from_config(config: Dict, aggregate_years: Dict) -> List[int]:
@@ -129,7 +130,9 @@ def _color_scale(accent: str) -> List[str]:
 def _load_activities(
     *,
     source: str = "strava",
+    include_activity_urls: bool = False,
     include_strava_activity_urls: bool = False,
+    include_garmin_activity_urls: bool = False,
 ) -> List[Dict]:
     if not os.path.exists(ACTIVITIES_PATH):
         return []
@@ -156,8 +159,14 @@ def _load_activities(
             "subtype": str(subtype),
             "hour": hour,
         }
+        include_provider_activity_urls = include_activity_urls
         if source == "strava" and include_strava_activity_urls:
-            url = _strava_activity_url_from_id(item.get("id"))
+            include_provider_activity_urls = True
+        if source == "garmin" and include_garmin_activity_urls:
+            include_provider_activity_urls = True
+
+        if include_provider_activity_urls:
+            url = _activity_url_from_id(source, item.get("id"))
             if url:
                 activity["url"] = url
                 activity_name = str(item.get("name") or "").strip()
@@ -180,10 +189,13 @@ def _type_totals(aggregates_years: Dict) -> Dict[str, int]:
 
 
 def _repo_slug_from_git() -> Optional[str]:
-    for env_name in ("DASHBOARD_REPO", "GITHUB_REPOSITORY"):
-        env_slug = os.environ.get(env_name, "").strip()
-        if env_slug and REPO_SLUG_RE.match(env_slug):
-            return env_slug
+    env_slug = choose_repo_slug_from_env(
+        dashboard_repo=os.environ.get("DASHBOARD_REPO", ""),
+        github_repository=os.environ.get("GITHUB_REPOSITORY", ""),
+        github_actions=os.environ.get("GITHUB_ACTIONS", ""),
+    )
+    if env_slug:
+        return env_slug
 
     try:
         result = subprocess.run(
@@ -195,34 +207,43 @@ def _repo_slug_from_git() -> Optional[str]:
     except (subprocess.CalledProcessError, FileNotFoundError):
         return None
 
-    url = result.stdout.strip()
-    # Handles:
-    # - https://github.com/owner/repo.git
-    # - git@github.com:owner/repo.git
-    match = re.search(r"github\.com[:/](?P<owner>[^/]+)/(?P<repo>[^/.]+)(?:\.git)?$", url)
-    if not match:
-        return None
-    return f"{match.group('owner')}/{match.group('repo')}"
+    return normalize_repo_slug(result.stdout.strip())
 
 
-def _strava_profile_url_from_config(config: Dict) -> Optional[str]:
-    raw = str((config.get("strava", {}) or {}).get("profile_url", "")).strip()
+def _host_regex_for_source(source: str) -> Optional[re.Pattern]:
+    if source == "strava":
+        return STRAVA_HOST_RE
+    if source == "garmin":
+        return GARMIN_CONNECT_HOST_RE
+    return None
+
+
+def _profile_url_from_config(config: Dict, source: str) -> Optional[str]:
+    raw = str((config.get(source, {}) or {}).get("profile_url", "")).strip()
     if not raw:
         return None
     if not re.match(r"^https?://", raw, flags=re.IGNORECASE):
         raw = f"https://{raw.lstrip('/')}"
     parsed = urllib.parse.urlparse(raw)
     host = str(parsed.hostname or "").lower()
-    if not host or not STRAVA_HOST_RE.search(host):
+    host_regex = _host_regex_for_source(source)
+    if not host or host_regex is None or not host_regex.search(host):
         return None
-    path = str(parsed.path or "").strip().rstrip("/")
-    if not path:
-        return None
+    if source == "garmin":
+        path = str(parsed.path or "").strip()
+        match = re.match(r"^/(?:modern/)?profile/([^/]+)(?:/.*)?$", path, flags=re.IGNORECASE)
+        if not match:
+            return None
+        normalized_path = f"/modern/profile/{match.group(1)}"
+    else:
+        normalized_path = str(parsed.path or "").strip().rstrip("/")
+        if not normalized_path:
+            return None
     return urllib.parse.urlunparse(
         (
             parsed.scheme or "https",
             parsed.netloc,
-            path,
+            normalized_path,
             "",
             parsed.query,
             "",
@@ -230,15 +251,15 @@ def _strava_profile_url_from_config(config: Dict) -> Optional[str]:
     )
 
 
-def _strava_activity_links_enabled_from_config(config: Dict) -> bool:
-    value = (config.get("strava", {}) or {}).get("include_activity_urls", False)
+def _activity_links_enabled_from_config(config: Dict, source: str) -> bool:
+    value = (config.get(source, {}) or {}).get("include_activity_urls", False)
     if isinstance(value, bool):
         return value
     normalized = str(value or "").strip().lower()
     return normalized in {"1", "true", "yes", "y", "on"}
 
 
-def _strava_activity_url_from_id(activity_id: object) -> Optional[str]:
+def _activity_url_from_id(source: str, activity_id: object) -> Optional[str]:
     raw = str(activity_id or "").strip()
     if not raw:
         return None
@@ -247,7 +268,23 @@ def _strava_activity_url_from_id(activity_id: object) -> Optional[str]:
     encoded = urllib.parse.quote(raw, safe="")
     if not encoded:
         return None
-    return f"https://www.strava.com/activities/{encoded}"
+    if source == "strava":
+        return f"https://www.strava.com/activities/{encoded}"
+    if source == "garmin":
+        return f"https://connect.garmin.com/modern/activity/{encoded}"
+    return None
+
+
+def _strava_profile_url_from_config(config: Dict) -> Optional[str]:
+    return _profile_url_from_config(config, "strava")
+
+
+def _strava_activity_links_enabled_from_config(config: Dict) -> bool:
+    return _activity_links_enabled_from_config(config, "strava")
+
+
+def _strava_activity_url_from_id(activity_id: object) -> Optional[str]:
+    return _activity_url_from_id("strava", activity_id)
 
 
 def _svg_for_year(
@@ -416,7 +453,12 @@ def generate(write_svgs: bool = True):
                     f.write(svg)
 
     source = normalize_source(config.get("source", "strava"))
-    include_strava_activity_urls = source == "strava" and _strava_activity_links_enabled_from_config(config)
+    include_activity_urls = _activity_links_enabled_from_config(config, source)
+    load_activities_kwargs = {"source": source}
+    if source == "strava":
+        load_activities_kwargs["include_strava_activity_urls"] = include_activity_urls
+    elif source == "garmin":
+        load_activities_kwargs["include_garmin_activity_urls"] = include_activity_urls
     site_payload = {
         "source": source,
         "generated_at": utc_now().isoformat(),
@@ -427,14 +469,15 @@ def generate(write_svgs: bool = True):
         "aggregates": aggregate_years,
         "units": units,
         "week_start": week_start,
-        "activities": _load_activities(
-            source=source,
-            include_strava_activity_urls=include_strava_activity_urls,
-        ),
+        "activities": _load_activities(**load_activities_kwargs),
     }
-    strava_profile_url = _strava_profile_url_from_config(config)
-    if source == "strava" and strava_profile_url:
-        site_payload["strava_profile_url"] = strava_profile_url
+    profile_url = _profile_url_from_config(config, source)
+    if profile_url:
+        site_payload["profile_url"] = profile_url
+        if source == "strava":
+            site_payload["strava_profile_url"] = profile_url
+        elif source == "garmin":
+            site_payload["garmin_profile_url"] = profile_url
     repo_slug = _repo_slug_from_git()
     if repo_slug:
         site_payload["repo"] = repo_slug

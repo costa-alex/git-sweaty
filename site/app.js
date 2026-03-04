@@ -23,11 +23,13 @@ const WEEKDAY_LABELS_BY_WEEK_START = Object.freeze({
 });
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const ACTIVE_DAYS_METRIC_KEY = "active_days";
+const DAYS_OFF_METRIC_KEY = "days_off";
 const DEFAULT_UNITS = Object.freeze({ distance: "mi", elevation: "ft" });
 const UNIT_SYSTEM_TO_UNITS = Object.freeze({
   imperial: Object.freeze({ distance: "mi", elevation: "ft" }),
   metric: Object.freeze({ distance: "km", elevation: "m" }),
 });
+const PAGE_TITLE_SUFFIX = " | git-sweaty";
 
 const typeButtons = document.getElementById("typeButtons");
 const yearButtons = document.getElementById("yearButtons");
@@ -63,15 +65,37 @@ const hasTouchInput = Number(window.navigator?.maxTouchPoints || 0) > 0;
 const useTouchInteractions = isTouch || hasTouchInput;
 const BREAKPOINTS = Object.freeze({
   NARROW_LAYOUT_MAX: 900,
+  DESKTOP_FINE_POINTER_NARROW_LAYOUT_MAX: 720,
 });
+const DESKTOP_MIN_YEAR_HEATMAP_WEEK_COLUMNS = 54;
+const DESKTOP_OUTLIER_WEEK_TOLERANCE_COLUMNS = 1;
+const FILTER_MENU_DROPDOWN_GAP_PX = 6;
+const FILTER_MENU_VIEWPORT_GUTTER_PX = 12;
+const FILTER_MENU_MIN_HEIGHT_PX = 180;
+const FILTER_MENU_MAX_VIEWPORT_RATIO = 0.75;
 let pendingAlignmentFrame = null;
 let pendingSummaryTailFrame = null;
 let persistentSideStatCardWidth = 0;
 let persistentSideStatCardMinHeight = 0;
 let pinnedTooltipCell = null;
 let touchTooltipInteractionBlockUntil = 0;
+let touchTooltipDismissBlockUntil = 0;
 let lastTooltipPointerType = "";
 let touchTooltipLinkClickSuppressUntil = 0;
+let touchTooltipRecentPointerUpCell = null;
+let touchTooltipRecentPointerUpUntil = 0;
+let touchTooltipRecentPointerUpWasTap = true;
+let touchTooltipPointerDownState = null;
+let tooltipPositionFrame = null;
+let tooltipSettleFrame = null;
+let pendingTooltipPoint = null;
+let tooltipResizeObserver = null;
+const PROFILE_PROVIDER_STRAVA = "strava";
+const PROFILE_PROVIDER_GARMIN = "garmin";
+const TOUCH_TOOLTIP_TAP_MAX_MOVE_PX = 10;
+const TOUCH_TOOLTIP_TAP_MAX_SCROLL_PX = 2;
+const TOUCH_TOOLTIP_MAX_EFFECTIVE_ZOOM = 1.2;
+const TOUCH_TOOLTIP_MIN_SCALE = 0.5;
 
 function resetPersistentSideStatSizing() {
   persistentSideStatCardWidth = 0;
@@ -107,7 +131,11 @@ function getUnitsForSystem(system) {
 }
 
 function isNarrowLayoutViewport() {
-  return window.matchMedia(`(max-width: ${BREAKPOINTS.NARROW_LAYOUT_MAX}px)`).matches;
+  const finePointerDesktop = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const narrowLayoutMax = finePointerDesktop
+    ? BREAKPOINTS.DESKTOP_FINE_POINTER_NARROW_LAYOUT_MAX
+    : BREAKPOINTS.NARROW_LAYOUT_MAX;
+  return window.matchMedia(`(max-width: ${narrowLayoutMax}px)`).matches;
 }
 
 function isDesktopLikeViewport() {
@@ -354,6 +382,27 @@ function syncHeaderLinkPlacement() {
   }
 }
 
+function syncProfileLinkNavigationTarget() {
+  if (!stravaProfileLink) return;
+  if (isDesktopLikeViewport()) {
+    stravaProfileLink.target = "_blank";
+    stravaProfileLink.rel = "noopener noreferrer";
+    return;
+  }
+  stravaProfileLink.removeAttribute("target");
+  stravaProfileLink.removeAttribute("rel");
+}
+
+function setProfileProviderIcon(provider) {
+  if (!stravaProfileLink) return;
+  stravaProfileLink.classList.remove("profile-provider-strava", "profile-provider-garmin");
+  if (provider === PROFILE_PROVIDER_GARMIN) {
+    stravaProfileLink.classList.add("profile-provider-garmin");
+    return;
+  }
+  stravaProfileLink.classList.add("profile-provider-strava");
+}
+
 function parseStravaProfileUrl(value) {
   let raw = String(value || "").trim();
   if (!raw) return null;
@@ -369,7 +418,9 @@ function parseStravaProfileUrl(value) {
   }
 
   const host = String(parsed.hostname || "").toLowerCase();
-  if (!(host === "strava.com" || host.endsWith(".strava.com"))) {
+  const isStravaHost = host === "strava.com" || host.endsWith(".strava.com");
+  const isGarminHost = host === "connect.garmin.com" || host.endsWith(".connect.garmin.com");
+  if (!isStravaHost && !isGarminHost) {
     return null;
   }
 
@@ -378,9 +429,18 @@ function parseStravaProfileUrl(value) {
     return null;
   }
 
+  let normalizedPath = path;
+  if (isGarminHost) {
+    const garminMatch = path.match(/^\/(?:modern\/)?profile\/([^/]+)(?:\/.*)?$/i);
+    if (!garminMatch) {
+      return null;
+    }
+    normalizedPath = `/modern/profile/${garminMatch[1]}`;
+  }
+
   return {
-    href: `${parsed.protocol}//${parsed.host}${path}${parsed.search}`,
-    label: "Strava",
+    href: `${parsed.protocol}//${parsed.host}${normalizedPath}${parsed.search}`,
+    label: isGarminHost ? "Garmin" : "Strava",
   };
 }
 
@@ -399,12 +459,17 @@ function parseStravaActivityUrl(value) {
   }
 
   const host = String(parsed.hostname || "").toLowerCase();
-  if (!(host === "strava.com" || host.endsWith(".strava.com"))) {
+  const isStravaHost = host === "strava.com" || host.endsWith(".strava.com");
+  const isGarminHost = host === "connect.garmin.com" || host.endsWith(".connect.garmin.com");
+  if (!isStravaHost && !isGarminHost) {
     return null;
   }
 
   const path = String(parsed.pathname || "").trim().replace(/\/+$/, "");
-  if (!/^\/activities\/[^/]+$/i.test(path)) {
+  if (isStravaHost && !/^\/activities\/[^/]+$/i.test(path)) {
+    return null;
+  }
+  if (isGarminHost && !/^\/(?:modern\/)?activity\/[^/]+$/i.test(path)) {
     return null;
   }
 
@@ -413,21 +478,29 @@ function parseStravaActivityUrl(value) {
   };
 }
 
-function syncStravaProfileLink(profileUrl) {
+function syncStravaProfileLink(profileUrl, source) {
   if (!stravaProfileLink) return;
   const parsed = parseStravaProfileUrl(profileUrl);
   if (!parsed) {
     stravaProfileLink.hidden = true;
+    setProfileProviderIcon(PROFILE_PROVIDER_STRAVA);
+    syncProfileLinkNavigationTarget();
     syncHeaderLinkPlacement();
     return;
   }
   stravaProfileLink.href = parsed.href;
+  const providerLabel = parsed.label || providerDisplayName(source) || "Profile";
+  const provider = providerLabel === "Garmin"
+    ? PROFILE_PROVIDER_GARMIN
+    : PROFILE_PROVIDER_STRAVA;
+  setProfileProviderIcon(provider);
   if (stravaProfileLabel) {
-    stravaProfileLabel.textContent = parsed.label;
+    stravaProfileLabel.textContent = providerLabel;
   } else {
-    stravaProfileLink.textContent = parsed.label;
+    stravaProfileLink.textContent = providerLabel;
   }
   stravaProfileLink.hidden = false;
+  syncProfileLinkNavigationTarget();
   syncHeaderLinkPlacement();
 }
 
@@ -438,13 +511,453 @@ function providerDisplayName(source) {
   return "";
 }
 
+function payloadRepoCandidate(payload) {
+  return payload?.repo
+    || payload?.repo_slug
+    || payload?.repo_url
+    || payload?.repository
+    || "";
+}
+
+function payloadProfileUrl(payload) {
+  return payload?.profile_url
+    || payload?.profileUrl
+    || payload?.provider_profile_url
+    || payload?.garmin_profile_url
+    || payload?.garminProfileUrl
+    || payload?.garmin_profile
+    || payload?.strava_profile_url
+    || payload?.stravaProfileUrl
+    || payload?.strava_profile
+    || "";
+}
+
+function payloadSource(payload) {
+  return payload?.source || payload?.provider || "";
+}
+
+function cloneSelectionState(allMode, selectedValues) {
+  return {
+    allMode: Boolean(allMode),
+    selectedValues: new Set(selectedValues),
+  };
+}
+
+function reduceTopButtonSelection({
+  rawValue,
+  allMode,
+  selectedValues,
+  allValues,
+  normalizeValue = (value) => value,
+}) {
+  if (rawValue === "all") {
+    if (!allValues.length) {
+      return { allMode: true, selectedValues: new Set() };
+    }
+    const hasExplicitAllSelection = !allMode
+      && selectedValues.size === allValues.length
+      && allValues.every((value) => selectedValues.has(value));
+    if (hasExplicitAllSelection) {
+      return { allMode: true, selectedValues: new Set() };
+    }
+    return { allMode: false, selectedValues: new Set(allValues) };
+  }
+  const normalizedValue = normalizeValue(rawValue);
+  if (!allValues.includes(normalizedValue)) {
+    return { allMode, selectedValues };
+  }
+  if (allMode) {
+    return {
+      allMode: false,
+      selectedValues: new Set([normalizedValue]),
+    };
+  }
+  const nextSelectedValues = new Set(selectedValues);
+  if (nextSelectedValues.has(normalizedValue)) {
+    nextSelectedValues.delete(normalizedValue);
+    if (!nextSelectedValues.size) {
+      return { allMode: true, selectedValues: new Set() };
+    }
+    return { allMode: false, selectedValues: nextSelectedValues };
+  }
+  nextSelectedValues.add(normalizedValue);
+  return { allMode: false, selectedValues: nextSelectedValues };
+}
+
+function reduceMenuSelection({
+  rawValue,
+  allMode,
+  selectedValues,
+  allValues,
+  normalizeValue = (value) => value,
+  allowToggleOffAll = false,
+}) {
+  if (rawValue === "all") {
+    const hasExplicitAllSelection = !allMode
+      && allValues.length > 0
+      && selectedValues.size === allValues.length
+      && allValues.every((value) => selectedValues.has(value));
+    if (allowToggleOffAll && (allMode || hasExplicitAllSelection)) {
+      return { allMode: false, selectedValues: new Set() };
+    }
+    return { allMode: true, selectedValues: new Set() };
+  }
+  const normalizedValue = normalizeValue(rawValue);
+  if (!allValues.includes(normalizedValue)) {
+    return { allMode, selectedValues };
+  }
+  if (allMode) {
+    return {
+      allMode: false,
+      selectedValues: new Set(allValues.filter((value) => value !== normalizedValue)),
+    };
+  }
+  const nextSelectedValues = new Set(selectedValues);
+  if (nextSelectedValues.has(normalizedValue)) {
+    nextSelectedValues.delete(normalizedValue);
+    return { allMode: false, selectedValues: nextSelectedValues };
+  }
+  nextSelectedValues.add(normalizedValue);
+  return { allMode: false, selectedValues: nextSelectedValues };
+}
+
+function deriveActiveSummaryYearMetricKey({
+  visibleYears,
+  selectedMetricByYear,
+  filterableMetricsByYear,
+}) {
+  const selectedMetrics = new Set();
+  for (const year of visibleYears) {
+    const selectedMetric = selectedMetricByYear.get(year);
+    const filterableSet = filterableMetricsByYear.get(year) || new Set();
+    if (selectedMetric && filterableSet.has(selectedMetric)) {
+      selectedMetrics.add(selectedMetric);
+    }
+  }
+  if (selectedMetrics.size !== 1) {
+    return null;
+  }
+  const [candidateMetric] = Array.from(selectedMetrics);
+  let hasEligibleYear = false;
+  for (const year of visibleYears) {
+    const filterableSet = filterableMetricsByYear.get(year) || new Set();
+    if (!filterableSet.has(candidateMetric)) continue;
+    hasEligibleYear = true;
+    if (selectedMetricByYear.get(year) !== candidateMetric) {
+      return null;
+    }
+  }
+  return hasEligibleYear ? candidateMetric : null;
+}
+
+function toStringSet(values) {
+  const result = new Set();
+  (Array.isArray(values) ? values : []).forEach((value) => {
+    if (typeof value === "string") {
+      result.add(value);
+    }
+  });
+  return result;
+}
+
+function trackYearMetricAvailability(year, visibleYearsSet) {
+  visibleYearsSet.add(Number(year));
+}
+
+function pruneYearMetricSelectionsByFilterability(selectionByYear, filterableMetricsByYearMap) {
+  Array.from(selectionByYear.keys()).forEach((year) => {
+    const filterableSet = filterableMetricsByYearMap.get(year);
+    const selectedMetricKey = selectionByYear.get(year) || null;
+    if (!filterableSet || (selectedMetricKey && !filterableSet.has(selectedMetricKey))) {
+      selectionByYear.delete(year);
+    }
+  });
+}
+
+function selectedTypesListForState(state, allTypes) {
+  if (!state || state.allMode) {
+    return allTypes.slice();
+  }
+  return allTypes.filter((type) => state.selectedValues.has(type));
+}
+
+function selectedYearsListForState(state, visibleYears) {
+  if (!state || state.allMode) {
+    return visibleYears.slice();
+  }
+  return visibleYears.filter((year) => state.selectedValues.has(Number(year)));
+}
+
+function updateButtonState(container, selectedValues, isAllSelected, allValues, normalizeValue) {
+  if (!container) return;
+  const hasExplicitAllSelection = allValues.length > 0
+    && !isAllSelected
+    && selectedValues.size === allValues.length
+    && allValues.every((value) => selectedValues.has(value));
+  container.querySelectorAll(".filter-button").forEach((button) => {
+    const rawValue = String(button.dataset.value || "");
+    const value = normalizeValue ? normalizeValue(rawValue) : rawValue;
+    const isActive = rawValue === "all"
+      ? hasExplicitAllSelection
+      : (!isAllSelected && selectedValues.has(value));
+    button.classList.toggle("active", isActive);
+  });
+}
+
+function getTypeMenuText(types, allTypesSelected) {
+  if (allTypesSelected) return "All Activities";
+  if (types.length) return types.map((type) => displayType(type)).join(", ");
+  return "No Activities Selected";
+}
+
+function getYearMenuText(years, allYearsSelected) {
+  if (allYearsSelected) return "All Years";
+  if (years.length) return years.map((year) => String(year)).join(", ");
+  return "No Years Selected";
+}
+
+function setMenuLabel(labelEl, text, fallbackText) {
+  if (!labelEl) return;
+  if (fallbackText && fallbackText !== text) {
+    labelEl.textContent = fallbackText;
+    return;
+  }
+  labelEl.textContent = text;
+}
+
+function setMenuOpenState(menuEl, buttonEl, isOpen) {
+  if (!menuEl) return;
+  menuEl.classList.toggle("open", isOpen);
+  if (buttonEl) {
+    buttonEl.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  }
+}
+
+function ensureFilterMenuList(container) {
+  if (!container) return null;
+  let list = container.querySelector(".filter-menu-options-list");
+  if (list) return list;
+  list = document.createElement("div");
+  list.className = "filter-menu-options-list";
+  container.appendChild(list);
+  return list;
+}
+
+function resetFilterMenuScroll(container) {
+  if (!container) return;
+  const list = container.querySelector(".filter-menu-options-list");
+  if (list) {
+    list.scrollTop = 0;
+    return;
+  }
+  container.scrollTop = 0;
+}
+
+function getFilterMenuMaxHeightPx(triggerButtonEl) {
+  if (!triggerButtonEl) return null;
+  const viewportHeight = Number(window.innerHeight || document.documentElement?.clientHeight || 0);
+  if (!viewportHeight) return null;
+  const rect = triggerButtonEl.getBoundingClientRect();
+  const spaceBelow = Math.max(
+    0,
+    viewportHeight - rect.bottom - FILTER_MENU_DROPDOWN_GAP_PX - FILTER_MENU_VIEWPORT_GUTTER_PX,
+  );
+  const viewportCap = Math.floor(viewportHeight * FILTER_MENU_MAX_VIEWPORT_RATIO);
+  const boundedCap = Math.min(spaceBelow, viewportCap);
+  const minimum = Math.min(FILTER_MENU_MIN_HEIGHT_PX, spaceBelow);
+  return Math.max(minimum, boundedCap);
+}
+
+function applyFilterMenuMaxHeight(menuEl, triggerButtonEl, optionsEl) {
+  if (!menuEl || !optionsEl || !menuEl.classList.contains("open")) {
+    if (optionsEl) {
+      optionsEl.style.removeProperty("--filter-menu-max-height");
+    }
+    return;
+  }
+  const maxHeight = getFilterMenuMaxHeightPx(triggerButtonEl);
+  if (Number.isFinite(maxHeight) && maxHeight > 0) {
+    optionsEl.style.setProperty("--filter-menu-max-height", `${Math.round(maxHeight)}px`);
+    return;
+  }
+  optionsEl.style.removeProperty("--filter-menu-max-height");
+}
+
+function syncOpenFilterMenuMaxHeights() {
+  applyFilterMenuMaxHeight(typeMenu, typeMenuButton, typeMenuOptions);
+  applyFilterMenuMaxHeight(yearMenu, yearMenuButton, yearMenuOptions);
+}
+
+function renderFilterButtons(container, options, onSelect) {
+  if (!container) return;
+  container.innerHTML = "";
+  options.forEach((option) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "filter-button";
+    button.dataset.value = option.value;
+    button.textContent = option.label;
+    button.addEventListener("click", () => onSelect(option.value));
+    container.appendChild(button);
+  });
+}
+
+function renderFilterMenuOptions(
+  container,
+  options,
+  selectedValues,
+  isAllSelected,
+  onSelect,
+  normalizeValue,
+) {
+  if (!container) return;
+  container.innerHTML = "";
+  const list = ensureFilterMenuList(container);
+  if (!list) return;
+  const normalizedOptionValues = options
+    .filter((option) => String(option.value) !== "all")
+    .map((option) => {
+      const rawValue = String(option.value);
+      return normalizeValue ? normalizeValue(rawValue) : rawValue;
+    });
+  const hasExplicitAllSelection = !isAllSelected
+    && normalizedOptionValues.length > 0
+    && normalizedOptionValues.every((value) => selectedValues.has(value));
+  const allOptionSelected = isAllSelected || hasExplicitAllSelection;
+  options.forEach((option) => {
+    const rawValue = String(option.value);
+    const normalized = normalizeValue ? normalizeValue(rawValue) : rawValue;
+    const isActive = rawValue === "all"
+      ? allOptionSelected
+      : (!isAllSelected && selectedValues.has(normalized));
+    const isChecked = rawValue === "all"
+      ? allOptionSelected
+      : (isAllSelected || selectedValues.has(normalized));
+
+    const row = document.createElement("div");
+    row.className = "filter-menu-option";
+    row.setAttribute("role", "button");
+    if (isActive) {
+      row.classList.add("active");
+    }
+    row.dataset.value = rawValue;
+
+    const label = document.createElement("span");
+    label.className = "filter-menu-option-label";
+    label.textContent = option.label;
+
+    const check = document.createElement("input");
+    check.type = "checkbox";
+    check.className = "filter-menu-check";
+    check.checked = isChecked;
+    check.tabIndex = -1;
+    check.setAttribute("aria-hidden", "true");
+
+    row.appendChild(label);
+    row.appendChild(check);
+    row.addEventListener("pointerdown", (event) => {
+      event.stopPropagation();
+    });
+    row.addEventListener("click", () => onSelect(rawValue));
+    list.appendChild(row);
+  });
+}
+
+function renderFilterMenuDoneButton(container, onDone) {
+  if (!container) return;
+  const footer = document.createElement("div");
+  footer.className = "filter-menu-footer";
+  const done = document.createElement("button");
+  done.type = "button";
+  done.className = "filter-menu-done";
+  done.textContent = "Done";
+  done.addEventListener("pointerdown", (event) => {
+    event.stopPropagation();
+  });
+  done.addEventListener("click", () => onDone());
+  footer.appendChild(done);
+  container.appendChild(footer);
+}
+
+function syncFilterControlState({
+  typeButtons,
+  yearButtons,
+  selectedTypes,
+  selectedYears,
+  allTypeValues,
+  allYearValues,
+  allTypesSelected,
+  allYearsSelected,
+  typeMenuTypes,
+  yearMenuYears,
+  typeMenuSelection,
+  yearMenuSelection,
+  typeMenuLabel,
+  yearMenuLabel,
+  typeClearButton,
+  yearClearButton,
+  keepTypeMenuOpen,
+  keepYearMenuOpen,
+  typeMenu,
+  yearMenu,
+  typeMenuButton,
+  yearMenuButton,
+}) {
+  updateButtonState(typeButtons, selectedTypes, allTypesSelected, allTypeValues);
+  updateButtonState(yearButtons, selectedYears, allYearsSelected, allYearValues, (v) => Number(v));
+  const typeMenuText = getTypeMenuText(
+    typeMenuTypes,
+    typeMenuSelection.allMode || typeMenuTypes.length === allTypeValues.length,
+  );
+  const yearMenuText = getYearMenuText(
+    yearMenuYears,
+    yearMenuSelection.allMode || yearMenuYears.length === allYearValues.length,
+  );
+  setMenuLabel(
+    typeMenuLabel,
+    typeMenuText,
+    !typeMenuSelection.allMode
+    && typeMenuTypes.length > 1
+    && typeMenuTypes.length < allTypeValues.length
+      ? "Multiple Activities Selected"
+      : "",
+  );
+  setMenuLabel(
+    yearMenuLabel,
+    yearMenuText,
+    !yearMenuSelection.allMode
+    && yearMenuYears.length > 1
+    && yearMenuYears.length < allYearValues.length
+      ? "Multiple Years Selected"
+      : "",
+  );
+  if (typeClearButton) {
+    if (allTypesSelected) {
+      typeClearButton.textContent = "Select All";
+      typeClearButton.disabled = allTypeValues.length === 0;
+    } else {
+      typeClearButton.textContent = "Clear";
+      typeClearButton.disabled = false;
+    }
+  }
+  if (yearClearButton) {
+    yearClearButton.disabled = allYearsSelected;
+  }
+  if (keepTypeMenuOpen) {
+    setMenuOpenState(typeMenu, typeMenuButton, true);
+  }
+  if (keepYearMenuOpen) {
+    setMenuOpenState(yearMenu, yearMenuButton, true);
+  }
+}
+
 function setDashboardTitle(source) {
   const provider = providerDisplayName(source);
   const title = provider ? `${provider} Activity Heatmaps` : "Activity Heatmaps";
   if (dashboardTitle) {
     dashboardTitle.textContent = title;
   }
-  document.title = title;
+  document.title = `${title}${PAGE_TITLE_SUFFIX}`;
 }
 
 function readCssVar(name, fallback, scope) {
@@ -452,6 +965,25 @@ function readCssVar(name, fallback, scope) {
   const value = getComputedStyle(target).getPropertyValue(name).trim();
   const parsed = parseFloat(value);
   return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function getRenderedToCssScale(element) {
+  const target = element || document.documentElement || document.body;
+  if (!target) return 1;
+  const rectWidth = Number(target.getBoundingClientRect?.().width || 0);
+  const cssWidth = Number(target.clientWidth || target.offsetWidth || 0);
+  if (!Number.isFinite(rectWidth) || rectWidth <= 0 || !Number.isFinite(cssWidth) || cssWidth <= 0) {
+    return 1;
+  }
+  const scale = rectWidth / cssWidth;
+  return Number.isFinite(scale) && scale > 0 ? scale : 1;
+}
+
+function renderedPixelsToCssPixels(value, referenceElement) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return 0;
+  const scale = getRenderedToCssScale(referenceElement);
+  return scale > 0 ? (numeric / scale) : numeric;
 }
 
 function getLayout(scope) {
@@ -468,15 +1000,63 @@ function getLayout(scope) {
 function getElementBoxWidth(element) {
   if (!element) return 0;
   const width = element.getBoundingClientRect().width;
-  return Number.isFinite(width) ? width : 0;
+  return renderedPixelsToCssPixels(width, element);
+}
+
+function getElementBoxHeight(element) {
+  if (!element) return 0;
+  const height = element.getBoundingClientRect().height;
+  return renderedPixelsToCssPixels(height, element);
 }
 
 function getElementContentWidth(element) {
   if (!element) return 0;
+  const boxWidth = getElementBoxWidth(element);
   const styles = getComputedStyle(element);
   const paddingLeft = parseFloat(styles.paddingLeft) || 0;
   const paddingRight = parseFloat(styles.paddingRight) || 0;
-  return Math.max(0, element.clientWidth - paddingLeft - paddingRight);
+  const borderLeft = parseFloat(styles.borderLeftWidth) || 0;
+  const borderRight = parseFloat(styles.borderRightWidth) || 0;
+  return Math.max(0, boxWidth - paddingLeft - paddingRight - borderLeft - borderRight);
+}
+
+function getYearCardWeekColumnCount(card) {
+  const heatmapArea = card?.querySelector(".heatmap-area");
+  if (!heatmapArea) return 0;
+  const rawValue = Number(heatmapArea.dataset.weekColumns || "");
+  return Number.isFinite(rawValue) && rawValue > 0 ? rawValue : 0;
+}
+
+function getYearHeatmapWeekStep(referenceElement) {
+  if (!referenceElement) return 0;
+  const cell = readCssVar("--cell", 12, referenceElement);
+  const gap = readCssVar("--gap", 2, referenceElement);
+  const step = cell + gap;
+  return Number.isFinite(step) && step > 0 ? step : 0;
+}
+
+function getDominantYearRailWidth(widths) {
+  const finiteWidths = widths.filter((width) => Number.isFinite(width) && width > 0);
+  if (!finiteWidths.length) return 0;
+  const buckets = new Map();
+  finiteWidths.forEach((width) => {
+    const bucket = Math.round(width);
+    const current = buckets.get(bucket) || { count: 0, minWidth: width };
+    current.count += 1;
+    current.minWidth = Math.min(current.minWidth, width);
+    buckets.set(bucket, current);
+  });
+  let bestBucket = null;
+  let bestCount = -1;
+  let bestBucketWidth = Infinity;
+  buckets.forEach((entry, bucket) => {
+    if (entry.count > bestCount || (entry.count === bestCount && bucket < bestBucketWidth)) {
+      bestCount = entry.count;
+      bestBucket = entry;
+      bestBucketWidth = bucket;
+    }
+  });
+  return bestBucket ? bestBucket.minWidth : 0;
 }
 
 function alignFrequencyMetricChipsToSecondGraphAxis(frequencyCard, title, metricChipRow) {
@@ -493,7 +1073,7 @@ function alignFrequencyMetricChipsToSecondGraphAxis(frequencyCard, title, metric
   const targetLeft = yearLabelRect.left - titleRect.left;
 
   if (!Number.isFinite(currentLeft) || !Number.isFinite(targetLeft)) return;
-  const extraOffset = targetLeft - currentLeft;
+  const extraOffset = renderedPixelsToCssPixels(targetLeft - currentLeft, title);
   if (extraOffset > 0.5) {
     metricChipRow.style.setProperty("margin-left", `${extraOffset}px`);
   }
@@ -549,7 +1129,7 @@ function normalizeSideStatCardSize() {
   }
 
   const maxWidth = cards.reduce((acc, card) => Math.max(acc, Math.ceil(getElementBoxWidth(card))), 0);
-  const maxHeight = cards.reduce((acc, card) => Math.max(acc, Math.ceil(card.getBoundingClientRect().height || 0)), 0);
+  const maxHeight = cards.reduce((acc, card) => Math.max(acc, Math.ceil(getElementBoxHeight(card))), 0);
   const normalizedWidth = Math.max(maxWidth, Math.ceil(configuredMinWidth));
   persistentSideStatCardWidth = Math.max(persistentSideStatCardWidth, normalizedWidth);
   persistentSideStatCardMinHeight = Math.max(persistentSideStatCardMinHeight, maxHeight);
@@ -567,13 +1147,39 @@ function buildSectionLayoutPlan(list) {
   const yearCards = Array.from(list.querySelectorAll(".labeled-card-row-year .year-card"));
   if (!frequencyCard && !yearCards.length) return null;
 
+  const desktopLike = isDesktopLikeViewport();
   const yearGraphWidths = yearCards
     .map((card) => getElementBoxWidth(card.querySelector(".heatmap-area")))
     .filter((width) => width > 0);
+  const maxYearWeekColumns = yearCards.reduce(
+    (maxColumns, card) => Math.max(maxColumns, getYearCardWeekColumnCount(card)),
+    0,
+  );
 
   let graphRailWidth = yearGraphWidths.length ? Math.max(...yearGraphWidths) : 0;
+  const dominantYearRailWidth = getDominantYearRailWidth(yearGraphWidths);
   let frequencyGap = null;
   let frequencyPadRight = null;
+  let desktopCalendarOverflowAllowance = 0;
+  const weekStepReference = yearCards[0]?.querySelector(".heatmap-area") || frequencyCard || list;
+  const weekStep = getYearHeatmapWeekStep(weekStepReference);
+
+  if (
+    desktopLike
+    && graphRailWidth > 0
+    && maxYearWeekColumns > 0
+    && weekStep > 0
+  ) {
+    const missingWeeks = Math.max(0, DESKTOP_MIN_YEAR_HEATMAP_WEEK_COLUMNS - maxYearWeekColumns);
+    if (missingWeeks > 0) {
+      const baselineExpansion = missingWeeks * weekStep;
+      desktopCalendarOverflowAllowance += baselineExpansion;
+    }
+
+    if (maxYearWeekColumns >= DESKTOP_MIN_YEAR_HEATMAP_WEEK_COLUMNS) {
+      desktopCalendarOverflowAllowance += DESKTOP_OUTLIER_WEEK_TOLERANCE_COLUMNS * weekStep;
+    }
+  }
 
   if (frequencyCard) {
     const frequencyCols = Array.from(frequencyCard.querySelectorAll(".more-stats-grid > .more-stats-col"));
@@ -588,12 +1194,17 @@ function buildSectionLayoutPlan(list) {
     }
 
     if (graphRailWidth > 0 && totalFrequencyGraphWidth > 0) {
-      const totalGap = Math.max(0, graphRailWidth - totalFrequencyGraphWidth);
+      const frequencyRailWidth = (
+        dominantYearRailWidth > 0
+        && dominantYearRailWidth < graphRailWidth
+      )
+        ? dominantYearRailWidth
+        : graphRailWidth;
+      const targetRailWidth = Math.max(totalFrequencyGraphWidth, frequencyRailWidth);
+      const totalGap = Math.max(0, targetRailWidth - totalFrequencyGraphWidth);
       if (graphCount > 1) {
         const gapCount = graphCount - 1;
-        const desiredTrailingPad = isNarrowLayoutViewport()
-          ? 0
-          : readCssVar("--year-grid-pad-right", 0, frequencyCard);
+        const desiredTrailingPad = readCssVar("--year-grid-pad-right", 0, frequencyCard);
         const trailingPad = Math.max(0, Math.min(totalGap, desiredTrailingPad));
         const distributableGap = Math.max(0, totalGap - trailingPad);
         // Reserve trailing right gutter first so the third graph rail stays aligned with yearly rails.
@@ -611,7 +1222,6 @@ function buildSectionLayoutPlan(list) {
   ];
 
   let shouldStackSection = false;
-  const desktopLike = isDesktopLikeViewport();
   cards.forEach((card) => {
     const statsColumn = card.classList.contains("more-stats")
       ? card.querySelector(".more-stats-facts.side-stats-column")
@@ -628,7 +1238,7 @@ function buildSectionLayoutPlan(list) {
     const availableWidth = getElementContentWidth(card);
     const overflow = requiredWidth - availableWidth;
     const tolerance = desktopLike
-      ? readCssVar("--stack-overflow-tolerance-desktop", 0, card)
+      ? (readCssVar("--stack-overflow-tolerance-desktop", 0, card) + desktopCalendarOverflowAllowance)
       : 0;
     if (overflow > tolerance) {
       shouldStackSection = true;
@@ -738,6 +1348,34 @@ function formatLocalDateKey(date) {
   return `${y}-${m}-${d}`;
 }
 
+function getLocalTodayDateKey(referenceDate = new Date()) {
+  return formatLocalDateKey(referenceDate);
+}
+
+function isDateKeyElapsed(dateKey, todayDateKey = getLocalTodayDateKey()) {
+  const normalizedDateKey = String(dateKey || "");
+  return Boolean(normalizedDateKey) && normalizedDateKey <= todayDateKey;
+}
+
+function getElapsedDayCountForYear(year, referenceDate = new Date()) {
+  const normalizedYear = Number(year);
+  if (!Number.isFinite(normalizedYear)) return 0;
+  const currentYear = referenceDate.getFullYear();
+  if (normalizedYear > currentYear) return 0;
+  if (normalizedYear < currentYear) {
+    const yearStart = Date.UTC(normalizedYear, 0, 1);
+    const nextYearStart = Date.UTC(normalizedYear + 1, 0, 1);
+    return Math.max(0, Math.round((nextYearStart - yearStart) / MS_PER_DAY));
+  }
+  const currentDayUtc = Date.UTC(
+    referenceDate.getFullYear(),
+    referenceDate.getMonth(),
+    referenceDate.getDate(),
+  );
+  const yearStartUtc = Date.UTC(normalizedYear, 0, 1);
+  return Math.max(0, Math.floor((currentDayUtc - yearStartUtc) / MS_PER_DAY) + 1);
+}
+
 function localDayNumber(date) {
   return Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / MS_PER_DAY);
 }
@@ -820,7 +1458,7 @@ function clamp(value, min, max) {
 }
 
 function getViewportMetrics() {
-  const viewport = window.visualViewport;
+  const viewport = useTouchInteractions ? window.visualViewport : null;
   if (!viewport) {
     return {
       offsetLeft: 0,
@@ -837,53 +1475,248 @@ function getViewportMetrics() {
   };
 }
 
-function getTooltipScale() {
+function tooltipViewportAnchorOffset(viewport) {
+  if (!useTouchInteractions) {
+    return { x: 0, y: 0 };
+  }
+  return {
+    x: Number.isFinite(viewport?.offsetLeft) ? viewport.offsetLeft : 0,
+    y: Number.isFinite(viewport?.offsetTop) ? viewport.offsetTop : 0,
+  };
+}
+
+function pickTooltipCoordinate(preferred, alternate, min, max) {
+  const preferredFits = preferred >= min && preferred <= max;
+  if (preferredFits) {
+    return preferred;
+  }
+  const alternateFits = alternate >= min && alternate <= max;
+  if (alternateFits) {
+    return alternate;
+  }
+  const clampedPreferred = clamp(preferred, min, max);
+  const clampedAlternate = clamp(alternate, min, max);
+  return Math.abs(clampedPreferred - preferred) <= Math.abs(clampedAlternate - alternate)
+    ? clampedPreferred
+    : clampedAlternate;
+}
+
+function getTouchTooltipScale() {
+  if (!useTouchInteractions) {
+    return 1;
+  }
   const viewport = window.visualViewport;
   const scale = Number(viewport?.scale);
   if (!Number.isFinite(scale) || scale <= 0) {
     return 1;
   }
-  return 1 / scale;
+  const desiredScale = TOUCH_TOOLTIP_MAX_EFFECTIVE_ZOOM / scale;
+  return clamp(desiredScale, TOUCH_TOOLTIP_MIN_SCALE, 1);
+}
+
+function getDesktopTooltipCoordinateScale() {
+  if (useTouchInteractions) {
+    return 1;
+  }
+  const doc = typeof document !== "undefined" ? document : null;
+  const body = doc?.body;
+  if (body && typeof window.getComputedStyle === "function") {
+    const cssZoom = parseFloat(window.getComputedStyle(body).zoom || "");
+    if (Number.isFinite(cssZoom) && cssZoom > 0) {
+      return cssZoom;
+    }
+  }
+  const rectWidth = Number(tooltip?.getBoundingClientRect?.().width || 0);
+  const offsetWidth = Number(tooltip?.offsetWidth || 0);
+  if (Number.isFinite(rectWidth) && rectWidth > 0 && Number.isFinite(offsetWidth) && offsetWidth > 0) {
+    const inferredScale = rectWidth / offsetWidth;
+    if (Number.isFinite(inferredScale) && inferredScale > 0) {
+      return inferredScale;
+    }
+  }
+  return 1;
+}
+
+function updateDesktopTooltipBounds() {
+  if (useTouchInteractions) return;
+  const padding = 12;
+  const viewport = getViewportMetrics();
+  const coordinateScale = typeof getDesktopTooltipCoordinateScale === "function"
+    ? getDesktopTooltipCoordinateScale()
+    : 1;
+  const viewportWidth = coordinateScale > 0 ? (viewport.width / coordinateScale) : viewport.width;
+  const viewportHeight = coordinateScale > 0 ? (viewport.height / coordinateScale) : viewport.height;
+  const maxWidth = Math.max(200, Math.floor(viewportWidth - (padding * 2)));
+  const maxHeight = Math.max(120, Math.floor(viewportHeight - (padding * 2)));
+  tooltip.style.maxWidth = `${maxWidth}px`;
+  tooltip.style.maxHeight = `${maxHeight}px`;
+  tooltip.style.overflowY = "auto";
+  tooltip.style.overflowX = "hidden";
 }
 
 function positionTooltip(x, y) {
   const padding = 12;
+  const coordinateScale = typeof getDesktopTooltipCoordinateScale === "function"
+    ? getDesktopTooltipCoordinateScale()
+    : 1;
   const rect = tooltip.getBoundingClientRect();
+  const rectWidth = Number.isFinite(rect.width) && rect.width > 0
+    ? (useTouchInteractions ? rect.width : (
+      coordinateScale > 0 ? (rect.width / coordinateScale) : rect.width
+    ))
+    : Math.max(0, Number(tooltip.offsetWidth || 0));
+  const rectHeight = Number.isFinite(rect.height) && rect.height > 0
+    ? (useTouchInteractions ? rect.height : (
+      coordinateScale > 0 ? (rect.height / coordinateScale) : rect.height
+    ))
+    : Math.max(0, Number(tooltip.offsetHeight || 0));
   const viewport = getViewportMetrics();
-  const anchorX = x + viewport.offsetLeft;
-  const anchorY = y + viewport.offsetTop;
-  const minX = viewport.offsetLeft + padding;
-  const minY = viewport.offsetTop + padding;
-  const maxX = Math.max(minX, viewport.offsetLeft + viewport.width - rect.width - padding);
-  const maxY = Math.max(minY, viewport.offsetTop + viewport.height - rect.height - padding);
-  const left = clamp(anchorX + 12, minX, maxX);
-  const preferredTop = useTouchInteractions ? (anchorY - rect.height - 12) : (anchorY + 12);
-  const top = clamp(preferredTop, minY, maxY);
+  const viewportWidth = useTouchInteractions || !(coordinateScale > 0)
+    ? viewport.width
+    : (viewport.width / coordinateScale);
+  const viewportHeight = useTouchInteractions || !(coordinateScale > 0)
+    ? viewport.height
+    : (viewport.height / coordinateScale);
+  const anchorOffset = tooltipViewportAnchorOffset(viewport);
+  const anchorX = useTouchInteractions || !(coordinateScale > 0)
+    ? (x + anchorOffset.x)
+    : ((x + anchorOffset.x) / coordinateScale);
+  const anchorY = useTouchInteractions || !(coordinateScale > 0)
+    ? (y + anchorOffset.y)
+    : ((y + anchorOffset.y) / coordinateScale);
+  const minX = anchorOffset.x + padding;
+  const minY = anchorOffset.y + padding;
+  const maxX = Math.max(minX, anchorOffset.x + viewportWidth - rectWidth - padding);
+  const maxY = Math.max(minY, anchorOffset.y + viewportHeight - rectHeight - padding);
+  const preferredLeft = anchorX + padding;
+  const alternateLeft = anchorX - rectWidth - padding;
+  const left = pickTooltipCoordinate(preferredLeft, alternateLeft, minX, maxX);
+  const preferredTop = useTouchInteractions
+    ? (anchorY - rectHeight - padding)
+    : (anchorY + padding);
+  const alternateTop = useTouchInteractions
+    ? (anchorY + padding)
+    : (anchorY - rectHeight - padding);
+  const top = pickTooltipCoordinate(preferredTop, alternateTop, minY, maxY);
   tooltip.style.left = `${left}px`;
   tooltip.style.top = `${top}px`;
   tooltip.style.bottom = "auto";
+  const finalRect = tooltip.getBoundingClientRect();
+  const finalRectWidth = useTouchInteractions || !(coordinateScale > 0)
+    ? finalRect.width
+    : (finalRect.width / coordinateScale);
+  const finalRectHeight = useTouchInteractions || !(coordinateScale > 0)
+    ? finalRect.height
+    : (finalRect.height / coordinateScale);
+  const finalRectLeft = useTouchInteractions || !(coordinateScale > 0)
+    ? finalRect.left
+    : (finalRect.left / coordinateScale);
+  const finalRectTop = useTouchInteractions || !(coordinateScale > 0)
+    ? finalRect.top
+    : (finalRect.top / coordinateScale);
+  const finalMaxX = Math.max(minX, anchorOffset.x + viewportWidth - finalRectWidth - padding);
+  const finalMaxY = Math.max(minY, anchorOffset.y + viewportHeight - finalRectHeight - padding);
+  const finalPreferredLeft = anchorX + padding;
+  const finalAlternateLeft = anchorX - finalRectWidth - padding;
+  const adjustedLeft = pickTooltipCoordinate(finalPreferredLeft, finalAlternateLeft, minX, finalMaxX);
+  const finalPreferredTop = useTouchInteractions
+    ? (anchorY - finalRectHeight - padding)
+    : (anchorY + padding);
+  const finalAlternateTop = useTouchInteractions
+    ? (anchorY + padding)
+    : (anchorY - finalRectHeight - padding);
+  const adjustedTop = pickTooltipCoordinate(finalPreferredTop, finalAlternateTop, minY, finalMaxY);
+  if (Math.abs(adjustedLeft - finalRectLeft) > 0.5) {
+    tooltip.style.left = `${adjustedLeft}px`;
+  }
+  if (Math.abs(adjustedTop - finalRectTop) > 0.5) {
+    tooltip.style.top = `${adjustedTop}px`;
+  }
+  if (!useTouchInteractions && window.visualViewport) {
+    const visualViewport = window.visualViewport;
+    const vvLeftRaw = Number.isFinite(visualViewport.offsetLeft) ? visualViewport.offsetLeft : 0;
+    const vvTopRaw = Number.isFinite(visualViewport.offsetTop) ? visualViewport.offsetTop : 0;
+    const vvLeft = coordinateScale > 0 ? (vvLeftRaw / coordinateScale) : vvLeftRaw;
+    const vvTop = coordinateScale > 0 ? (vvTopRaw / coordinateScale) : vvTopRaw;
+    const vvWidth = Number.isFinite(visualViewport.width) ? visualViewport.width : viewport.width;
+    const vvHeight = Number.isFinite(visualViewport.height) ? visualViewport.height : viewport.height;
+    const vvWidthCss = coordinateScale > 0 ? (vvWidth / coordinateScale) : vvWidth;
+    const vvHeightCss = coordinateScale > 0 ? (vvHeight / coordinateScale) : vvHeight;
+    const afterClampRect = tooltip.getBoundingClientRect();
+    const afterClampRectWidth = coordinateScale > 0
+      ? (afterClampRect.width / coordinateScale)
+      : afterClampRect.width;
+    const afterClampRectHeight = coordinateScale > 0
+      ? (afterClampRect.height / coordinateScale)
+      : afterClampRect.height;
+    const afterClampRectLeft = coordinateScale > 0
+      ? (afterClampRect.left / coordinateScale)
+      : afterClampRect.left;
+    const afterClampRectTop = coordinateScale > 0
+      ? (afterClampRect.top / coordinateScale)
+      : afterClampRect.top;
+    const vvMinX = vvLeft + padding;
+    const vvMinY = vvTop + padding;
+    const vvMaxX = Math.max(vvMinX, vvLeft + vvWidthCss - afterClampRectWidth - padding);
+    const vvMaxY = Math.max(vvMinY, vvTop + vvHeightCss - afterClampRectHeight - padding);
+    const vvPreferredLeft = anchorX + padding;
+    const vvAlternateLeft = anchorX - afterClampRectWidth - padding;
+    const vvAdjustedLeft = pickTooltipCoordinate(vvPreferredLeft, vvAlternateLeft, vvMinX, vvMaxX);
+    const vvPreferredTop = anchorY + padding;
+    const vvAlternateTop = anchorY - afterClampRectHeight - padding;
+    const vvAdjustedTop = pickTooltipCoordinate(vvPreferredTop, vvAlternateTop, vvMinY, vvMaxY);
+    if (Math.abs(vvAdjustedLeft - afterClampRectLeft) > 0.5) {
+      tooltip.style.left = `${vvAdjustedLeft}px`;
+    }
+    if (Math.abs(vvAdjustedTop - afterClampRectTop) > 0.5) {
+      tooltip.style.top = `${vvAdjustedTop}px`;
+    }
+  }
 }
 
 function updateTouchTooltipWrapMode() {
   if (!useTouchInteractions) return;
   const padding = 12;
   const viewport = getViewportMetrics();
+  const anchorOffset = tooltipViewportAnchorOffset(viewport);
+  const touchTooltipScale = getTouchTooltipScale();
+  const effectiveScale = touchTooltipScale > 0 ? touchTooltipScale : 1;
   const availableWidth = Math.max(0, viewport.width - (padding * 2));
+  const availableHeight = Math.max(0, viewport.height - (padding * 2));
+  const scaledAvailableWidth = Math.max(0, Math.floor(availableWidth / effectiveScale));
+  const scaledAvailableHeight = Math.max(0, Math.floor(availableHeight / effectiveScale));
+  if (availableHeight > 0) {
+    const preferredMaxHeight = Math.max(120, Math.floor((viewport.height * 0.7) / effectiveScale));
+    const maxHeight = Math.min(scaledAvailableHeight, preferredMaxHeight);
+    tooltip.style.maxHeight = `${maxHeight}px`;
+    tooltip.style.overflowY = "auto";
+    tooltip.style.removeProperty("overflow-x");
+  } else {
+    tooltip.style.removeProperty("max-height");
+    tooltip.style.removeProperty("overflow-y");
+    tooltip.style.removeProperty("overflow-x");
+  }
   if (availableWidth <= 0) {
+    tooltip.style.removeProperty("max-width");
     tooltip.classList.remove("nowrap");
     return;
   }
+  const maxWidth = scaledAvailableWidth;
+  tooltip.style.maxWidth = `${maxWidth}px`;
 
   tooltip.classList.remove("nowrap");
-  tooltip.style.left = `${viewport.offsetLeft + padding}px`;
-  tooltip.style.top = `${viewport.offsetTop + padding}px`;
+  tooltip.style.left = `${anchorOffset.x + padding}px`;
+  tooltip.style.top = `${anchorOffset.y + padding}px`;
   tooltip.style.bottom = "auto";
   tooltip.style.right = "auto";
 
   tooltip.classList.add("nowrap");
-  const nowrapWidth = tooltip.getBoundingClientRect().width;
-  if (nowrapWidth > availableWidth) {
+  const nowrapWidth = Math.max(0, Number(tooltip.scrollWidth || 0));
+  if (!nowrapWidth || nowrapWidth > maxWidth) {
     tooltip.classList.remove("nowrap");
+    tooltip.style.overflowX = "hidden";
+  } else {
+    tooltip.style.removeProperty("overflow-x");
   }
 }
 
@@ -1030,32 +1863,60 @@ function showTooltip(content, x, y, options = {}) {
   const rendered = renderTooltipContent(content);
   const allowInteraction = rendered.hasLinks && (useTouchInteractions || interactive);
   tooltip.classList.toggle("interactive", allowInteraction);
-  const tooltipScale = getTooltipScale();
   if (useTouchInteractions) {
     tooltip.classList.add("touch");
-    tooltip.style.transform = "none";
+    const touchTooltipScale = getTouchTooltipScale();
     tooltip.style.transformOrigin = "top left";
+    if (touchTooltipScale === 1) {
+      tooltip.style.removeProperty("transform");
+    } else {
+      tooltip.style.transform = `scale(${touchTooltipScale})`;
+    }
   } else {
     tooltip.classList.remove("touch");
-    tooltip.style.transform = `translateY(-8px) scale(${tooltipScale})`;
-    tooltip.style.transformOrigin = "top left";
+    updateDesktopTooltipBounds();
+    tooltip.style.transform = "none";
+    tooltip.style.removeProperty("transform-origin");
   }
   tooltip.classList.add("visible");
   if (useTouchInteractions) {
     updateTouchTooltipWrapMode();
   }
-  requestAnimationFrame(() => {
-    positionTooltip(x, y);
-    if (useTouchInteractions) {
-      requestAnimationFrame(() => positionTooltip(x, y));
-    }
+  pendingTooltipPoint = { x, y };
+  if (tooltipPositionFrame !== null) {
+    window.cancelAnimationFrame(tooltipPositionFrame);
+    tooltipPositionFrame = null;
+  }
+  if (tooltipSettleFrame !== null) {
+    window.cancelAnimationFrame(tooltipSettleFrame);
+    tooltipSettleFrame = null;
+  }
+  tooltipPositionFrame = window.requestAnimationFrame(() => {
+    tooltipPositionFrame = null;
+    if (!pendingTooltipPoint) return;
+    positionTooltip(pendingTooltipPoint.x, pendingTooltipPoint.y);
+    tooltipSettleFrame = window.requestAnimationFrame(() => {
+      tooltipSettleFrame = null;
+      if (!pendingTooltipPoint) return;
+      positionTooltip(pendingTooltipPoint.x, pendingTooltipPoint.y);
+    });
   });
 }
 
 function hideTooltip() {
+  if (tooltipPositionFrame !== null) {
+    window.cancelAnimationFrame(tooltipPositionFrame);
+    tooltipPositionFrame = null;
+  }
+  if (tooltipSettleFrame !== null) {
+    window.cancelAnimationFrame(tooltipSettleFrame);
+    tooltipSettleFrame = null;
+  }
+  pendingTooltipPoint = null;
   tooltip.classList.remove("visible");
   tooltip.classList.remove("nowrap");
   tooltip.classList.remove("interactive");
+  tooltip.innerHTML = "";
 }
 
 function clearActiveTouchCell() {
@@ -1075,6 +1936,17 @@ function nowMs() {
     : Date.now();
 }
 
+function markTouchTooltipDismissBlock(durationMs = 450) {
+  if (!useTouchInteractions) return;
+  const blockUntil = nowMs() + Math.max(0, Number(durationMs) || 0);
+  touchTooltipDismissBlockUntil = Math.max(touchTooltipDismissBlockUntil, blockUntil);
+}
+
+function shouldIgnoreTouchTooltipDismiss() {
+  if (!useTouchInteractions) return false;
+  return nowMs() <= touchTooltipDismissBlockUntil;
+}
+
 function markTouchTooltipLinkClickSuppress(durationMs = 1200) {
   if (!useTouchInteractions) return;
   const blockUntil = nowMs() + Math.max(0, Number(durationMs) || 0);
@@ -1086,10 +1958,102 @@ function shouldSuppressTouchTooltipLinkClick() {
   return nowMs() <= touchTooltipLinkClickSuppressUntil;
 }
 
+function markTouchTooltipCellPointerUp(cell, durationMs = 700, wasTap = true) {
+  if (!useTouchInteractions) return;
+  if (!cell) return;
+  touchTooltipRecentPointerUpCell = cell;
+  touchTooltipRecentPointerUpUntil = nowMs() + Math.max(0, Number(durationMs) || 0);
+  touchTooltipRecentPointerUpWasTap = Boolean(wasTap);
+}
+
+function shouldSuppressTouchTooltipCellClick(event, cell) {
+  if (!useTouchInteractions) return false;
+  if (!cell) return false;
+  if (!isTouchTooltipActivationEvent(event)) return false;
+  if (nowMs() > touchTooltipRecentPointerUpUntil) {
+    return false;
+  }
+  if (!touchTooltipRecentPointerUpWasTap) {
+    return true;
+  }
+  if (!touchTooltipRecentPointerUpCell || touchTooltipRecentPointerUpCell !== cell) {
+    return false;
+  }
+  return true;
+}
+
+function markTouchTooltipCellPointerDown(event, cell) {
+  if (!useTouchInteractions) return;
+  if (!cell) return;
+  if (!isTouchTooltipActivationEvent(event)) return;
+  const pointerId = Number(event?.pointerId);
+  const clientX = Number(event?.clientX);
+  const clientY = Number(event?.clientY);
+  const scrollHost = typeof cell.closest === "function"
+    ? cell.closest(".card")
+    : null;
+  touchTooltipPointerDownState = {
+    pointerId: Number.isFinite(pointerId) ? pointerId : null,
+    clientX: Number.isFinite(clientX) ? clientX : null,
+    clientY: Number.isFinite(clientY) ? clientY : null,
+    viewportX: window.scrollX || window.pageXOffset || 0,
+    viewportY: window.scrollY || window.pageYOffset || 0,
+    scrollHost,
+    scrollLeft: scrollHost ? Number(scrollHost.scrollLeft || 0) : 0,
+    scrollTop: scrollHost ? Number(scrollHost.scrollTop || 0) : 0,
+  };
+}
+
+function wasTouchTooltipCellTapGesture(event) {
+  const state = touchTooltipPointerDownState;
+  if (!state) {
+    return true;
+  }
+
+  const pointerId = Number(event?.pointerId);
+  if (state.pointerId !== null && Number.isFinite(pointerId) && pointerId !== state.pointerId) {
+    return false;
+  }
+
+  const clientX = Number(event?.clientX);
+  const clientY = Number(event?.clientY);
+  const movedByPointer = Number.isFinite(clientX)
+    && Number.isFinite(clientY)
+    && state.clientX !== null
+    && state.clientY !== null
+    && (
+      Math.abs(clientX - state.clientX) > TOUCH_TOOLTIP_TAP_MAX_MOVE_PX
+      || Math.abs(clientY - state.clientY) > TOUCH_TOOLTIP_TAP_MAX_MOVE_PX
+    );
+
+  const viewportX = window.scrollX || window.pageXOffset || 0;
+  const viewportY = window.scrollY || window.pageYOffset || 0;
+  const viewportMoved = Math.abs(viewportX - state.viewportX) > TOUCH_TOOLTIP_TAP_MAX_SCROLL_PX
+    || Math.abs(viewportY - state.viewportY) > TOUCH_TOOLTIP_TAP_MAX_SCROLL_PX;
+
+  let scrollHostMoved = false;
+  if (state.scrollHost && state.scrollHost.isConnected) {
+    const hostScrollLeft = Number(state.scrollHost.scrollLeft || 0);
+    const hostScrollTop = Number(state.scrollHost.scrollTop || 0);
+    scrollHostMoved = Math.abs(hostScrollLeft - state.scrollLeft) > TOUCH_TOOLTIP_TAP_MAX_SCROLL_PX
+      || Math.abs(hostScrollTop - state.scrollTop) > TOUCH_TOOLTIP_TAP_MAX_SCROLL_PX;
+  }
+
+  return !(movedByPointer || viewportMoved || scrollHostMoved);
+}
+
+function resolveTouchTooltipCellPointerUpTap(event) {
+  if (!useTouchInteractions) return true;
+  const wasTap = wasTouchTooltipCellTapGesture(event);
+  touchTooltipPointerDownState = null;
+  return wasTap;
+}
+
 function markTouchTooltipInteractionBlock(durationMs = 450) {
   if (!useTouchInteractions) return;
   const blockUntil = nowMs() + Math.max(0, Number(durationMs) || 0);
   touchTooltipInteractionBlockUntil = Math.max(touchTooltipInteractionBlockUntil, blockUntil);
+  touchTooltipDismissBlockUntil = Math.max(touchTooltipDismissBlockUntil, blockUntil);
 }
 
 function shouldIgnoreTouchCellClick() {
@@ -1110,6 +2074,7 @@ function isPointInsideTooltip(event) {
 }
 
 function hasActiveTooltipCell() {
+  if (!useTouchInteractions) return false;
   return Boolean(document.querySelector(".cell.active"));
 }
 
@@ -1179,7 +2144,7 @@ function handleTooltipLinkActivation(event) {
       event.preventDefault();
       return true;
     }
-    // Mobile/touch: force same-tab navigation so iOS can hand off universal links to Strava.
+    // Mobile/touch: force same-tab navigation so universal links can hand off to provider apps.
     event.preventDefault();
     markTouchTooltipInteractionBlock(1600);
     markTouchTooltipLinkClickSuppress(1200);
@@ -1214,38 +2179,71 @@ function getTooltipEventPoint(event, fallbackElement) {
 
 function attachTooltip(cell, text) {
   if (!text) return;
-  cell.addEventListener("mouseenter", (event) => {
-    if (isTooltipPinned()) return;
-    if (hasActiveTooltipCell()) return;
-    showTooltip(text, event.clientX, event.clientY);
-  });
-  cell.addEventListener("mousemove", (event) => {
-    if (isTooltipPinned()) return;
-    if (hasActiveTooltipCell()) return;
-    showTooltip(text, event.clientX, event.clientY);
-  });
-  cell.addEventListener("mouseleave", () => {
-    if (isTooltipPinned()) return;
-    if (hasActiveTooltipCell()) return;
-    hideTooltip();
-  });
   if (!useTouchInteractions) {
+    cell.addEventListener("mouseenter", (event) => {
+      if (isTooltipPinned()) return;
+      if (hasActiveTooltipCell()) return;
+      showTooltip(text, event.clientX, event.clientY);
+    });
+    cell.addEventListener("mousemove", (event) => {
+      if (isTooltipPinned()) return;
+      if (hasActiveTooltipCell()) return;
+      showTooltip(text, event.clientX, event.clientY);
+    });
+    cell.addEventListener("mouseleave", () => {
+      if (isTooltipPinned()) return;
+      if (hasActiveTooltipCell()) return;
+      hideTooltip();
+    });
     return;
   }
-  cell.addEventListener("click", (event) => {
-    if (shouldIgnoreTouchCellClick() || isPointInsideTooltip(event)) {
+  const handleTouchCellSelection = (event) => {
+    if (shouldIgnoreTouchCellClick()) {
       event.stopPropagation();
       return;
     }
+    markTouchTooltipDismissBlock(900);
     if (cell.classList.contains("active")) {
-      cell.classList.remove("active");
-      hideTooltip();
+      // Keep touch selection stable; outside tap or another cell tap clears it.
       return;
     }
     clearActiveTouchCell();
     cell.classList.add("active");
     const point = getTooltipEventPoint(event, cell);
     showTooltip(text, point.x, point.y);
+  };
+  cell.addEventListener("pointerdown", (event) => {
+    rememberTooltipPointerType(event);
+    markTouchTooltipCellPointerDown(event, cell);
+  });
+  cell.addEventListener("pointerup", (event) => {
+    rememberTooltipPointerType(event);
+    if (!isTouchTooltipActivationEvent(event)) {
+      return;
+    }
+    const wasTap = resolveTouchTooltipCellPointerUpTap(event);
+    markTouchTooltipCellPointerUp(cell, 700, wasTap);
+    if (!wasTap) {
+      event.stopPropagation();
+      return;
+    }
+    handleTouchCellSelection(event);
+  });
+  cell.addEventListener("pointercancel", (event) => {
+    rememberTooltipPointerType(event);
+    if (!isTouchTooltipActivationEvent(event)) {
+      return;
+    }
+    resolveTouchTooltipCellPointerUpTap(event);
+    markTouchTooltipCellPointerUp(cell, 700, false);
+  });
+  cell.addEventListener("click", (event) => {
+    rememberTooltipPointerType(event);
+    if (shouldSuppressTouchTooltipCellClick(event, cell)) {
+      event.stopPropagation();
+      return;
+    }
+    handleTouchCellSelection(event);
   });
 }
 
@@ -1418,6 +2416,7 @@ const FREQUENCY_METRIC_ITEMS = [
 ];
 const METRIC_LABEL_BY_KEY = Object.freeze({
   [ACTIVE_DAYS_METRIC_KEY]: "Active Days",
+  [DAYS_OFF_METRIC_KEY]: "Days Off",
   distance: "Distance",
   moving_time: "Time",
   elevation_gain: "Elevation",
@@ -1435,7 +2434,7 @@ function getFrequencyMetricUnavailableReason(metricKey, metricLabel) {
 }
 
 function formatMetricTotal(metricKey, value, units) {
-  if (metricKey === ACTIVE_DAYS_METRIC_KEY) {
+  if (metricKey === ACTIVE_DAYS_METRIC_KEY || metricKey === DAYS_OFF_METRIC_KEY) {
     return formatNumber(value, 0);
   }
   if (metricKey === "distance") {
@@ -1546,6 +2545,41 @@ function createTooltipLinkedTypeLine(prefix, label, suffix, href) {
   return segments;
 }
 
+function formatTooltipDuration(seconds) {
+  const durationMinutes = Math.round(Number(seconds || 0) / 60);
+  if (durationMinutes >= 60) {
+    return `${Math.floor(durationMinutes / 60)}h ${durationMinutes % 60}m`;
+  }
+  return `${durationMinutes}m`;
+}
+
+function formatTooltipMetricLines(entry, units, prefix = "") {
+  const lines = [];
+  const distanceMeters = Number(entry?.distance || 0);
+  const elevationMeters = Number(entry?.elevation_gain || 0);
+  const durationSeconds = Number(entry?.moving_time || 0);
+  const distanceUnits = units?.distance === "km" ? "km" : "mi";
+  const elevationUnits = units?.elevation === "m" ? "m" : "ft";
+
+  if (distanceMeters > 0) {
+    const distance = distanceUnits === "km"
+      ? `${(distanceMeters / 1000).toFixed(2)} km`
+      : `${(distanceMeters / 1609.344).toFixed(2)} mi`;
+    lines.push(createTooltipTextLine(`${prefix}Distance: ${distance}`));
+  }
+  if (elevationMeters > 0) {
+    const elevation = elevationUnits === "m"
+      ? `${Math.round(elevationMeters)} m`
+      : `${Math.round(elevationMeters * 3.28084)} ft`;
+    lines.push(createTooltipTextLine(`${prefix}Elevation: ${elevation}`));
+  }
+  if (durationSeconds > 0) {
+    lines.push(createTooltipTextLine(`${prefix}Duration: ${formatTooltipDuration(durationSeconds)}`));
+  }
+
+  return lines;
+}
+
 function activityTypeOrderForTooltip(typeBreakdown, types) {
   const typeCounts = typeBreakdown?.typeCounts || {};
   const selectedTypes = Array.isArray(types) ? types : [];
@@ -1597,7 +2631,13 @@ function firstTooltipActivityLink(activityLinksByType, preferredType) {
   return allLinks.length === 1 ? String(allLinks[0].href || "") : "";
 }
 
-function formatTypeBreakdownLinesWithLinks(typeBreakdown, types, activityLinksByType) {
+function formatTypeBreakdownLinesWithLinks(
+  typeBreakdown,
+  types,
+  activityLinksByType,
+  typeMetricsByType = null,
+  units = { distance: "mi", elevation: "ft" },
+) {
   const lines = [];
   const orderedTypes = activityTypeOrderForTooltip(typeBreakdown, types);
   const typeCounts = typeBreakdown?.typeCounts || {};
@@ -1614,10 +2654,17 @@ function formatTypeBreakdownLinesWithLinks(typeBreakdown, types, activityLinksBy
 
     if (hasSingleLinkedType) {
       lines.push(createTooltipLinkedTypeLine("", typeLabel, `: ${count}`, links[0].href));
-      return;
+    } else {
+      lines.push(createTooltipTextLine(`${typeLabel}: ${count}`));
     }
 
-    lines.push(createTooltipTextLine(`${typeLabel}: ${count}`));
+    const typeMetrics = typeMetricsByType && typeof typeMetricsByType === "object"
+      ? typeMetricsByType[activityType]
+      : null;
+    if (typeMetrics && typeof typeMetrics === "object") {
+      lines.push(...formatTooltipMetricLines(typeMetrics, units, "- "));
+    }
+
     if (count > 1 && links.length > 1) {
       links.forEach((entry, index) => {
         const fallbackName = `${typeLabel} ${index + 1}`;
@@ -1672,6 +2719,7 @@ function buildCombinedTypeDetailsByDate(payload, types, years) {
   const detailsByDate = {};
   const typeBreakdownsByDate = {};
   const activityLinksByDateType = {};
+  const typeMetricsByDateType = {};
   const activities = getFilteredActivities(payload, types, years);
 
   activities.forEach((activity) => {
@@ -1756,7 +2804,31 @@ function buildCombinedTypeDetailsByDate(payload, types, years) {
     });
   });
 
-  return { typeLabelsByDate, typeBreakdownsByDate, activityLinksByDateType };
+  const selectedTypes = new Set(Array.isArray(types) ? types : []);
+  (Array.isArray(years) ? years : []).forEach((year) => {
+    const yearData = payload.aggregates?.[String(year)] || {};
+    Object.entries(yearData).forEach(([activityType, entries]) => {
+      if (!selectedTypes.has(activityType)) return;
+      Object.entries(entries || {}).forEach(([dateStr, dayEntry]) => {
+        if (Number(dayEntry?.count || 0) <= 0) return;
+        if (!typeMetricsByDateType[dateStr]) {
+          typeMetricsByDateType[dateStr] = {};
+        }
+        typeMetricsByDateType[dateStr][activityType] = {
+          distance: Number(dayEntry?.distance || 0),
+          moving_time: Number(dayEntry?.moving_time || 0),
+          elevation_gain: Number(dayEntry?.elevation_gain || 0),
+        };
+      });
+    });
+  });
+
+  return {
+    typeLabelsByDate,
+    typeBreakdownsByDate,
+    activityLinksByDateType,
+    typeMetricsByDateType,
+  };
 }
 
 function centerSummaryTypeCardTailRow(summaryEl) {
@@ -1773,7 +2845,14 @@ function centerSummaryTypeCardTailRow(summaryEl) {
 
   const styles = getComputedStyle(summaryEl);
   const gap = parseFloat(styles.columnGap || styles.gap || "0") || 0;
-  const cardRects = allCards.map((card) => card.getBoundingClientRect());
+  const cardRects = allCards.map((card) => {
+    const rect = card.getBoundingClientRect();
+    return {
+      top: renderedPixelsToCssPixels(rect?.top, summaryEl),
+      left: renderedPixelsToCssPixels(rect?.left, summaryEl),
+      width: renderedPixelsToCssPixels(rect?.width, summaryEl),
+    };
+  });
   const firstRowTop = cardRects[0]?.top;
   if (!Number.isFinite(firstRowTop)) return;
 
@@ -1888,6 +2967,7 @@ function buildSummary(
     : [];
   const typeCardSet = new Set(visibleTypeCardsList);
   const activeDays = new Set();
+  const todayDateKey = getLocalTodayDateKey();
 
   Object.entries(payload.aggregates || {}).forEach(([year, yearData]) => {
     if (!years.includes(Number(year))) return;
@@ -1916,9 +2996,20 @@ function buildSummary(
   });
 
   visibleTypeCardsList.sort((a, b) => (typeTotals[b]?.count || 0) - (typeTotals[a]?.count || 0));
+  const elapsedDays = years.reduce(
+    (sum, year) => sum + getElapsedDayCountForYear(Number(year)),
+    0,
+  );
+  let elapsedActiveDays = 0;
+  activeDays.forEach((dateKey) => {
+    if (isDateKeyElapsed(dateKey, todayDateKey)) {
+      elapsedActiveDays += 1;
+    }
+  });
+  const daysOff = Math.max(0, elapsedDays - elapsedActiveDays);
 
   const cards = [
-    { title: "Total Activities", value: totals.count.toLocaleString() },
+    { title: "Activities", value: totals.count.toLocaleString() },
   ];
   if (showActiveDays) {
     cards.push({
@@ -1927,16 +3018,22 @@ function buildSummary(
       metricKey: ACTIVE_DAYS_METRIC_KEY,
       filterable: activeDays.size > 0,
     });
+    cards.push({
+      title: "Days Off",
+      value: daysOff.toLocaleString(),
+      metricKey: DAYS_OFF_METRIC_KEY,
+      filterable: daysOff > 0,
+    });
   }
   cards.push(
     {
-      title: "Total Time",
+      title: "Time",
       value: formatDuration(totals.moving_time),
       metricKey: "moving_time",
       filterable: totals.moving_time > 0,
     },
     {
-      title: "Total Distance",
+      title: "Distance",
       value: totals.distance > 0
         ? formatDistance(totals.distance, summaryUnits)
         : STAT_PLACEHOLDER,
@@ -1944,7 +3041,7 @@ function buildSummary(
       filterable: totals.distance > 0,
     },
     {
-      title: "Total Elevation",
+      title: "Elevation",
       value: totals.elevation > 0
         ? formatElevation(totals.elevation, summaryUnits)
         : STAT_PLACEHOLDER,
@@ -2050,12 +3147,15 @@ function buildHeatmapArea(aggregates, year, units, colors, type, layout, options
     : null;
   const metricHeatmapMax = metricHeatmapKey === ACTIVE_DAYS_METRIC_KEY
     ? 1
+    : metricHeatmapKey === DAYS_OFF_METRIC_KEY
+    ? 1
     : metricHeatmapKey
     ? Number(options.metricMaxByKey?.[metricHeatmapKey] || 0)
     : 0;
   const metricHeatmapActive = Boolean(metricHeatmapKey) && metricHeatmapMax > 0;
   const metricHeatmapColor = options.metricHeatmapColor || colors[4];
   const metricHeatmapEmptyColor = options.metricHeatmapEmptyColor || DEFAULT_COLORS[0];
+  const todayDateKey = getLocalTodayDateKey();
 
   const monthRow = document.createElement("div");
   monthRow.className = "month-row";
@@ -2080,6 +3180,10 @@ function buildHeatmapArea(aggregates, year, units, colors, type, layout, options
   const yearEnd = utcDateFromParts(year, 11, 31);
   const start = weekStartOnOrBeforeUtc(yearStart, weekStart);
   const end = weekEndOnOrAfterUtc(yearEnd, weekStart);
+  const weekColumns = weekIndexFromWeekStartUtc(end, start) + 1;
+  if (weekColumns > 0) {
+    heatmapArea.dataset.weekColumns = String(weekColumns);
+  }
 
   for (let month = 0; month < 12; month += 1) {
     const monthStart = utcDateFromParts(year, month, 1);
@@ -2123,6 +3227,8 @@ function buildHeatmapArea(aggregates, year, units, colors, type, layout, options
     if (metricHeatmapActive) {
       const metricValue = metricHeatmapKey === ACTIVE_DAYS_METRIC_KEY
         ? (filled ? 1 : 0)
+        : metricHeatmapKey === DAYS_OFF_METRIC_KEY
+        ? (!filled && isDateKeyElapsed(dateStr, todayDateKey) ? 1 : 0)
         : Number(entry[metricHeatmapKey] || 0);
       cell.style.backgroundImage = "none";
       cell.style.background = metricValue > 0
@@ -2143,28 +3249,24 @@ function buildHeatmapArea(aggregates, year, units, colors, type, layout, options
       cell.style.background = filled ? colors[4] : colors[0];
     }
 
-    const durationMinutes = Math.round((entry.moving_time || 0) / 60);
-    const duration = durationMinutes >= 60
-      ? `${Math.floor(durationMinutes / 60)}h ${durationMinutes % 60}m`
-      : `${durationMinutes}m`;
-
     const typeBreakdown = type === "all" ? options.typeBreakdownsByDate?.[dateStr] : null;
     const typeLabels = type === "all" ? options.typeLabelsByDate?.[dateStr] : null;
     const activityLinksByType = options.activityLinksByDateType?.[dateStr] || {};
+    const typeMetricsByType = options.typeMetricsByDateType?.[dateStr] || {};
     const singleTypeLabel = type === "all"
       ? getSingleActivityTooltipTypeLabel(typeBreakdown, entry, typeLabels)
       : (Number(entry.count || 0) === 1 ? displayType(type) : "");
     const singleActivityLink = Number(entry.count || 0) === 1
       ? firstTooltipActivityLink(activityLinksByType, type)
       : "";
+    const shouldShowPerTypeMetrics = type === "all" && Number(entry.count || 0) > 1;
+    let renderedTypeBreakdown = false;
     const lines = [createTooltipTextLine(dateStr)];
     if (singleTypeLabel) {
-      lines.push(createTooltipLinkedTypeLine("1 ", singleTypeLabel, " Activity", singleActivityLink));
+      lines.push(createTooltipLinkedTypeLine("", singleTypeLabel, "", singleActivityLink));
     } else {
       lines.push(createTooltipTextLine(formatActivityCountLabel(entry.count, type === "all" ? [] : [type])));
     }
-
-    const showDistanceElevation = (entry.distance || 0) > 0 || (entry.elevation_gain || 0) > 0;
 
     if (type === "all") {
       if (!singleTypeLabel) {
@@ -2172,8 +3274,11 @@ function buildHeatmapArea(aggregates, year, units, colors, type, layout, options
           typeBreakdown,
           options.selectedTypes || [],
           activityLinksByType,
+          shouldShowPerTypeMetrics ? typeMetricsByType : null,
+          units,
         );
         if (breakdownLines.length) {
+          renderedTypeBreakdown = true;
           lines.push(...breakdownLines);
         } else if (Array.isArray(typeLabels) && typeLabels.length) {
           lines.push(createTooltipTextLine(`Types: ${typeLabels.join(", ")}`));
@@ -2183,36 +3288,28 @@ function buildHeatmapArea(aggregates, year, units, colors, type, layout, options
       }
     }
 
-    if (showDistanceElevation) {
-      const distance = units.distance === "km"
-        ? `${(entry.distance / 1000).toFixed(2)} km`
-        : `${(entry.distance / 1609.344).toFixed(2)} mi`;
-      const elevation = units.elevation === "m"
-        ? `${Math.round(entry.elevation_gain)} m`
-        : `${Math.round(entry.elevation_gain * 3.28084)} ft`;
-      lines.push(createTooltipTextLine(`Distance: ${distance}`));
-      lines.push(createTooltipTextLine(`Elevation: ${elevation}`));
+    const showAggregateTotals = !(shouldShowPerTypeMetrics && renderedTypeBreakdown);
+    if (showAggregateTotals) {
+      lines.push(...formatTooltipMetricLines(entry, units));
     }
-
-    lines.push(createTooltipTextLine(`Duration: ${duration}`));
     const tooltipContent = { lines };
     const canPinTooltip = Boolean(flattenTooltipActivityLinks(activityLinksByType).length);
-    cell.addEventListener("mouseenter", (event) => {
-      if (isTooltipPinned()) return;
-      if (hasActiveTooltipCell()) return;
-      showTooltip(tooltipContent, event.clientX, event.clientY);
-    });
-    cell.addEventListener("mousemove", (event) => {
-      if (isTooltipPinned()) return;
-      if (hasActiveTooltipCell()) return;
-      showTooltip(tooltipContent, event.clientX, event.clientY);
-    });
-    cell.addEventListener("mouseleave", () => {
-      if (isTooltipPinned()) return;
-      if (hasActiveTooltipCell()) return;
-      hideTooltip();
-    });
     if (!useTouchInteractions) {
+      cell.addEventListener("mouseenter", (event) => {
+        if (isTooltipPinned()) return;
+        if (hasActiveTooltipCell()) return;
+        showTooltip(tooltipContent, event.clientX, event.clientY);
+      });
+      cell.addEventListener("mousemove", (event) => {
+        if (isTooltipPinned()) return;
+        if (hasActiveTooltipCell()) return;
+        showTooltip(tooltipContent, event.clientX, event.clientY);
+      });
+      cell.addEventListener("mouseleave", () => {
+        if (isTooltipPinned()) return;
+        if (hasActiveTooltipCell()) return;
+        hideTooltip();
+      });
       if (canPinTooltip) {
         cell.addEventListener("click", (event) => {
           if (pinnedTooltipCell === cell) {
@@ -2232,14 +3329,14 @@ function buildHeatmapArea(aggregates, year, units, colors, type, layout, options
         });
       }
     } else {
-      cell.addEventListener("click", (event) => {
-        if (shouldIgnoreTouchCellClick() || isPointInsideTooltip(event)) {
+      const handleTouchCellSelection = (event) => {
+        if (shouldIgnoreTouchCellClick()) {
           event.stopPropagation();
           return;
         }
+        markTouchTooltipDismissBlock(900);
         if (cell.classList.contains("active")) {
-          cell.classList.remove("active");
-          hideTooltip();
+          // Keep touch selection stable; outside tap or another cell tap clears it.
           return;
         }
         const active = grid.querySelector(".cell.active");
@@ -2247,6 +3344,39 @@ function buildHeatmapArea(aggregates, year, units, colors, type, layout, options
         cell.classList.add("active");
         const point = getTooltipEventPoint(event, cell);
         showTooltip(tooltipContent, point.x, point.y);
+      };
+      cell.addEventListener("pointerdown", (event) => {
+        rememberTooltipPointerType(event);
+        markTouchTooltipCellPointerDown(event, cell);
+      });
+      cell.addEventListener("pointerup", (event) => {
+        rememberTooltipPointerType(event);
+        if (!isTouchTooltipActivationEvent(event)) {
+          return;
+        }
+        const wasTap = resolveTouchTooltipCellPointerUpTap(event);
+        markTouchTooltipCellPointerUp(cell, 700, wasTap);
+        if (!wasTap) {
+          event.stopPropagation();
+          return;
+        }
+        handleTouchCellSelection(event);
+      });
+      cell.addEventListener("pointercancel", (event) => {
+        rememberTooltipPointerType(event);
+        if (!isTouchTooltipActivationEvent(event)) {
+          return;
+        }
+        resolveTouchTooltipCellPointerUpTap(event);
+        markTouchTooltipCellPointerUp(cell, 700, false);
+      });
+      cell.addEventListener("click", (event) => {
+        rememberTooltipPointerType(event);
+        if (shouldSuppressTouchTooltipCellClick(event, cell)) {
+          event.stopPropagation();
+          return;
+        }
+        handleTouchCellSelection(event);
       });
     }
 
@@ -2371,6 +3501,7 @@ function buildCard(type, year, aggregates, units, options = {}) {
   const metricHeatmapColor = options.metricHeatmapColor || (type === "all" ? MULTI_TYPE_COLOR : colors[4]);
   const metricMaxByKey = {
     [ACTIVE_DAYS_METRIC_KEY]: 0,
+    [DAYS_OFF_METRIC_KEY]: 0,
     distance: 0,
     moving_time: 0,
     elevation_gain: 0,
@@ -2397,7 +3528,9 @@ function buildCard(type, year, aggregates, units, options = {}) {
     moving_time: 0,
     elevation: 0,
   };
-  Object.entries(aggregates || {}).forEach(([, entry]) => {
+  const todayDateKey = getLocalTodayDateKey();
+  let elapsedActiveDays = 0;
+  Object.entries(aggregates || {}).forEach(([dateStr, entry]) => {
     totals.count += entry.count || 0;
     totals.distance += entry.distance || 0;
     totals.moving_time += entry.moving_time || 0;
@@ -2405,8 +3538,14 @@ function buildCard(type, year, aggregates, units, options = {}) {
     metricMaxByKey.distance = Math.max(metricMaxByKey.distance, Number(entry.distance || 0));
     metricMaxByKey.moving_time = Math.max(metricMaxByKey.moving_time, Number(entry.moving_time || 0));
     metricMaxByKey.elevation_gain = Math.max(metricMaxByKey.elevation_gain, Number(entry.elevation_gain || 0));
+    if ((entry?.count || 0) > 0 && isDateKeyElapsed(dateStr, todayDateKey)) {
+      elapsedActiveDays += 1;
+    }
   });
+  const elapsedDaysInYear = getElapsedDayCountForYear(year);
+  const daysOffInYear = Math.max(0, elapsedDaysInYear - elapsedActiveDays);
   metricMaxByKey[ACTIVE_DAYS_METRIC_KEY] = totals.count > 0 ? 1 : 0;
+  metricMaxByKey[DAYS_OFF_METRIC_KEY] = daysOffInYear > 0 ? 1 : 0;
 
   const renderHeatmap = () => {
     const nextHeatmapArea = buildHeatmapArea(aggregates, year, units, colors, type, layout, {
@@ -2425,6 +3564,9 @@ function buildCard(type, year, aggregates, units, options = {}) {
   const filterableMetricKeys = getFilterableKeys(metricItems);
   if (totals.count > 0) {
     filterableMetricKeys.push(ACTIVE_DAYS_METRIC_KEY);
+  }
+  if (daysOffInYear > 0) {
+    filterableMetricKeys.push(DAYS_OFF_METRIC_KEY);
   }
   activeMetricKey = normalizeSingleSelectKey(activeMetricKey, filterableMetricKeys);
   const metricButtons = new Map();
@@ -2684,6 +3826,7 @@ function buildStatsOverview(payload, types, years, color, options = {}) {
           : 0;
       };
       return {
+        dateKey: dateStr,
         date,
         type: activity.type,
         subtype: getActivitySubtypeLabel(activity),
@@ -2706,6 +3849,34 @@ function buildStatsOverview(payload, types, years, color, options = {}) {
   visibleYearsDesc.forEach((year, index) => {
     yearIndex.set(Number(year), index);
   });
+  const activeDateKeys = new Set(activities.map((activity) => String(activity.dateKey || "")));
+  const daysOffEntries = [];
+  visibleYearsDesc.forEach((year) => {
+    const elapsedDaysInYear = getElapsedDayCountForYear(year);
+    if (elapsedDaysInYear <= 0) return;
+    const yearStartUtc = utcDateFromParts(year, 0, 1);
+    for (let dayOffset = 0; dayOffset < elapsedDaysInYear; dayOffset += 1) {
+      const dayUtc = new Date(yearStartUtc.getTime());
+      dayUtc.setUTCDate(dayUtc.getUTCDate() + dayOffset);
+      const dateKey = formatUtcDateKey(dayUtc);
+      if (activeDateKeys.has(dateKey)) continue;
+      const date = new Date(`${dateKey}T00:00:00`);
+      if (Number.isNaN(date.getTime())) continue;
+      daysOffEntries.push({
+        dateKey,
+        date,
+        type: "",
+        subtype: "",
+        year,
+        dayIndex: date.getDay(),
+        monthIndex: date.getMonth(),
+        weekIndex: weekOfYear(date),
+        hour: null,
+        active_days: 0,
+        [DAYS_OFF_METRIC_KEY]: 1,
+      });
+    }
+  });
 
   const formatBreakdown = (total, breakdown) => formatTooltipBreakdown(total, breakdown, types);
 
@@ -2727,8 +3898,11 @@ function buildStatsOverview(payload, types, years, color, options = {}) {
     const weekTotals = new Array(54).fill(0);
     let activityCount = 0;
     let hourActivityCount = 0;
+    const sourceItems = metricKey === DAYS_OFF_METRIC_KEY
+      ? daysOffEntries
+      : activities;
 
-    activities.forEach((activity) => {
+    sourceItems.forEach((activity) => {
       if (typeof filterFn === "function" && !filterFn(activity)) {
         return;
       }
@@ -2736,6 +3910,8 @@ function buildStatsOverview(payload, types, years, color, options = {}) {
       if (row === undefined) return;
       const weight = metricKey === ACTIVE_DAYS_METRIC_KEY
         ? Number(activity.active_days || 0)
+        : metricKey === DAYS_OFF_METRIC_KEY
+        ? Number(activity[DAYS_OFF_METRIC_KEY] || 0)
         : metricKey
         ? Number(activity[metricKey] || 0)
         : 1;
@@ -2747,16 +3923,20 @@ function buildStatsOverview(payload, types, years, color, options = {}) {
         weekTotals[activity.weekIndex] += weight;
       }
 
-      const dayBucket = dayBreakdowns[row][activity.dayIndex];
-      const monthBucket = monthBreakdowns[row][activity.monthIndex];
-      addTooltipBreakdownCount(dayBucket, activity.type, activity.subtype);
-      addTooltipBreakdownCount(monthBucket, activity.type, activity.subtype);
+      if (metricKey !== DAYS_OFF_METRIC_KEY) {
+        const dayBucket = dayBreakdowns[row][activity.dayIndex];
+        const monthBucket = monthBreakdowns[row][activity.monthIndex];
+        addTooltipBreakdownCount(dayBucket, activity.type, activity.subtype);
+        addTooltipBreakdownCount(monthBucket, activity.type, activity.subtype);
+      }
 
       if (Number.isFinite(activity.hour)) {
         hourActivityCount += 1;
         hourMatrix[row][activity.hour] += weight;
-        const hourBucket = hourBreakdowns[row][activity.hour];
-        addTooltipBreakdownCount(hourBucket, activity.type, activity.subtype);
+        if (metricKey !== DAYS_OFF_METRIC_KEY) {
+          const hourBucket = hourBreakdowns[row][activity.hour];
+          addTooltipBreakdownCount(hourBucket, activity.type, activity.subtype);
+        }
       }
     });
 
@@ -2792,6 +3972,7 @@ function buildStatsOverview(payload, types, years, color, options = {}) {
   const baseData = buildFrequencyData();
   const metricTotals = {
     [ACTIVE_DAYS_METRIC_KEY]: activities.reduce((sum, activity) => sum + Number(activity.active_days || 0), 0),
+    [DAYS_OFF_METRIC_KEY]: daysOffEntries.length,
     distance: activities.reduce((sum, activity) => sum + Number(activity.distance || 0), 0),
     moving_time: activities.reduce((sum, activity) => sum + Number(activity.moving_time || 0), 0),
     elevation_gain: activities.reduce((sum, activity) => sum + Number(activity.elevation_gain || 0), 0),
@@ -2805,6 +3986,9 @@ function buildStatsOverview(payload, types, years, color, options = {}) {
   const filterableMetricKeys = getFilterableKeys(metricItems);
   if (Number(metricTotals[ACTIVE_DAYS_METRIC_KEY] || 0) > 0) {
     filterableMetricKeys.push(ACTIVE_DAYS_METRIC_KEY);
+  }
+  if (Number(metricTotals[DAYS_OFF_METRIC_KEY] || 0) > 0) {
+    filterableMetricKeys.push(DAYS_OFF_METRIC_KEY);
   }
   activeMetricKey = normalizeSingleSelectKey(activeMetricKey, filterableMetricKeys);
   const reportMetricState = (source) => {
@@ -2935,9 +4119,11 @@ function buildStatsOverview(payload, types, years, color, options = {}) {
       const lines = [`${year} · ${label}`];
       if (activeMetricKey) {
         lines.push(formatTooltipValue(value));
-        const activityTotal = Object.values(breakdown?.typeCounts || {})
-          .reduce((sum, count) => sum + count, 0);
-        lines.push(formatBreakdown(activityTotal, breakdown));
+        if (activeMetricKey !== DAYS_OFF_METRIC_KEY) {
+          const activityTotal = Object.values(breakdown?.typeCounts || {})
+            .reduce((sum, count) => sum + count, 0);
+          lines.push(formatBreakdown(activityTotal, breakdown));
+        }
       } else {
         lines.push(formatBreakdown(value, breakdown));
       }
@@ -2981,7 +4167,7 @@ function buildStatsOverview(payload, types, years, color, options = {}) {
     );
 
     hourPanel.body.innerHTML = "";
-    if (matrixData.hourActivityCount > 0) {
+    const renderHourMatrix = () => {
       const hourLabels = matrixData.hourTotals.map((_, hour) => (hour % 3 === 0 ? formatHourLabel(hour) : ""));
       const hourTooltipLabels = matrixData.hourTotals.map((_, hour) => `${formatHourLabel(hour)} (${hour}:00)`);
       hourPanel.body.appendChild(
@@ -3000,6 +4186,21 @@ function buildStatsOverview(payload, types, years, color, options = {}) {
           },
         ),
       );
+    };
+    if (activeMetricKey === DAYS_OFF_METRIC_KEY) {
+      renderHourMatrix();
+      const hourGrid = hourPanel.body.querySelector(".axis-matrix-grid");
+      if (hourGrid) {
+        const unavailableNote = document.createElement("div");
+        unavailableNote.className = "hourly-days-off-note";
+        unavailableNote.textContent = "Hourly frequency unavailable for Days Off";
+        hourGrid.classList.add("hourly-days-off-unavailable-grid");
+        hourGrid.appendChild(unavailableNote);
+      }
+      return;
+    }
+    if (matrixData.hourActivityCount > 0) {
+      renderHourMatrix();
       return;
     }
 
@@ -3191,10 +4392,69 @@ function renderLoadError(error) {
   heatmaps.appendChild(card);
 }
 
+function applyDebugPayloadOverrides(payload) {
+  if (!payload || typeof payload !== "object" || typeof window === "undefined") return;
+  const params = new URLSearchParams(window.location.search);
+  const debugYearRaw = params.get("debugYear");
+  const debugWeekStartRaw = String(params.get("debugWeekStart") || "").trim().toLowerCase();
+
+  if (debugWeekStartRaw === "monday" || debugWeekStartRaw === "mon") {
+    payload.week_start = WEEK_START_MONDAY;
+  } else if (debugWeekStartRaw === "sunday" || debugWeekStartRaw === "sun") {
+    payload.week_start = WEEK_START_SUNDAY;
+  }
+
+  if (!debugYearRaw) return;
+  const debugYear = Number(debugYearRaw);
+  if (!Number.isInteger(debugYear) || debugYear < 1900 || debugYear > 2100) return;
+
+  if (!Array.isArray(payload.types)) payload.types = [];
+  if (!Array.isArray(payload.years)) payload.years = [];
+  if (!Array.isArray(payload.activities)) payload.activities = [];
+  if (!payload.aggregates || typeof payload.aggregates !== "object") payload.aggregates = {};
+
+  const fallbackType = "Run";
+  const debugType = payload.types.length ? String(payload.types[0]) : fallbackType;
+  if (!payload.types.includes(debugType)) {
+    payload.types.push(debugType);
+  }
+
+  const debugDate = `${debugYear}-01-01`;
+  const debugYearKey = String(debugYear);
+  payload.aggregates[debugYearKey] = payload.aggregates[debugYearKey] || {};
+  payload.aggregates[debugYearKey][debugType] = payload.aggregates[debugYearKey][debugType] || {};
+  payload.aggregates[debugYearKey][debugType][debugDate] = {
+    count: 1,
+    distance: 1609.344,
+    moving_time: 1800,
+    elevation_gain: 30,
+    activity_ids: ["debug-placeholder"],
+  };
+
+  const hasDebugActivity = payload.activities.some(
+    (activity) => Number(activity?.year) === debugYear && String(activity?.date || "") === debugDate,
+  );
+  if (!hasDebugActivity) {
+    payload.activities.push({
+      date: debugDate,
+      hour: 8,
+      name: "Debug placeholder activity",
+      subtype: debugType,
+      type: debugType,
+      year: debugYear,
+    });
+  }
+
+  if (!payload.years.some((yearValue) => Number(yearValue) === debugYear)) {
+    payload.years.push(debugYear);
+  }
+}
+
 async function init() {
   syncRepoLink();
   syncFooterHostedLink();
   syncStravaProfileLink();
+  syncProfileLinkNavigationTarget();
   syncHeaderLinkPlacement();
   const resp = await fetch("data.json");
   if (!resp.ok) {
@@ -3204,24 +4464,17 @@ async function init() {
   if (!payload || typeof payload !== "object") {
     throw new Error("Invalid dashboard data format.");
   }
-  syncRepoLink(
-    payload.repo
-    || payload.repo_slug
-    || payload.repo_url
-    || payload.repository,
-  );
-  syncFooterHostedLink(
-    payload.repo
-    || payload.repo_slug
-    || payload.repo_url
-    || payload.repository,
-  );
+  applyDebugPayloadOverrides(payload);
+  const repoCandidate = payloadRepoCandidate(payload);
+  const profileUrl = payloadProfileUrl(payload);
+  const sourceValue = payloadSource(payload);
+  syncRepoLink(repoCandidate);
+  syncFooterHostedLink(repoCandidate);
   syncStravaProfileLink(
-    payload.strava_profile_url
-    || payload.stravaProfileUrl
-    || payload.strava_profile,
+    profileUrl,
+    sourceValue,
   );
-  setDashboardTitle(payload.source);
+  setDashboardTitle(sourceValue);
   TYPE_META = payload.type_meta || {};
   OTHER_BUCKET = String(payload.other_bucket || "OtherSports");
   (payload.types || []).forEach((type) => {
@@ -3236,73 +4489,6 @@ async function init() {
   ];
   const setupUnits = normalizeUnits(payload.units || DEFAULT_UNITS);
   const setupWeekStart = normalizeWeekStart(payload.week_start || payload.weekStart);
-
-  function renderButtons(container, options, onSelect) {
-    if (!container) return;
-    container.innerHTML = "";
-    options.forEach((option) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "filter-button";
-      button.dataset.value = option.value;
-      button.textContent = option.label;
-      button.addEventListener("click", () => onSelect(option.value));
-      container.appendChild(button);
-    });
-  }
-
-  function renderMenuOptions(container, options, selectedValues, isAllSelected, onSelect, normalizeValue) {
-    if (!container) return;
-    container.innerHTML = "";
-    options.forEach((option) => {
-      const rawValue = String(option.value);
-      const normalized = normalizeValue ? normalizeValue(rawValue) : rawValue;
-      const isActive = rawValue === "all"
-        ? isAllSelected
-        : (!isAllSelected && selectedValues.has(normalized));
-      const isChecked = isAllSelected || isActive;
-
-      const row = document.createElement("div");
-      row.className = "filter-menu-option";
-      row.setAttribute("role", "button");
-      if (isActive) {
-        row.classList.add("active");
-      }
-      row.dataset.value = rawValue;
-
-      const label = document.createElement("span");
-      label.className = "filter-menu-option-label";
-      label.textContent = option.label;
-
-      const check = document.createElement("input");
-      check.type = "checkbox";
-      check.className = "filter-menu-check";
-      check.checked = isChecked;
-      check.tabIndex = -1;
-      check.setAttribute("aria-hidden", "true");
-
-      row.appendChild(label);
-      row.appendChild(check);
-      row.addEventListener("pointerdown", (event) => {
-        event.stopPropagation();
-      });
-      row.addEventListener("click", () => onSelect(rawValue));
-      container.appendChild(row);
-    });
-  }
-
-  function renderMenuDoneButton(container, onDone) {
-    if (!container) return;
-    const done = document.createElement("button");
-    done.type = "button";
-    done.className = "filter-menu-done";
-    done.textContent = "Done";
-    done.addEventListener("pointerdown", (event) => {
-      event.stopPropagation();
-    });
-    done.addEventListener("click", () => onDone());
-    container.appendChild(done);
-  }
 
   let resizeTimer = null;
   let lastViewportWidth = window.innerWidth;
@@ -3326,134 +4512,6 @@ async function init() {
   let visibleFrequencyFilterableMetricKeys = new Set();
   let draftTypeMenuSelection = null;
   let draftYearMenuSelection = null;
-
-  function reduceTopButtonSelection({
-    rawValue,
-    allMode,
-    selectedValues,
-    allValues,
-    normalizeValue = (value) => value,
-  }) {
-    if (rawValue === "all") {
-      if (!allValues.length) {
-        return { allMode: true, selectedValues: new Set() };
-      }
-      const hasExplicitAllSelection = !allMode
-        && selectedValues.size === allValues.length
-        && allValues.every((value) => selectedValues.has(value));
-      if (hasExplicitAllSelection) {
-        return { allMode: true, selectedValues: new Set() };
-      }
-      return { allMode: false, selectedValues: new Set(allValues) };
-    }
-    const normalizedValue = normalizeValue(rawValue);
-    if (!allValues.includes(normalizedValue)) {
-      return { allMode, selectedValues };
-    }
-    if (allMode) {
-      return {
-        allMode: false,
-        selectedValues: new Set([normalizedValue]),
-      };
-    }
-    const nextSelectedValues = new Set(selectedValues);
-    if (nextSelectedValues.has(normalizedValue)) {
-      nextSelectedValues.delete(normalizedValue);
-      if (!nextSelectedValues.size) {
-        return { allMode: true, selectedValues: new Set() };
-      }
-      return { allMode: false, selectedValues: nextSelectedValues };
-    }
-    nextSelectedValues.add(normalizedValue);
-    return { allMode: false, selectedValues: nextSelectedValues };
-  }
-
-  function reduceMenuSelection({
-    rawValue,
-    allMode,
-    selectedValues,
-    allValues,
-    normalizeValue = (value) => value,
-    allowMobileToggleOffAll = false,
-    isMobileLayout = false,
-  }) {
-    if (rawValue === "all") {
-      if (allowMobileToggleOffAll && isMobileLayout && allMode) {
-        return { allMode: false, selectedValues: new Set() };
-      }
-      return { allMode: true, selectedValues: new Set() };
-    }
-    const normalizedValue = normalizeValue(rawValue);
-    if (!allValues.includes(normalizedValue)) {
-      return { allMode, selectedValues };
-    }
-    if (allMode) {
-      return {
-        allMode: false,
-        selectedValues: new Set(allValues.filter((value) => value !== normalizedValue)),
-      };
-    }
-    const nextSelectedValues = new Set(selectedValues);
-    if (nextSelectedValues.has(normalizedValue)) {
-      nextSelectedValues.delete(normalizedValue);
-      return { allMode: false, selectedValues: nextSelectedValues };
-    }
-    nextSelectedValues.add(normalizedValue);
-    return { allMode: false, selectedValues: nextSelectedValues };
-  }
-
-  function deriveActiveSummaryYearMetricKey({
-    visibleYears,
-    selectedMetricByYear,
-    filterableMetricsByYear,
-  }) {
-    const selectedMetrics = new Set();
-    for (const year of visibleYears) {
-      const selectedMetric = selectedMetricByYear.get(year);
-      const filterableSet = filterableMetricsByYear.get(year) || new Set();
-      if (selectedMetric && filterableSet.has(selectedMetric)) {
-        selectedMetrics.add(selectedMetric);
-      }
-    }
-    if (selectedMetrics.size !== 1) {
-      return null;
-    }
-    const [candidateMetric] = Array.from(selectedMetrics);
-    let hasEligibleYear = false;
-    for (const year of visibleYears) {
-      const filterableSet = filterableMetricsByYear.get(year) || new Set();
-      if (!filterableSet.has(candidateMetric)) continue;
-      hasEligibleYear = true;
-      if (selectedMetricByYear.get(year) !== candidateMetric) {
-        return null;
-      }
-    }
-    return hasEligibleYear ? candidateMetric : null;
-  }
-
-  function toStringSet(values) {
-    const result = new Set();
-    (Array.isArray(values) ? values : []).forEach((value) => {
-      if (typeof value === "string") {
-        result.add(value);
-      }
-    });
-    return result;
-  }
-
-  function trackYearMetricAvailability(year, visibleYearsSet) {
-    visibleYearsSet.add(Number(year));
-  }
-
-  function pruneYearMetricSelectionsByFilterability(selectionByYear, filterableMetricsByYearMap) {
-    Array.from(selectionByYear.keys()).forEach((year) => {
-      const filterableSet = filterableMetricsByYearMap.get(year);
-      const selectedMetricKey = selectionByYear.get(year) || null;
-      if (!filterableSet || (selectedMetricKey && !filterableSet.has(selectedMetricKey))) {
-        selectionByYear.delete(year);
-      }
-    });
-  }
 
   function hasAnyYearMetricSelection() {
     for (const metricKey of selectedYearMetricByYear.values()) {
@@ -3558,20 +4616,6 @@ async function init() {
     return allYearsMode;
   }
 
-  function cloneSelectionState(allMode, selectedValues) {
-    return {
-      allMode: Boolean(allMode),
-      selectedValues: new Set(selectedValues),
-    };
-  }
-
-  function selectedTypesListForState(state) {
-    if (!state || state.allMode) {
-      return payload.types.slice();
-    }
-    return payload.types.filter((type) => state.selectedValues.has(type));
-  }
-
   function selectedTypesList() {
     if (areAllTypesSelected()) {
       return payload.types.slice();
@@ -3579,34 +4623,11 @@ async function init() {
     return payload.types.filter((type) => selectedTypes.has(type));
   }
 
-  function selectedYearsListForState(state, visibleYears) {
-    if (!state || state.allMode) {
-      return visibleYears.slice();
-    }
-    return visibleYears.filter((year) => state.selectedValues.has(Number(year)));
-  }
-
   function selectedYearsList(visibleYears) {
     if (areAllYearsSelected()) {
       return visibleYears.slice();
     }
     return visibleYears.filter((year) => selectedYears.has(Number(year)));
-  }
-
-  function updateButtonState(container, selectedValues, isAllSelected, allValues, normalizeValue) {
-    if (!container) return;
-    const hasExplicitAllSelection = allValues.length > 0
-      && !isAllSelected
-      && selectedValues.size === allValues.length
-      && allValues.every((value) => selectedValues.has(value));
-    container.querySelectorAll(".filter-button").forEach((button) => {
-      const rawValue = String(button.dataset.value || "");
-      const value = normalizeValue ? normalizeValue(rawValue) : rawValue;
-      const isActive = rawValue === "all"
-        ? hasExplicitAllSelection
-        : (!isAllSelected && selectedValues.has(value));
-      button.classList.toggle("active", isActive);
-    });
   }
 
   function toggleType(value) {
@@ -3627,8 +4648,7 @@ async function init() {
       allMode: selection.allMode,
       selectedValues: selection.selectedValues,
       allValues: payload.types,
-      allowMobileToggleOffAll: true,
-      isMobileLayout: isNarrowLayoutViewport(),
+      allowToggleOffAll: true,
     });
     draftTypeMenuSelection = nextState;
   }
@@ -3657,8 +4677,7 @@ async function init() {
       selectedValues: selection.selectedValues,
       allValues: currentVisibleYears,
       normalizeValue: (rawValue) => Number(rawValue),
-      allowMobileToggleOffAll: true,
-      isMobileLayout: isNarrowLayoutViewport(),
+      allowToggleOffAll: true,
     });
     draftYearMenuSelection = nextState;
   }
@@ -3689,82 +4708,6 @@ async function init() {
     }
   }
 
-  function getTypeMenuText(types, allTypesSelected) {
-    if (allTypesSelected) return "All Activities";
-    if (types.length) return types.map((type) => displayType(type)).join(", ");
-    return "No Activities Selected";
-  }
-
-  function getYearMenuText(years, allYearsSelected) {
-    if (allYearsSelected) return "All Years";
-    if (years.length) return years.map((year) => String(year)).join(", ");
-    return "No Years Selected";
-  }
-
-  function setMenuLabel(labelEl, text, fallbackText) {
-    if (!labelEl) return;
-    if (fallbackText && fallbackText !== text) {
-      labelEl.textContent = fallbackText;
-      return;
-    }
-    labelEl.textContent = text;
-  }
-
-  function setMenuOpen(menuEl, buttonEl, isOpen) {
-    if (!menuEl) return;
-    menuEl.classList.toggle("open", isOpen);
-    if (buttonEl) {
-      buttonEl.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    }
-  }
-
-  function syncFilterControlState({
-    typeMenuTypes,
-    yearMenuYears,
-    typeMenuSelection,
-    yearMenuSelection,
-    allTypesSelected,
-    allYearsSelected,
-    keepTypeMenuOpen,
-    keepYearMenuOpen,
-  }) {
-    updateButtonState(typeButtons, selectedTypes, allTypesSelected, payload.types);
-    updateButtonState(yearButtons, selectedYears, allYearsSelected, currentVisibleYears, (v) => Number(v));
-    const typeMenuText = getTypeMenuText(
-      typeMenuTypes,
-      typeMenuSelection.allMode || typeMenuTypes.length === payload.types.length,
-    );
-    const yearMenuText = getYearMenuText(yearMenuYears, yearMenuSelection.allMode);
-    setMenuLabel(
-      typeMenuLabel,
-      typeMenuText,
-      !typeMenuSelection.allMode && typeMenuTypes.length > 1 ? "Multiple Activities Selected" : "",
-    );
-    setMenuLabel(
-      yearMenuLabel,
-      yearMenuText,
-      !yearMenuSelection.allMode && yearMenuYears.length > 1 ? "Multiple Years Selected" : "",
-    );
-    if (typeClearButton) {
-      if (allTypesSelected) {
-        typeClearButton.textContent = "Select All";
-        typeClearButton.disabled = payload.types.length === 0;
-      } else {
-        typeClearButton.textContent = "Clear";
-        typeClearButton.disabled = false;
-      }
-    }
-    if (yearClearButton) {
-      yearClearButton.disabled = allYearsSelected;
-    }
-    if (keepTypeMenuOpen) {
-      setMenuOpen(typeMenu, typeMenuButton, true);
-    }
-    if (keepYearMenuOpen) {
-      setMenuOpen(yearMenu, yearMenuButton, true);
-    }
-  }
-
   function setCardScrollKey(card, key) {
     if (!card || !card.dataset) return;
     card.dataset.scrollKey = String(key || "");
@@ -3773,6 +4716,8 @@ async function init() {
   function update(options = {}) {
     const keepTypeMenuOpen = Boolean(options.keepTypeMenuOpen);
     const keepYearMenuOpen = Boolean(options.keepYearMenuOpen);
+    const resetTypeMenuScroll = Boolean(options.resetTypeMenuScroll);
+    const resetYearMenuScroll = Boolean(options.resetYearMenuScroll);
     const menuOnly = Boolean(options.menuOnly);
     const resetCardScroll = Boolean(options.resetCardScroll);
     const resetViewport = Boolean(options.resetViewport);
@@ -3795,17 +4740,17 @@ async function init() {
     ];
     const typeMenuSelection = draftTypeMenuSelection || { allMode: allTypesMode, selectedValues: selectedTypes };
     const yearMenuSelection = draftYearMenuSelection || { allMode: allYearsMode, selectedValues: selectedYears };
-    const typeMenuTypes = selectedTypesListForState(typeMenuSelection);
+    const typeMenuTypes = selectedTypesListForState(typeMenuSelection, payload.types);
     const yearMenuYears = selectedYearsListForState(yearMenuSelection, visibleYears);
     yearMenuYears.sort((a, b) => b - a);
 
-    renderButtons(yearButtons, yearOptions, (value) => {
+    renderFilterButtons(yearButtons, yearOptions, (value) => {
       draftYearMenuSelection = null;
-      setMenuOpen(yearMenu, yearMenuButton, false);
+      setMenuOpenState(yearMenu, yearMenuButton, false);
       toggleYear(value);
       update();
     });
-    renderMenuOptions(
+    renderFilterMenuOptions(
       typeMenuOptions,
       typeOptions,
       typeMenuSelection.selectedValues,
@@ -3815,13 +4760,13 @@ async function init() {
         update({ keepTypeMenuOpen: true, menuOnly: true });
       },
     );
-    renderMenuDoneButton(typeMenuOptions, () => {
+    renderFilterMenuDoneButton(typeMenuOptions, () => {
       commitTypeMenuSelection();
       finalizeTypeSelection();
-      setMenuOpen(typeMenu, typeMenuButton, false);
+      setMenuOpenState(typeMenu, typeMenuButton, false);
       update();
     });
-    renderMenuOptions(
+    renderFilterMenuOptions(
       yearMenuOptions,
       yearOptions,
       yearMenuSelection.selectedValues,
@@ -3832,23 +4777,45 @@ async function init() {
       },
       (v) => Number(v),
     );
-    renderMenuDoneButton(yearMenuOptions, () => {
+    renderFilterMenuDoneButton(yearMenuOptions, () => {
       commitYearMenuSelection();
       finalizeYearSelection();
-      setMenuOpen(yearMenu, yearMenuButton, false);
+      setMenuOpenState(yearMenu, yearMenuButton, false);
       update();
     });
 
     syncFilterControlState({
+      typeButtons,
+      yearButtons,
+      selectedTypes,
+      selectedYears,
+      allTypeValues: payload.types,
+      allYearValues: currentVisibleYears,
+      allTypesSelected,
+      allYearsSelected,
       typeMenuTypes,
       yearMenuYears,
       typeMenuSelection,
       yearMenuSelection,
-      allTypesSelected,
-      allYearsSelected,
+      typeMenuLabel,
+      yearMenuLabel,
+      typeClearButton,
+      yearClearButton,
       keepTypeMenuOpen,
       keepYearMenuOpen,
+      typeMenu,
+      yearMenu,
+      typeMenuButton,
+      yearMenuButton,
     });
+
+    syncOpenFilterMenuMaxHeights();
+    if (resetTypeMenuScroll) {
+      resetFilterMenuScroll(typeMenuOptions);
+    }
+    if (resetYearMenuScroll) {
+      resetFilterMenuScroll(yearMenuOptions);
+    }
 
     if (menuOnly) {
       return;
@@ -3926,6 +4893,7 @@ async function init() {
         typeLabelsByDate,
         typeBreakdownsByDate,
         activityLinksByDateType,
+        typeMetricsByDateType,
       } = buildCombinedTypeDetailsByDate(payload, types, years);
       if (showCombinedTypes) {
         const section = document.createElement("div");
@@ -3989,6 +4957,7 @@ async function init() {
               typeBreakdownsByDate,
               typeLabelsByDate,
               activityLinksByDateType,
+              typeMetricsByDateType,
             },
           );
           setCardScrollKey(card, `${combinedSelectionKey}:year:${year}`);
@@ -4131,9 +5100,9 @@ async function init() {
     }
   }
 
-  renderButtons(typeButtons, typeOptions, (value) => {
+  renderFilterButtons(typeButtons, typeOptions, (value) => {
     draftTypeMenuSelection = null;
-    setMenuOpen(typeMenu, typeMenuButton, false);
+    setMenuOpenState(typeMenu, typeMenuButton, false);
     toggleType(value);
     update();
   });
@@ -4147,9 +5116,9 @@ async function init() {
         draftTypeMenuSelection = null;
       }
       draftYearMenuSelection = null;
-      setMenuOpen(typeMenu, typeMenuButton, open);
-      setMenuOpen(yearMenu, yearMenuButton, false);
-      update({ keepTypeMenuOpen: open, menuOnly: true });
+      setMenuOpenState(typeMenu, typeMenuButton, open);
+      setMenuOpenState(yearMenu, yearMenuButton, false);
+      update({ keepTypeMenuOpen: open, menuOnly: true, resetTypeMenuScroll: open });
     });
   }
   if (yearMenuButton) {
@@ -4162,9 +5131,9 @@ async function init() {
         draftYearMenuSelection = null;
       }
       draftTypeMenuSelection = null;
-      setMenuOpen(yearMenu, yearMenuButton, open);
-      setMenuOpen(typeMenu, typeMenuButton, false);
-      update({ keepYearMenuOpen: open, menuOnly: true });
+      setMenuOpenState(yearMenu, yearMenuButton, open);
+      setMenuOpenState(typeMenu, typeMenuButton, false);
+      update({ keepYearMenuOpen: open, menuOnly: true, resetYearMenuScroll: open });
     });
   }
   if (typeClearButton) {
@@ -4173,14 +5142,14 @@ async function init() {
       if (areAllTypesSelected()) {
         if (!payload.types.length) return;
         draftTypeMenuSelection = null;
-        setMenuOpen(typeMenu, typeMenuButton, false);
+        setMenuOpenState(typeMenu, typeMenuButton, false);
         allTypesMode = false;
         selectedTypes = new Set(payload.types);
         update();
         return;
       }
       draftTypeMenuSelection = null;
-      setMenuOpen(typeMenu, typeMenuButton, false);
+      setMenuOpenState(typeMenu, typeMenuButton, false);
       allTypesMode = true;
       selectedTypes.clear();
       update();
@@ -4193,7 +5162,7 @@ async function init() {
     yearClearButton.addEventListener("click", () => {
       if (areAllYearsSelected()) return;
       draftYearMenuSelection = null;
-      setMenuOpen(yearMenu, yearMenuButton, false);
+      setMenuOpenState(yearMenu, yearMenuButton, false);
       allYearsMode = true;
       selectedYears.clear();
       update();
@@ -4216,8 +5185,8 @@ async function init() {
       }
       draftTypeMenuSelection = null;
       draftYearMenuSelection = null;
-      setMenuOpen(typeMenu, typeMenuButton, false);
-      setMenuOpen(yearMenu, yearMenuButton, false);
+      setMenuOpenState(typeMenu, typeMenuButton, false);
+      setMenuOpenState(yearMenu, yearMenuButton, false);
       allTypesMode = true;
       selectedTypes.clear();
       allYearsMode = true;
@@ -4243,7 +5212,7 @@ async function init() {
     let shouldRefreshMenus = false;
     if (typeMenu && !typeMenu.contains(target)) {
       if (typeMenu.classList.contains("open")) {
-        setMenuOpen(typeMenu, typeMenuButton, false);
+        setMenuOpenState(typeMenu, typeMenuButton, false);
         shouldRefreshMenus = true;
       }
       if (draftTypeMenuSelection) {
@@ -4253,7 +5222,7 @@ async function init() {
     }
     if (yearMenu && !yearMenu.contains(target)) {
       if (yearMenu.classList.contains("open")) {
-        setMenuOpen(yearMenu, yearMenuButton, false);
+        setMenuOpenState(yearMenu, yearMenuButton, false);
         shouldRefreshMenus = true;
       }
       if (draftYearMenuSelection) {
@@ -4268,9 +5237,21 @@ async function init() {
   syncUnitToggleState();
   update();
 
+  if (!useTouchInteractions && typeof window.ResizeObserver === "function" && !tooltipResizeObserver) {
+    tooltipResizeObserver = new window.ResizeObserver(() => {
+      if (!tooltip.classList.contains("visible")) return;
+      if (!pendingTooltipPoint) return;
+      positionTooltip(pendingTooltipPoint.x, pendingTooltipPoint.y);
+    });
+    tooltipResizeObserver.observe(tooltip);
+  }
+
   if (document.fonts?.ready) {
     document.fonts.ready.then(() => {
       requestLayoutAlignment();
+      if (!useTouchInteractions && tooltip.classList.contains("visible") && pendingTooltipPoint) {
+        positionTooltip(pendingTooltipPoint.x, pendingTooltipPoint.y);
+      }
     }).catch(() => {});
   }
 
@@ -4284,11 +5265,13 @@ async function init() {
       const isNarrowLayout = isNarrowLayoutViewport();
       const widthChanged = Math.abs(width - lastViewportWidth) >= 1;
       const layoutModeChanged = isNarrowLayout !== lastIsNarrowLayout;
+      syncOpenFilterMenuMaxHeights();
       if (!widthChanged && !layoutModeChanged) {
         return;
       }
       lastViewportWidth = width;
       lastIsNarrowLayout = isNarrowLayout;
+      syncProfileLinkNavigationTarget();
       syncHeaderLinkPlacement();
       resetPersistentSideStatSizing();
       update();
@@ -4374,8 +5357,45 @@ async function init() {
       }
     });
 
-    const dismissTooltipOnTouchScroll = () => {
-      if (nowMs() <= touchTooltipInteractionBlockUntil) {
+    let lastTouchViewportScrollX = window.scrollX || window.pageXOffset || 0;
+    let lastTouchViewportScrollY = window.scrollY || window.pageYOffset || 0;
+
+    const dismissTooltipOnTouchScroll = (event) => {
+      const scrollTarget = event?.target;
+      const targetElement = scrollTarget?.nodeType === Node.TEXT_NODE
+        ? scrollTarget.parentElement
+        : scrollTarget;
+      const cardScrollEvent = Boolean(
+        targetElement
+        && targetElement !== document
+        && targetElement !== window
+        && typeof targetElement.closest === "function"
+        && targetElement.closest(".card"),
+      );
+
+      if (cardScrollEvent && tooltip.classList.contains("visible")) {
+        dismissTooltipState();
+        return;
+      }
+
+      const currentScrollX = window.scrollX || window.pageXOffset || 0;
+      const currentScrollY = window.scrollY || window.pageYOffset || 0;
+      const viewportMoved = Math.abs(currentScrollX - lastTouchViewportScrollX) >= 2
+        || Math.abs(currentScrollY - lastTouchViewportScrollY) >= 2;
+      lastTouchViewportScrollX = currentScrollX;
+      lastTouchViewportScrollY = currentScrollY;
+
+      if (!tooltip.classList.contains("visible")) {
+        return;
+      }
+
+      // Always dismiss on actual page movement so touch pan/scroll never leaves stale tooltips.
+      if (viewportMoved) {
+        dismissTooltipState();
+        return;
+      }
+
+      if (nowMs() <= touchTooltipInteractionBlockUntil || shouldIgnoreTouchTooltipDismiss()) {
         return;
       }
       dismissTooltipState();
