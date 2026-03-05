@@ -36662,6 +36662,15 @@
       "type": "Run",
       "url": "https://www.strava.com/activities/17597058174",
       "year": 2026
+    },
+    {
+      "date": "2026-03-05",
+      "hour": 9,
+      "name": "Treino com pesos matinal",
+      "subtype": "WeightTraining",
+      "type": "WeightTraining",
+      "url": "https://www.strava.com/activities/17610651510",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -71940,11 +71949,20 @@
           "distance": 0.0,
           "elevation_gain": 0.0,
           "moving_time": 1892.0
+        },
+        "2026-03-05": {
+          "activity_ids": [
+            "17610651510"
+          ],
+          "count": 1,
+          "distance": 0.0,
+          "elevation_gain": 0.0,
+          "moving_time": 1869.0
         }
       }
     }
   },
-  "generated_at": "2026-03-04T15:51:38.648552+00:00",
+  "generated_at": "2026-03-05T15:56:13.806675+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",

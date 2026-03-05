@@ -54981,5 +54981,18 @@
     "start_date_local": "2026-03-04T06:28:19Z",
     "type": "Run",
     "year": 2026
+  },
+  {
+    "date": "2026-03-05",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "17610651510",
+    "moving_time": 1869.0,
+    "name": "Treino com pesos matinal",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-03-05T09:09:10Z",
+    "type": "WeightTraining",
+    "year": 2026
   }
 ]
