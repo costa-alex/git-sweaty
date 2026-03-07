@@ -55020,5 +55020,31 @@
     "start_date_local": "2026-03-06T12:45:43Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-03-06",
+    "distance": 15774.5,
+    "elevation_gain": 0.0,
+    "id": "17627593604",
+    "moving_time": 1504.0,
+    "name": "TrainingPeaks Virtual - Event: Forest Velodrome Elimination - TPV Career Mode",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-03-06T18:13:15Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-03-07",
+    "distance": 7673.9,
+    "elevation_gain": 96.0,
+    "id": "17633935575",
+    "moving_time": 2704.0,
+    "name": "Corrida matinal",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-03-07T10:09:16Z",
+    "type": "Run",
+    "year": 2026
   }
 ]
