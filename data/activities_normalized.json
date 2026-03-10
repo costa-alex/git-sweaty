@@ -55111,5 +55111,18 @@
     "start_date_local": "2026-03-09T13:48:34Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-03-10",
+    "distance": 33192.8,
+    "elevation_gain": 0.0,
+    "id": "17668927431",
+    "moving_time": 3631.0,
+    "name": "TrainingPeaks Virtual - Workout: Monadnock -2",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-03-10T06:34:59Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
