@@ -55176,5 +55176,18 @@
     "start_date_local": "2026-03-11T13:50:38Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-03-12",
+    "distance": 35468.4,
+    "elevation_gain": 0.0,
+    "id": "17693771752",
+    "moving_time": 3734.0,
+    "name": "TrainingPeaks Virtual - Workout: Eclipse -3",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-03-12T06:47:41Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
