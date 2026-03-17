@@ -36869,6 +36869,24 @@
       "type": "EBikeRide",
       "url": "https://www.strava.com/activities/17742376492",
       "year": 2026
+    },
+    {
+      "date": "2026-03-16",
+      "hour": 17,
+      "name": "Corrida vespertina",
+      "subtype": "Run",
+      "type": "Run",
+      "url": "https://www.strava.com/activities/17744668327",
+      "year": 2026
+    },
+    {
+      "date": "2026-03-17",
+      "hour": 10,
+      "name": "Volta de bicicleta matinal",
+      "subtype": "Ride",
+      "type": "Ride",
+      "url": "https://www.strava.com/activities/17754499527",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -71630,6 +71648,15 @@
           "distance": 46897.5,
           "elevation_gain": 645.0,
           "moving_time": 6951.0
+        },
+        "2026-03-17": {
+          "activity_ids": [
+            "17754499527"
+          ],
+          "count": 1,
+          "distance": 102317.0,
+          "elevation_gain": 759.0,
+          "moving_time": 13568.0
         }
       },
       "Run": {
@@ -71686,6 +71713,15 @@
           "distance": 5668.2,
           "elevation_gain": 84.0,
           "moving_time": 1802.0
+        },
+        "2026-03-16": {
+          "activity_ids": [
+            "17744668327"
+          ],
+          "count": 1,
+          "distance": 6596.6,
+          "elevation_gain": 83.0,
+          "moving_time": 2214.0
         }
       },
       "Swim": {
@@ -72328,7 +72364,7 @@
       }
     }
   },
-  "generated_at": "2026-03-16T16:11:05.765710+00:00",
+  "generated_at": "2026-03-17T16:10:55.995246+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",

@@ -55280,5 +55280,31 @@
     "start_date_local": "2026-03-16T13:44:58Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-03-16",
+    "distance": 6596.6,
+    "elevation_gain": 83.0,
+    "id": "17744668327",
+    "moving_time": 2214.0,
+    "name": "Corrida vespertina",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-03-16T17:12:31Z",
+    "type": "Run",
+    "year": 2026
+  },
+  {
+    "date": "2026-03-17",
+    "distance": 102317.0,
+    "elevation_gain": 759.0,
+    "id": "17754499527",
+    "moving_time": 13568.0,
+    "name": "Volta de bicicleta matinal",
+    "raw_activity_type": "Ride",
+    "raw_type": "Ride",
+    "start_date_local": "2026-03-17T10:11:36Z",
+    "type": "Ride",
+    "year": 2026
   }
 ]
