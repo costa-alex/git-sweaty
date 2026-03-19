@@ -36914,6 +36914,15 @@
       "type": "EBikeRide",
       "url": "https://www.strava.com/activities/17767105048",
       "year": 2026
+    },
+    {
+      "date": "2026-03-18",
+      "hour": 16,
+      "name": "Treino com pesos vespertino",
+      "subtype": "WeightTraining",
+      "type": "WeightTraining",
+      "url": "https://www.strava.com/activities/17768934633",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72406,11 +72415,20 @@
           "distance": 0.0,
           "elevation_gain": 0.0,
           "moving_time": 1959.0
+        },
+        "2026-03-18": {
+          "activity_ids": [
+            "17768934633"
+          ],
+          "count": 1,
+          "distance": 0.0,
+          "elevation_gain": 0.0,
+          "moving_time": 2764.0
         }
       }
     }
   },
-  "generated_at": "2026-03-18T16:11:53.109038+00:00",
+  "generated_at": "2026-03-19T16:00:50.057846+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
