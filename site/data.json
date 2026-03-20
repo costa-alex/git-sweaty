@@ -36923,6 +36923,24 @@
       "type": "WeightTraining",
       "url": "https://www.strava.com/activities/17768934633",
       "year": 2026
+    },
+    {
+      "date": "2026-03-19",
+      "hour": 15,
+      "name": "TrainingPeaks Virtual - Workout: Andrews",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/17781085056",
+      "year": 2026
+    },
+    {
+      "date": "2026-03-20",
+      "hour": 10,
+      "name": "Corrida matinal",
+      "subtype": "Run",
+      "type": "Run",
+      "url": "https://www.strava.com/activities/17790239615",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -71768,6 +71786,15 @@
           "distance": 6596.6,
           "elevation_gain": 83.0,
           "moving_time": 2214.0
+        },
+        "2026-03-20": {
+          "activity_ids": [
+            "17790239615"
+          ],
+          "count": 1,
+          "distance": 15182.9,
+          "elevation_gain": 93.0,
+          "moving_time": 5101.0
         }
       },
       "Swim": {
@@ -72267,6 +72294,15 @@
           "distance": 35468.4,
           "elevation_gain": 0.0,
           "moving_time": 3734.0
+        },
+        "2026-03-19": {
+          "activity_ids": [
+            "17781085056"
+          ],
+          "count": 1,
+          "distance": 51209.6,
+          "elevation_gain": 0.0,
+          "moving_time": 5418.0
         }
       },
       "Walk": {
@@ -72428,7 +72464,7 @@
       }
     }
   },
-  "generated_at": "2026-03-19T16:00:50.057846+00:00",
+  "generated_at": "2026-03-20T15:51:12.235260+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
