@@ -55384,5 +55384,18 @@
     "start_date_local": "2026-03-20T10:43:40Z",
     "type": "Run",
     "year": 2026
+  },
+  {
+    "date": "2026-03-21",
+    "distance": 7351.4,
+    "elevation_gain": 165.0,
+    "id": "17801797619",
+    "moving_time": 5695.0,
+    "name": "Rucking",
+    "raw_activity_type": "Hike",
+    "raw_type": "Hike",
+    "start_date_local": "2026-03-21T10:24:19Z",
+    "type": "Hike",
+    "year": 2026
   }
 ]
