@@ -36977,6 +36977,15 @@
       "type": "VirtualRide",
       "url": "https://www.strava.com/activities/17815468185",
       "year": 2026
+    },
+    {
+      "date": "2026-03-23",
+      "hour": 10,
+      "name": "Corrida matinal",
+      "subtype": "Run",
+      "type": "Run",
+      "url": "https://www.strava.com/activities/17826605933",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -71851,6 +71860,15 @@
           "distance": 15182.9,
           "elevation_gain": 93.0,
           "moving_time": 5101.0
+        },
+        "2026-03-23": {
+          "activity_ids": [
+            "17826605933"
+          ],
+          "count": 1,
+          "distance": 11020.2,
+          "elevation_gain": 28.0,
+          "moving_time": 3636.0
         }
       },
       "Swim": {
@@ -72538,7 +72556,7 @@
       }
     }
   },
-  "generated_at": "2026-03-22T15:32:59.893480+00:00",
+  "generated_at": "2026-03-23T16:04:35.604625+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
