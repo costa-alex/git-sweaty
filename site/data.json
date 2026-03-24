@@ -36986,6 +36986,24 @@
       "type": "Run",
       "url": "https://www.strava.com/activities/17826605933",
       "year": 2026
+    },
+    {
+      "date": "2026-03-23",
+      "hour": 15,
+      "name": "TrainingPeaks Virtual - Workout: Pioneer -3",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/17829432455",
+      "year": 2026
+    },
+    {
+      "date": "2026-03-24",
+      "hour": 9,
+      "name": "MARRETADA \ud83d\udc80\ud83e\udea6",
+      "subtype": "Ride",
+      "type": "Ride",
+      "url": "https://www.strava.com/activities/17841410772",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -71786,6 +71804,15 @@
           "distance": 102317.0,
           "elevation_gain": 759.0,
           "moving_time": 13568.0
+        },
+        "2026-03-24": {
+          "activity_ids": [
+            "17841410772"
+          ],
+          "count": 1,
+          "distance": 110671.0,
+          "elevation_gain": 1604.0,
+          "moving_time": 18004.0
         }
       },
       "Run": {
@@ -72395,6 +72422,15 @@
           "distance": 43218.6,
           "elevation_gain": 0.0,
           "moving_time": 4515.0
+        },
+        "2026-03-23": {
+          "activity_ids": [
+            "17829432455"
+          ],
+          "count": 1,
+          "distance": 33757.0,
+          "elevation_gain": 0.0,
+          "moving_time": 3618.0
         }
       },
       "Walk": {
@@ -72556,7 +72592,7 @@
       }
     }
   },
-  "generated_at": "2026-03-23T16:04:35.604625+00:00",
+  "generated_at": "2026-03-24T16:11:41.958555+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
