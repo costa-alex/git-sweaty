@@ -55579,5 +55579,18 @@
     "start_date_local": "2026-03-27T13:53:57Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-03-28",
+    "distance": 6320.1,
+    "elevation_gain": 179.0,
+    "id": "17886339790",
+    "moving_time": 2393.0,
+    "name": "Rampas \u2197\ufe0f\u2198\ufe0f",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-03-28T10:09:14Z",
+    "type": "Run",
+    "year": 2026
   }
 ]

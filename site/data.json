@@ -37076,6 +37076,15 @@
       "type": "EBikeRide",
       "url": "https://www.strava.com/activities/17877827484",
       "year": 2026
+    },
+    {
+      "date": "2026-03-28",
+      "hour": 10,
+      "name": "Rampas \u2197\ufe0f\u2198\ufe0f",
+      "subtype": "Run",
+      "type": "Run",
+      "url": "https://www.strava.com/activities/17886339790",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72006,6 +72015,15 @@
           "distance": 7012.0,
           "elevation_gain": 47.0,
           "moving_time": 2704.0
+        },
+        "2026-03-28": {
+          "activity_ids": [
+            "17886339790"
+          ],
+          "count": 1,
+          "distance": 6320.1,
+          "elevation_gain": 179.0,
+          "moving_time": 2393.0
         }
       },
       "Swim": {
@@ -72720,7 +72738,7 @@
       }
     }
   },
-  "generated_at": "2026-03-27T15:58:13.343852+00:00",
+  "generated_at": "2026-03-28T15:37:57.536159+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
