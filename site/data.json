@@ -37085,6 +37085,15 @@
       "type": "Run",
       "url": "https://www.strava.com/activities/17886339790",
       "year": 2026
+    },
+    {
+      "date": "2026-03-29",
+      "hour": 11,
+      "name": "TrainingPeaks Virtual - Workout: Collins",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/17899486453",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72577,6 +72586,15 @@
           "distance": 33757.0,
           "elevation_gain": 0.0,
           "moving_time": 3618.0
+        },
+        "2026-03-29": {
+          "activity_ids": [
+            "17899486453"
+          ],
+          "count": 1,
+          "distance": 44087.2,
+          "elevation_gain": 0.0,
+          "moving_time": 4598.0
         }
       },
       "Walk": {
@@ -72738,7 +72756,7 @@
       }
     }
   },
-  "generated_at": "2026-03-28T15:37:57.536159+00:00",
+  "generated_at": "2026-03-29T15:39:00.362036+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
