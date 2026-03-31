@@ -37121,6 +37121,15 @@
       "type": "EBikeRide",
       "url": "https://www.strava.com/activities/17912673740",
       "year": 2026
+    },
+    {
+      "date": "2026-03-31",
+      "hour": 9,
+      "name": "Gravel e voltar \u27a1\ufe0f\u2b05\ufe0f",
+      "subtype": "GravelRide",
+      "type": "GravelRide",
+      "url": "https://www.strava.com/activities/17924482144",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -71920,6 +71929,15 @@
           "distance": 48765.5,
           "elevation_gain": 1106.0,
           "moving_time": 13197.0
+        },
+        "2026-03-31": {
+          "activity_ids": [
+            "17924482144"
+          ],
+          "count": 1,
+          "distance": 80115.1,
+          "elevation_gain": 401.0,
+          "moving_time": 14209.0
         }
       },
       "Hike": {
@@ -72802,7 +72820,7 @@
       }
     }
   },
-  "generated_at": "2026-03-30T16:09:25.658418+00:00",
+  "generated_at": "2026-03-31T16:09:40.970909+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
