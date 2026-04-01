@@ -37130,6 +37130,42 @@
       "type": "GravelRide",
       "url": "https://www.strava.com/activities/17924482144",
       "year": 2026
+    },
+    {
+      "date": "2026-04-01",
+      "hour": 9,
+      "name": "Corrida matinal",
+      "subtype": "Run",
+      "type": "Run",
+      "url": "https://www.strava.com/activities/17934916078",
+      "year": 2026
+    },
+    {
+      "date": "2026-04-01",
+      "hour": 12,
+      "name": "Commute \ud83c\udfe0-\ud83c\udfca\u200d\u2642\ufe0f",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/17936450823",
+      "year": 2026
+    },
+    {
+      "date": "2026-04-01",
+      "hour": 12,
+      "name": "Nata\u00e7\u00e3o \ud83c\udfca\u200d\u2642\ufe0f",
+      "subtype": "Swim",
+      "type": "Swim",
+      "url": "https://www.strava.com/activities/17937123135",
+      "year": 2026
+    },
+    {
+      "date": "2026-04-01",
+      "hour": 13,
+      "name": "Commute \ud83c\udfca\u200d\u2642\ufe0f-\ud83c\udfe0",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/17938142225",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -71900,6 +71936,16 @@
           "distance": 28293.3,
           "elevation_gain": 516.0,
           "moving_time": 5498.0
+        },
+        "2026-04-01": {
+          "activity_ids": [
+            "17936450823",
+            "17938142225"
+          ],
+          "count": 2,
+          "distance": 29182.4,
+          "elevation_gain": 469.0,
+          "moving_time": 5580.0
         }
       },
       "GravelRide": {
@@ -72088,6 +72134,15 @@
           "distance": 6320.1,
           "elevation_gain": 179.0,
           "moving_time": 2393.0
+        },
+        "2026-04-01": {
+          "activity_ids": [
+            "17934916078"
+          ],
+          "count": 1,
+          "distance": 5713.1,
+          "elevation_gain": 46.0,
+          "moving_time": 1805.0
         }
       },
       "Swim": {
@@ -72288,6 +72343,15 @@
           "distance": 1700.0,
           "elevation_gain": 0.0,
           "moving_time": 2509.0
+        },
+        "2026-04-01": {
+          "activity_ids": [
+            "17937123135"
+          ],
+          "count": 1,
+          "distance": 1800.0,
+          "elevation_gain": 0.0,
+          "moving_time": 2214.0
         }
       },
       "VirtualRide": {
@@ -72820,7 +72884,7 @@
       }
     }
   },
-  "generated_at": "2026-03-31T16:09:40.970909+00:00",
+  "generated_at": "2026-04-01T16:09:21.631438+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
