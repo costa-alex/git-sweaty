@@ -55709,5 +55709,18 @@
     "start_date_local": "2026-04-01T13:54:38Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-04-02",
+    "distance": 50948.7,
+    "elevation_gain": 0.0,
+    "id": "17949149291",
+    "moving_time": 5415.0,
+    "name": "TrainingPeaks Virtual - Workout: Antelope +2",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-04-02T11:41:10Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]

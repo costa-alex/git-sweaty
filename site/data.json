@@ -37166,6 +37166,15 @@
       "type": "EBikeRide",
       "url": "https://www.strava.com/activities/17938142225",
       "year": 2026
+    },
+    {
+      "date": "2026-04-02",
+      "hour": 11,
+      "name": "TrainingPeaks Virtual - Workout: Antelope +2",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/17949149291",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72723,6 +72732,15 @@
           "distance": 44087.2,
           "elevation_gain": 0.0,
           "moving_time": 4598.0
+        },
+        "2026-04-02": {
+          "activity_ids": [
+            "17949149291"
+          ],
+          "count": 1,
+          "distance": 50948.7,
+          "elevation_gain": 0.0,
+          "moving_time": 5415.0
         }
       },
       "Walk": {
@@ -72884,7 +72902,7 @@
       }
     }
   },
-  "generated_at": "2026-04-01T16:09:21.631438+00:00",
+  "generated_at": "2026-04-02T16:05:16.756476+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
