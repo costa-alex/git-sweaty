@@ -55722,5 +55722,31 @@
     "start_date_local": "2026-04-02T11:41:10Z",
     "type": "VirtualRide",
     "year": 2026
+  },
+  {
+    "date": "2026-04-02",
+    "distance": 6025.8,
+    "elevation_gain": 133.0,
+    "id": "17951972005",
+    "moving_time": 2210.0,
+    "name": "Corrida em trilho vespertina",
+    "raw_activity_type": "Run",
+    "raw_type": "TrailRun",
+    "start_date_local": "2026-04-02T16:50:11Z",
+    "type": "TrailRun",
+    "year": 2026
+  },
+  {
+    "date": "2026-04-03",
+    "distance": 11189.6,
+    "elevation_gain": 0.0,
+    "id": "17959729048",
+    "moving_time": 4046.0,
+    "name": "TrainingPeaks Virtual - Workout: Pioneer -3",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-04-03T10:03:22Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
