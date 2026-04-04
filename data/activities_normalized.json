@@ -55748,5 +55748,18 @@
     "start_date_local": "2026-04-03T10:03:22Z",
     "type": "VirtualRide",
     "year": 2026
+  },
+  {
+    "date": "2026-04-04",
+    "distance": 18528.8,
+    "elevation_gain": 285.0,
+    "id": "17973367332",
+    "moving_time": 4537.0,
+    "name": "Passear ao sol \u2600\ufe0f",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-04-04T10:32:06Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
