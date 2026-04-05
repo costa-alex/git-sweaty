@@ -55761,5 +55761,18 @@
     "start_date_local": "2026-04-04T10:32:06Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-04-04",
+    "distance": 24500.5,
+    "elevation_gain": 0.0,
+    "id": "17977859767",
+    "moving_time": 5429.0,
+    "name": "TrainingPeaks Virtual - Workout: Eisenhower",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-04-04T16:16:24Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
