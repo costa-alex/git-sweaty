@@ -37211,6 +37211,33 @@
       "type": "VirtualRide",
       "url": "https://www.strava.com/activities/17977859767",
       "year": 2026
+    },
+    {
+      "date": "2026-04-05",
+      "hour": 18,
+      "name": "Treino com pesos ao entardecer",
+      "subtype": "WeightTraining",
+      "type": "WeightTraining",
+      "url": "https://www.strava.com/activities/17991217581",
+      "year": 2026
+    },
+    {
+      "date": "2026-04-06",
+      "hour": 6,
+      "name": "Corrida matinal",
+      "subtype": "Run",
+      "type": "Run",
+      "url": "https://www.strava.com/activities/17994853639",
+      "year": 2026
+    },
+    {
+      "date": "2026-04-06",
+      "hour": 9,
+      "name": "Commute \ud83d\udcbb",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/17995857857",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72000,6 +72027,15 @@
           "distance": 18528.8,
           "elevation_gain": 285.0,
           "moving_time": 4537.0
+        },
+        "2026-04-06": {
+          "activity_ids": [
+            "17995857857"
+          ],
+          "count": 1,
+          "distance": 10931.0,
+          "elevation_gain": 166.0,
+          "moving_time": 2068.0
         }
       },
       "GravelRide": {
@@ -72197,6 +72233,15 @@
           "distance": 5713.1,
           "elevation_gain": 46.0,
           "moving_time": 1805.0
+        },
+        "2026-04-06": {
+          "activity_ids": [
+            "17994853639"
+          ],
+          "count": 1,
+          "distance": 11089.6,
+          "elevation_gain": 89.0,
+          "moving_time": 3605.0
         }
       },
       "Swim": {
@@ -72972,11 +73017,20 @@
           "distance": 0.0,
           "elevation_gain": 0.0,
           "moving_time": 2764.0
+        },
+        "2026-04-05": {
+          "activity_ids": [
+            "17991217581"
+          ],
+          "count": 1,
+          "distance": 0.0,
+          "elevation_gain": 0.0,
+          "moving_time": 2170.0
         }
       }
     }
   },
-  "generated_at": "2026-04-05T15:40:03.226850+00:00",
+  "generated_at": "2026-04-06T15:55:25.210553+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
