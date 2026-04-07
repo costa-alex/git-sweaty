@@ -37238,6 +37238,24 @@
       "type": "EBikeRide",
       "url": "https://www.strava.com/activities/17995857857",
       "year": 2026
+    },
+    {
+      "date": "2026-04-06",
+      "hour": 17,
+      "name": "Commute \ud83c\udfe0",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/18003099730",
+      "year": 2026
+    },
+    {
+      "date": "2026-04-07",
+      "hour": 6,
+      "name": "TrainingPeaks Virtual - Workout: Cramer",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/18008860655",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72030,12 +72048,13 @@
         },
         "2026-04-06": {
           "activity_ids": [
-            "17995857857"
+            "17995857857",
+            "18003099730"
           ],
-          "count": 1,
-          "distance": 10931.0,
-          "elevation_gain": 166.0,
-          "moving_time": 2068.0
+          "count": 2,
+          "distance": 21459.0,
+          "elevation_gain": 299.0,
+          "moving_time": 4181.0
         }
       },
       "GravelRide": {
@@ -72860,6 +72879,15 @@
           "distance": 24500.5,
           "elevation_gain": 0.0,
           "moving_time": 5429.0
+        },
+        "2026-04-07": {
+          "activity_ids": [
+            "18008860655"
+          ],
+          "count": 1,
+          "distance": 28784.2,
+          "elevation_gain": 0.0,
+          "moving_time": 3622.0
         }
       },
       "Walk": {
@@ -73030,7 +73058,7 @@
       }
     }
   },
-  "generated_at": "2026-04-06T15:55:25.210553+00:00",
+  "generated_at": "2026-04-07T16:13:31.534954+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
