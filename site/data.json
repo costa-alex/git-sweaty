@@ -37256,6 +37256,15 @@
       "type": "VirtualRide",
       "url": "https://www.strava.com/activities/18008860655",
       "year": 2026
+    },
+    {
+      "date": "2026-04-08",
+      "hour": 12,
+      "name": "Nata\u00e7\u00e3o \ud83c\udfca\u200d\u2642\ufe0f",
+      "subtype": "Swim",
+      "type": "Swim",
+      "url": "https://www.strava.com/activities/18026387289",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72470,6 +72479,15 @@
           "distance": 1800.0,
           "elevation_gain": 0.0,
           "moving_time": 2214.0
+        },
+        "2026-04-08": {
+          "activity_ids": [
+            "18026387289"
+          ],
+          "count": 1,
+          "distance": 1850.0,
+          "elevation_gain": 0.0,
+          "moving_time": 2479.0
         }
       },
       "TrailRun": {
@@ -73058,7 +73076,7 @@
       }
     }
   },
-  "generated_at": "2026-04-07T16:13:31.534954+00:00",
+  "generated_at": "2026-04-08T16:18:34.343413+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
