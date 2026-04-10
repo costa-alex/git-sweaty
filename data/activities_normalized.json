@@ -55852,5 +55852,18 @@
     "start_date_local": "2026-04-08T12:45:43Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-04-10",
+    "distance": 6020.5,
+    "elevation_gain": 23.0,
+    "id": "18049946076",
+    "moving_time": 2078.0,
+    "name": "San Martin de La Vega, Madrid \ud83c\uddea\ud83c\uddf8",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-04-10T07:50:00Z",
+    "type": "Run",
+    "year": 2026
   }
 ]
