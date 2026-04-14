@@ -55891,5 +55891,18 @@
     "start_date_local": "2026-04-13T12:45:27Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-04-14",
+    "distance": 31246.8,
+    "elevation_gain": 0.0,
+    "id": "18100480309",
+    "moving_time": 3613.0,
+    "name": "TrainingPeaks Virtual - Workout: Ruchen",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-04-14T06:33:43Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
