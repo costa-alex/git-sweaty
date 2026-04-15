@@ -55904,5 +55904,18 @@
     "start_date_local": "2026-04-14T06:33:43Z",
     "type": "VirtualRide",
     "year": 2026
+  },
+  {
+    "date": "2026-04-15",
+    "distance": 11645.6,
+    "elevation_gain": 17.0,
+    "id": "18114590091",
+    "moving_time": 3975.0,
+    "name": "Corrida matinal",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-04-15T06:47:25Z",
+    "type": "Run",
+    "year": 2026
   }
 ]
