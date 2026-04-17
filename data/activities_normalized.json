@@ -55943,5 +55943,44 @@
     "start_date_local": "2026-04-16T09:09:00Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-04-16",
+    "distance": 10656.8,
+    "elevation_gain": 135.0,
+    "id": "18134825671",
+    "moving_time": 2321.0,
+    "name": "Commute \ud83c\udfe0",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-04-16T17:45:00Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-04-17",
+    "distance": 10480.8,
+    "elevation_gain": 71.0,
+    "id": "18141353511",
+    "moving_time": 3597.0,
+    "name": "Corrida matinal",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-04-17T06:59:44Z",
+    "type": "Run",
+    "year": 2026
+  },
+  {
+    "date": "2026-04-17",
+    "distance": 1700.0,
+    "elevation_gain": 0.0,
+    "id": "18144397007",
+    "moving_time": 2111.0,
+    "name": "Nata\u00e7\u00e3o \ud83c\udfca\u200d\u2642\ufe0f",
+    "raw_activity_type": "Swim",
+    "raw_type": "Swim",
+    "start_date_local": "2026-04-17T12:46:14Z",
+    "type": "Swim",
+    "year": 2026
   }
 ]

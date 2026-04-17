@@ -37328,6 +37328,33 @@
       "type": "EBikeRide",
       "url": "https://www.strava.com/activities/18128731520",
       "year": 2026
+    },
+    {
+      "date": "2026-04-16",
+      "hour": 17,
+      "name": "Commute \ud83c\udfe0",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/18134825671",
+      "year": 2026
+    },
+    {
+      "date": "2026-04-17",
+      "hour": 6,
+      "name": "Corrida matinal",
+      "subtype": "Run",
+      "type": "Run",
+      "url": "https://www.strava.com/activities/18141353511",
+      "year": 2026
+    },
+    {
+      "date": "2026-04-17",
+      "hour": 12,
+      "name": "Nata\u00e7\u00e3o \ud83c\udfca\u200d\u2642\ufe0f",
+      "subtype": "Swim",
+      "type": "Swim",
+      "url": "https://www.strava.com/activities/18144397007",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72130,12 +72157,13 @@
         },
         "2026-04-16": {
           "activity_ids": [
-            "18128731520"
+            "18128731520",
+            "18134825671"
           ],
-          "count": 1,
-          "distance": 10896.7,
-          "elevation_gain": 153.0,
-          "moving_time": 1993.0
+          "count": 2,
+          "distance": 21553.5,
+          "elevation_gain": 288.0,
+          "moving_time": 4314.0
         }
       },
       "GravelRide": {
@@ -72369,6 +72397,15 @@
           "distance": 11645.6,
           "elevation_gain": 17.0,
           "moving_time": 3975.0
+        },
+        "2026-04-17": {
+          "activity_ids": [
+            "18141353511"
+          ],
+          "count": 1,
+          "distance": 10480.8,
+          "elevation_gain": 71.0,
+          "moving_time": 3597.0
         }
       },
       "Swim": {
@@ -72596,6 +72633,15 @@
           "distance": 1950.0,
           "elevation_gain": 0.0,
           "moving_time": 2255.0
+        },
+        "2026-04-17": {
+          "activity_ids": [
+            "18144397007"
+          ],
+          "count": 1,
+          "distance": 1700.0,
+          "elevation_gain": 0.0,
+          "moving_time": 2111.0
         }
       },
       "TrailRun": {
@@ -73202,7 +73248,7 @@
       }
     }
   },
-  "generated_at": "2026-04-16T16:26:14.603680+00:00",
+  "generated_at": "2026-04-17T16:05:28.801002+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
