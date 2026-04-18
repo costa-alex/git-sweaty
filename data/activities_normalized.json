@@ -55982,5 +55982,18 @@
     "start_date_local": "2026-04-17T12:46:14Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-04-18",
+    "distance": 5688.7,
+    "elevation_gain": 21.0,
+    "id": "18155056703",
+    "moving_time": 1803.0,
+    "name": "30min livres",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-04-18T10:06:21Z",
+    "type": "Run",
+    "year": 2026
   }
 ]
