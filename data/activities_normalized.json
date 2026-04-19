@@ -55995,5 +55995,31 @@
     "start_date_local": "2026-04-18T10:06:21Z",
     "type": "Run",
     "year": 2026
+  },
+  {
+    "date": "2026-04-18",
+    "distance": 52623.0,
+    "elevation_gain": 0.0,
+    "id": "18162697667",
+    "moving_time": 5456.0,
+    "name": "TrainingPeaks Virtual - Workout: Window",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-04-18T18:29:36Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-04-19",
+    "distance": 21234.4,
+    "elevation_gain": 119.0,
+    "id": "18170519154",
+    "moving_time": 7253.0,
+    "name": "Corrida matinal",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-04-19T10:14:13Z",
+    "type": "Run",
+    "year": 2026
   }
 ]
