@@ -56060,5 +56060,31 @@
     "start_date_local": "2026-04-21T09:13:34Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-04-21",
+    "distance": 10543.8,
+    "elevation_gain": 142.0,
+    "id": "18200906681",
+    "moving_time": 2010.0,
+    "name": "Commute \ud83c\udfe0",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-04-21T17:45:00Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-04-22",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "18207859449",
+    "moving_time": 2481.0,
+    "name": "Treino com pesos matinal",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-04-22T07:07:21Z",
+    "type": "WeightTraining",
+    "year": 2026
   }
 ]
