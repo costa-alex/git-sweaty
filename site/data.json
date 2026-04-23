@@ -37427,6 +37427,24 @@
       "type": "WeightTraining",
       "url": "https://www.strava.com/activities/18207859449",
       "year": 2026
+    },
+    {
+      "date": "2026-04-23",
+      "hour": 6,
+      "name": "TrainingPeaks Virtual - Workout: Beech",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/18221662324",
+      "year": 2026
+    },
+    {
+      "date": "2026-04-23",
+      "hour": 9,
+      "name": "Commute \ud83d\udcbb",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/18222586156",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72246,6 +72264,15 @@
           "distance": 21439.5,
           "elevation_gain": 296.0,
           "moving_time": 3963.0
+        },
+        "2026-04-23": {
+          "activity_ids": [
+            "18222586156"
+          ],
+          "count": 1,
+          "distance": 10910.2,
+          "elevation_gain": 154.0,
+          "moving_time": 1965.0
         }
       },
       "GravelRide": {
@@ -73205,6 +73232,15 @@
           "distance": 20990.0,
           "elevation_gain": 0.0,
           "moving_time": 3617.0
+        },
+        "2026-04-23": {
+          "activity_ids": [
+            "18221662324"
+          ],
+          "count": 1,
+          "distance": 32610.6,
+          "elevation_gain": 0.0,
+          "moving_time": 3613.0
         }
       },
       "Walk": {
@@ -73384,7 +73420,7 @@
       }
     }
   },
-  "generated_at": "2026-04-22T16:13:09.490752+00:00",
+  "generated_at": "2026-04-23T16:46:36.752321+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
