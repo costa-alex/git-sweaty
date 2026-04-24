@@ -37445,6 +37445,24 @@
       "type": "EBikeRide",
       "url": "https://www.strava.com/activities/18222586156",
       "year": 2026
+    },
+    {
+      "date": "2026-04-23",
+      "hour": 18,
+      "name": "Commute \ud83c\udfe0",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/18229279658",
+      "year": 2026
+    },
+    {
+      "date": "2026-04-24",
+      "hour": 12,
+      "name": "Nata\u00e7\u00e3o \ud83c\udfca\u200d\u2642\ufe0f",
+      "subtype": "Swim",
+      "type": "Swim",
+      "url": "https://www.strava.com/activities/18238292662",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72267,12 +72285,13 @@
         },
         "2026-04-23": {
           "activity_ids": [
-            "18222586156"
+            "18222586156",
+            "18229279658"
           ],
-          "count": 1,
-          "distance": 10910.2,
-          "elevation_gain": 154.0,
-          "moving_time": 1965.0
+          "count": 2,
+          "distance": 25596.800000000003,
+          "elevation_gain": 362.0,
+          "moving_time": 5013.0
         }
       },
       "GravelRide": {
@@ -72778,6 +72797,15 @@
           "distance": 1950.0,
           "elevation_gain": 0.0,
           "moving_time": 2354.0
+        },
+        "2026-04-24": {
+          "activity_ids": [
+            "18238292662"
+          ],
+          "count": 1,
+          "distance": 1750.0,
+          "elevation_gain": 0.0,
+          "moving_time": 2017.0
         }
       },
       "TrailRun": {
@@ -73420,7 +73448,7 @@
       }
     }
   },
-  "generated_at": "2026-04-23T16:46:36.752321+00:00",
+  "generated_at": "2026-04-24T16:08:37.110266+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
