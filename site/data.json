@@ -37463,6 +37463,24 @@
       "type": "Swim",
       "url": "https://www.strava.com/activities/18238292662",
       "year": 2026
+    },
+    {
+      "date": "2026-04-24",
+      "hour": 18,
+      "name": "TrainingPeaks Virtual - Koppenberg, Flanders, Belgium",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/18242111776",
+      "year": 2026
+    },
+    {
+      "date": "2026-04-25",
+      "hour": 10,
+      "name": "Corrida matinal",
+      "subtype": "Run",
+      "type": "Run",
+      "url": "https://www.strava.com/activities/18249013316",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72552,6 +72570,15 @@
           "distance": 21234.4,
           "elevation_gain": 119.0,
           "moving_time": 7253.0
+        },
+        "2026-04-25": {
+          "activity_ids": [
+            "18249013316"
+          ],
+          "count": 1,
+          "distance": 5734.0,
+          "elevation_gain": 13.0,
+          "moving_time": 1803.0
         }
       },
       "Swim": {
@@ -73269,6 +73296,15 @@
           "distance": 32610.6,
           "elevation_gain": 0.0,
           "moving_time": 3613.0
+        },
+        "2026-04-24": {
+          "activity_ids": [
+            "18242111776"
+          ],
+          "count": 1,
+          "distance": 5926.1,
+          "elevation_gain": 0.0,
+          "moving_time": 906.0
         }
       },
       "Walk": {
@@ -73448,7 +73484,7 @@
       }
     }
   },
-  "generated_at": "2026-04-24T16:08:37.110266+00:00",
+  "generated_at": "2026-04-25T15:46:47.588278+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",

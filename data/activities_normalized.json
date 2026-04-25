@@ -56138,5 +56138,31 @@
     "start_date_local": "2026-04-24T12:46:23Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-04-24",
+    "distance": 5926.1,
+    "elevation_gain": 0.0,
+    "id": "18242111776",
+    "moving_time": 906.0,
+    "name": "TrainingPeaks Virtual - Koppenberg, Flanders, Belgium",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-04-24T18:46:53Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-04-25",
+    "distance": 5734.0,
+    "elevation_gain": 13.0,
+    "id": "18249013316",
+    "moving_time": 1803.0,
+    "name": "Corrida matinal",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-04-25T10:10:44Z",
+    "type": "Run",
+    "year": 2026
   }
 ]
