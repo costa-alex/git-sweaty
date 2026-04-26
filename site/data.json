@@ -37481,6 +37481,24 @@
       "type": "Run",
       "url": "https://www.strava.com/activities/18249013316",
       "year": 2026
+    },
+    {
+      "date": "2026-04-25",
+      "hour": 15,
+      "name": "TrainingPeaks Virtual - Workout: Pioneer -3",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/18254441212",
+      "year": 2026
+    },
+    {
+      "date": "2026-04-26",
+      "hour": 10,
+      "name": "Gravelzito",
+      "subtype": "GravelRide",
+      "type": "GravelRide",
+      "url": "https://www.strava.com/activities/18264407005",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72348,6 +72366,15 @@
           "distance": 80115.1,
           "elevation_gain": 401.0,
           "moving_time": 14209.0
+        },
+        "2026-04-26": {
+          "activity_ids": [
+            "18264407005"
+          ],
+          "count": 1,
+          "distance": 35193.8,
+          "elevation_gain": 647.0,
+          "moving_time": 7453.0
         }
       },
       "Hike": {
@@ -73305,6 +73332,15 @@
           "distance": 5926.1,
           "elevation_gain": 0.0,
           "moving_time": 906.0
+        },
+        "2026-04-25": {
+          "activity_ids": [
+            "18254441212"
+          ],
+          "count": 1,
+          "distance": 17265.8,
+          "elevation_gain": 0.0,
+          "moving_time": 4395.0
         }
       },
       "Walk": {
@@ -73484,7 +73520,7 @@
       }
     }
   },
-  "generated_at": "2026-04-25T15:46:47.588278+00:00",
+  "generated_at": "2026-04-26T15:50:15.649926+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",

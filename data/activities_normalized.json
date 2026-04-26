@@ -56164,5 +56164,31 @@
     "start_date_local": "2026-04-25T10:10:44Z",
     "type": "Run",
     "year": 2026
+  },
+  {
+    "date": "2026-04-25",
+    "distance": 17265.8,
+    "elevation_gain": 0.0,
+    "id": "18254441212",
+    "moving_time": 4395.0,
+    "name": "TrainingPeaks Virtual - Workout: Pioneer -3",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-04-25T15:46:08Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-04-26",
+    "distance": 35193.8,
+    "elevation_gain": 647.0,
+    "id": "18264407005",
+    "moving_time": 7453.0,
+    "name": "Gravelzito",
+    "raw_activity_type": "Ride",
+    "raw_type": "GravelRide",
+    "start_date_local": "2026-04-26T10:02:31Z",
+    "type": "GravelRide",
+    "year": 2026
   }
 ]
