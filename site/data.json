@@ -37517,6 +37517,24 @@
       "type": "Swim",
       "url": "https://www.strava.com/activities/18277919693",
       "year": 2026
+    },
+    {
+      "date": "2026-04-28",
+      "hour": 6,
+      "name": "TrainingPeaks Virtual - Workout: Glennamong",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/18287969881",
+      "year": 2026
+    },
+    {
+      "date": "2026-04-28",
+      "hour": 12,
+      "name": "Commute \ud83d\udce6",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/18291113753",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72346,6 +72364,15 @@
           "distance": 25596.800000000003,
           "elevation_gain": 362.0,
           "moving_time": 5013.0
+        },
+        "2026-04-28": {
+          "activity_ids": [
+            "18291113753"
+          ],
+          "count": 1,
+          "distance": 11016.7,
+          "elevation_gain": 204.0,
+          "moving_time": 1997.0
         }
       },
       "GravelRide": {
@@ -73377,6 +73404,15 @@
           "distance": 17265.8,
           "elevation_gain": 0.0,
           "moving_time": 4395.0
+        },
+        "2026-04-28": {
+          "activity_ids": [
+            "18287969881"
+          ],
+          "count": 1,
+          "distance": 35208.0,
+          "elevation_gain": 0.0,
+          "moving_time": 3624.0
         }
       },
       "Walk": {
@@ -73556,7 +73592,7 @@
       }
     }
   },
-  "generated_at": "2026-04-27T16:46:16.186276+00:00",
+  "generated_at": "2026-04-28T16:57:48.321509+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
