@@ -56255,5 +56255,44 @@
     "start_date_local": "2026-04-29T12:45:37Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-04-29",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "18309591990",
+    "moving_time": 1233.0,
+    "name": "Treino com pesos ao entardecer",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-04-29T18:42:08Z",
+    "type": "WeightTraining",
+    "year": 2026
+  },
+  {
+    "date": "2026-04-30",
+    "distance": 29622.4,
+    "elevation_gain": 0.0,
+    "id": "18315350984",
+    "moving_time": 3663.0,
+    "name": "TrainingPeaks Virtual - Workout: Ochsenhorn",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-04-30T06:30:22Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-04-30",
+    "distance": 10942.2,
+    "elevation_gain": 154.0,
+    "id": "18316187922",
+    "moving_time": 1964.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-04-30T09:04:59Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
