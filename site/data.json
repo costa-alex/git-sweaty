@@ -37571,6 +37571,24 @@
       "type": "EBikeRide",
       "url": "https://www.strava.com/activities/18316187922",
       "year": 2026
+    },
+    {
+      "date": "2026-04-30",
+      "hour": 17,
+      "name": "Commute \ud83c\udfe0",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/18321573374",
+      "year": 2026
+    },
+    {
+      "date": "2026-05-01",
+      "hour": 6,
+      "name": "TrainingPeaks Virtual - Workout: Antelope",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/18327916405",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72412,12 +72430,13 @@
         },
         "2026-04-30": {
           "activity_ids": [
-            "18316187922"
+            "18316187922",
+            "18321573374"
           ],
-          "count": 1,
-          "distance": 10942.2,
-          "elevation_gain": 154.0,
-          "moving_time": 1964.0
+          "count": 2,
+          "distance": 21473.800000000003,
+          "elevation_gain": 283.0,
+          "moving_time": 3999.0
         }
       },
       "GravelRide": {
@@ -73476,6 +73495,15 @@
           "distance": 29622.4,
           "elevation_gain": 0.0,
           "moving_time": 3663.0
+        },
+        "2026-05-01": {
+          "activity_ids": [
+            "18327916405"
+          ],
+          "count": 1,
+          "distance": 36550.1,
+          "elevation_gain": 0.0,
+          "moving_time": 5469.0
         }
       },
       "Walk": {
@@ -73664,7 +73692,7 @@
       }
     }
   },
-  "generated_at": "2026-04-30T16:25:15.930961+00:00",
+  "generated_at": "2026-05-01T16:01:31.425607+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
