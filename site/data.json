@@ -37589,6 +37589,15 @@
       "type": "VirtualRide",
       "url": "https://www.strava.com/activities/18327916405",
       "year": 2026
+    },
+    {
+      "date": "2026-05-02",
+      "hour": 10,
+      "name": "Corrida em trilho matinal",
+      "subtype": "TrailRun",
+      "type": "TrailRun",
+      "url": "https://www.strava.com/activities/18343975885",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -73007,6 +73016,15 @@
           "distance": 10147.2,
           "elevation_gain": 258.0,
           "moving_time": 4075.0
+        },
+        "2026-05-02": {
+          "activity_ids": [
+            "18343975885"
+          ],
+          "count": 1,
+          "distance": 7509.1,
+          "elevation_gain": 81.0,
+          "moving_time": 2735.0
         }
       },
       "VirtualRide": {
@@ -73692,7 +73710,7 @@
       }
     }
   },
-  "generated_at": "2026-05-01T16:01:31.425607+00:00",
+  "generated_at": "2026-05-02T15:54:11.568320+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",

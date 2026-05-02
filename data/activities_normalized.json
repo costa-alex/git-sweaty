@@ -56320,5 +56320,18 @@
     "start_date_local": "2026-05-01T06:32:49Z",
     "type": "VirtualRide",
     "year": 2026
+  },
+  {
+    "date": "2026-05-02",
+    "distance": 7509.1,
+    "elevation_gain": 81.0,
+    "id": "18343975885",
+    "moving_time": 2735.0,
+    "name": "Corrida em trilho matinal",
+    "raw_activity_type": "Run",
+    "raw_type": "TrailRun",
+    "start_date_local": "2026-05-02T10:25:08Z",
+    "type": "TrailRun",
+    "year": 2026
   }
 ]
