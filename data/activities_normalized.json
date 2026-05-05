@@ -56346,5 +56346,18 @@
     "start_date_local": "2026-05-04T12:45:51Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-05-05",
+    "distance": 16864.5,
+    "elevation_gain": 0.0,
+    "id": "18381382998",
+    "moving_time": 5404.0,
+    "name": "TrainingPeaks Virtual - Workout: Haeckel",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-05-05T06:15:53Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
