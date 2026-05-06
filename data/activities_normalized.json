@@ -56359,5 +56359,44 @@
     "start_date_local": "2026-05-05T06:15:53Z",
     "type": "VirtualRide",
     "year": 2026
+  },
+  {
+    "date": "2026-05-06",
+    "distance": 5486.9,
+    "elevation_gain": 104.0,
+    "id": "18394882582",
+    "moving_time": 1804.0,
+    "name": "Corrida matinal",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-05-06T06:27:21Z",
+    "type": "Run",
+    "year": 2026
+  },
+  {
+    "date": "2026-05-06",
+    "distance": 10911.3,
+    "elevation_gain": 152.0,
+    "id": "18395918153",
+    "moving_time": 2008.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-05-06T08:59:54Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-05-06",
+    "distance": 10562.3,
+    "elevation_gain": 151.0,
+    "id": "18398186850",
+    "moving_time": 2057.0,
+    "name": "Commute \ud83c\udfe0",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-05-06T12:30:51Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
