@@ -37643,6 +37643,24 @@
       "type": "EBikeRide",
       "url": "https://www.strava.com/activities/18398186850",
       "year": 2026
+    },
+    {
+      "date": "2026-05-07",
+      "hour": 6,
+      "name": "TrainingPeaks Virtual - Workout: Chilly",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/18408406388",
+      "year": 2026
+    },
+    {
+      "date": "2026-05-07",
+      "hour": 9,
+      "name": "Commute \ud83d\udcbb",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/18409255617",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72501,6 +72519,15 @@
           "distance": 21473.6,
           "elevation_gain": 303.0,
           "moving_time": 4065.0
+        },
+        "2026-05-07": {
+          "activity_ids": [
+            "18409255617"
+          ],
+          "count": 1,
+          "distance": 10969.0,
+          "elevation_gain": 147.0,
+          "moving_time": 2143.0
         }
       },
       "GravelRide": {
@@ -73604,6 +73631,15 @@
           "distance": 16864.5,
           "elevation_gain": 0.0,
           "moving_time": 5404.0
+        },
+        "2026-05-07": {
+          "activity_ids": [
+            "18408406388"
+          ],
+          "count": 1,
+          "distance": 33142.5,
+          "elevation_gain": 0.0,
+          "moving_time": 3617.0
         }
       },
       "Walk": {
@@ -73792,7 +73828,7 @@
       }
     }
   },
-  "generated_at": "2026-05-06T16:47:35.694146+00:00",
+  "generated_at": "2026-05-07T16:56:58.969579+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",

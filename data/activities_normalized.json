@@ -56398,5 +56398,31 @@
     "start_date_local": "2026-05-06T12:30:51Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-05-07",
+    "distance": 33142.5,
+    "elevation_gain": 0.0,
+    "id": "18408406388",
+    "moving_time": 3617.0,
+    "name": "TrainingPeaks Virtual - Workout: Chilly",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-05-07T06:39:18Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-05-07",
+    "distance": 10969.0,
+    "elevation_gain": 147.0,
+    "id": "18409255617",
+    "moving_time": 2143.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-05-07T09:15:17Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
