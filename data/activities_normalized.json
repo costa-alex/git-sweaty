@@ -56476,5 +56476,31 @@
     "start_date_local": "2026-05-08T14:24:46Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-05-08",
+    "distance": 10495.9,
+    "elevation_gain": 132.0,
+    "id": "18429007527",
+    "moving_time": 1944.0,
+    "name": "Commute \ud83c\udfe0",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-05-08T18:28:15Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-05-09",
+    "distance": 50393.9,
+    "elevation_gain": 0.0,
+    "id": "18437837523",
+    "moving_time": 6360.0,
+    "name": "TrainingPeaks Virtual - Workout: Glassy +1",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-05-09T11:32:57Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
