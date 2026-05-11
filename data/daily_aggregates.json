@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-10T15:59:37.541112+00:00",
+  "generated_at": "2026-05-11T17:28:03.568988+00:00",
   "years": {
     "2012": {
       "Hike": {
@@ -34925,6 +34925,17 @@
           "moving_time": 7453.0
         }
       },
+      "HighIntensityIntervalTraining": {
+        "2026-05-11": {
+          "activity_ids": [
+            "18460127949"
+          ],
+          "count": 1,
+          "distance": 0.0,
+          "elevation_gain": 0.0,
+          "moving_time": 2918.0
+        }
+      },
       "Hike": {
         "2026-03-21": {
           "activity_ids": [
@@ -35453,6 +35464,15 @@
           "distance": 1850.0,
           "elevation_gain": 0.0,
           "moving_time": 1906.0
+        },
+        "2026-05-11": {
+          "activity_ids": [
+            "18463217531"
+          ],
+          "count": 1,
+          "distance": 1650.0,
+          "elevation_gain": 0.0,
+          "moving_time": 2395.0
         }
       },
       "TrailRun": {
