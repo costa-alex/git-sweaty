@@ -37742,6 +37742,15 @@
       "type": "Swim",
       "url": "https://www.strava.com/activities/18463217531",
       "year": 2026
+    },
+    {
+      "date": "2026-05-12",
+      "hour": 6,
+      "name": "TrainingPeaks Virtual - Workout: Red Kaweah -2",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/18472994091",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -73779,6 +73788,15 @@
           "distance": 45307.5,
           "elevation_gain": 0.0,
           "moving_time": 7224.0
+        },
+        "2026-05-12": {
+          "activity_ids": [
+            "18472994091"
+          ],
+          "count": 1,
+          "distance": 16923.2,
+          "elevation_gain": 0.0,
+          "moving_time": 3621.0
         }
       },
       "Walk": {
@@ -73976,7 +73994,7 @@
       }
     }
   },
-  "generated_at": "2026-05-11T17:28:03.609657+00:00",
+  "generated_at": "2026-05-12T17:17:53.362014+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
