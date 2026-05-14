@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-13T17:20:25.029561+00:00",
+  "generated_at": "2026-05-14T17:04:45.078476+00:00",
   "years": {
     "2012": {
       "Hike": {
@@ -34876,6 +34876,15 @@
           "distance": 21447.8,
           "elevation_gain": 302.0,
           "moving_time": 3968.0
+        },
+        "2026-05-14": {
+          "activity_ids": [
+            "18500542541"
+          ],
+          "count": 1,
+          "distance": 10937.3,
+          "elevation_gain": 151.0,
+          "moving_time": 2122.0
         }
       },
       "GravelRide": {
@@ -36062,6 +36071,15 @@
           "distance": 16923.2,
           "elevation_gain": 0.0,
           "moving_time": 3621.0
+        },
+        "2026-05-14": {
+          "activity_ids": [
+            "18499780560"
+          ],
+          "count": 1,
+          "distance": 32962.0,
+          "elevation_gain": 0.0,
+          "moving_time": 3625.0
         }
       },
       "Walk": {

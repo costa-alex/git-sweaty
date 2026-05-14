@@ -56580,5 +56580,31 @@
     "start_date_local": "2026-05-13T12:45:09Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-05-14",
+    "distance": 32962.0,
+    "elevation_gain": 0.0,
+    "id": "18499780560",
+    "moving_time": 3625.0,
+    "name": "TrainingPeaks Virtual - Workout: Troll",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-05-14T06:37:58Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-05-14",
+    "distance": 10937.3,
+    "elevation_gain": 151.0,
+    "id": "18500542541",
+    "moving_time": 2122.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-05-14T08:48:56Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
