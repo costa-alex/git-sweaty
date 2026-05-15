@@ -37787,6 +37787,24 @@
       "type": "EBikeRide",
       "url": "https://www.strava.com/activities/18500542541",
       "year": 2026
+    },
+    {
+      "date": "2026-05-14",
+      "hour": 17,
+      "name": "Commute \ud83c\udfe0",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/18507023730",
+      "year": 2026
+    },
+    {
+      "date": "2026-05-15",
+      "hour": 13,
+      "name": "Commute \ud83d\udcbb",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/18517625655",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72668,12 +72686,22 @@
         },
         "2026-05-14": {
           "activity_ids": [
-            "18500542541"
+            "18500542541",
+            "18507023730"
+          ],
+          "count": 2,
+          "distance": 21529.6,
+          "elevation_gain": 289.0,
+          "moving_time": 4315.0
+        },
+        "2026-05-15": {
+          "activity_ids": [
+            "18517625655"
           ],
           "count": 1,
-          "distance": 10937.3,
+          "distance": 10916.8,
           "elevation_gain": 151.0,
-          "moving_time": 2122.0
+          "moving_time": 2182.0
         }
       },
       "GravelRide": {
@@ -74066,7 +74094,7 @@
       }
     }
   },
-  "generated_at": "2026-05-14T17:04:45.129356+00:00",
+  "generated_at": "2026-05-15T16:54:27.280851+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
