@@ -56632,5 +56632,31 @@
     "start_date_local": "2026-05-15T13:18:38Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-05-15",
+    "distance": 10552.8,
+    "elevation_gain": 154.0,
+    "id": "18519301447",
+    "moving_time": 2129.0,
+    "name": "Commute \ud83c\udfe0",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-05-15T17:34:02Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-05-16",
+    "distance": 12748.0,
+    "elevation_gain": 193.0,
+    "id": "18528601609",
+    "moving_time": 5040.0,
+    "name": "Limpar o Jamor \ud83e\uddd1\u200d\ud83e\uddd1\u200d\ud83e\uddd2\u200d\ud83e\uddd2",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-05-16T09:29:57Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
