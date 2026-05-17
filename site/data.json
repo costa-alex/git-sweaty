@@ -37823,6 +37823,24 @@
       "type": "EBikeRide",
       "url": "https://www.strava.com/activities/18528601609",
       "year": 2026
+    },
+    {
+      "date": "2026-05-17",
+      "hour": 10,
+      "name": "Nota mental: repor o material depois de usar \ud83e\udd26\u200d\u2642\ufe0f",
+      "subtype": "Ride",
+      "type": "Ride",
+      "url": "https://www.strava.com/activities/18539759882",
+      "year": 2026
+    },
+    {
+      "date": "2026-05-17",
+      "hour": 11,
+      "name": "TrainingPeaks Virtual - Workout: Heseman",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/18542692571",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72837,6 +72855,15 @@
           "distance": 110671.0,
           "elevation_gain": 1604.0,
           "moving_time": 18004.0
+        },
+        "2026-05-17": {
+          "activity_ids": [
+            "18539759882"
+          ],
+          "count": 1,
+          "distance": 7270.3,
+          "elevation_gain": 36.0,
+          "moving_time": 1309.0
         }
       },
       "Run": {
@@ -73925,6 +73952,15 @@
           "distance": 32962.0,
           "elevation_gain": 0.0,
           "moving_time": 3625.0
+        },
+        "2026-05-17": {
+          "activity_ids": [
+            "18542692571"
+          ],
+          "count": 1,
+          "distance": 28285.6,
+          "elevation_gain": 0.0,
+          "moving_time": 7349.0
         }
       },
       "Walk": {
@@ -74122,7 +74158,7 @@
       }
     }
   },
-  "generated_at": "2026-05-16T16:01:47.828178+00:00",
+  "generated_at": "2026-05-17T16:02:29.204864+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",

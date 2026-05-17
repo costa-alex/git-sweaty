@@ -56658,5 +56658,31 @@
     "start_date_local": "2026-05-16T09:29:57Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-05-17",
+    "distance": 7270.3,
+    "elevation_gain": 36.0,
+    "id": "18539759882",
+    "moving_time": 1309.0,
+    "name": "Nota mental: repor o material depois de usar \ud83e\udd26\u200d\u2642\ufe0f",
+    "raw_activity_type": "Ride",
+    "raw_type": "Ride",
+    "start_date_local": "2026-05-17T10:26:01Z",
+    "type": "Ride",
+    "year": 2026
+  },
+  {
+    "date": "2026-05-17",
+    "distance": 28285.6,
+    "elevation_gain": 0.0,
+    "id": "18542692571",
+    "moving_time": 7349.0,
+    "name": "TrainingPeaks Virtual - Workout: Heseman",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-05-17T11:50:29Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
