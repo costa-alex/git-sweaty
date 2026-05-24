@@ -56775,5 +56775,44 @@
     "start_date_local": "2026-05-20T12:45:37Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-05-24",
+    "distance": 5821.0,
+    "elevation_gain": 21.0,
+    "id": "18629327488",
+    "moving_time": 1969.0,
+    "name": "Athens \ud83c\uddec\ud83c\uddf7",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-05-24T06:54:16Z",
+    "type": "Run",
+    "year": 2026
+  },
+  {
+    "date": "2026-05-24",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "18629461194",
+    "moving_time": 1880.0,
+    "name": "Treino com pesos matinal",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-05-24T07:37:20Z",
+    "type": "WeightTraining",
+    "year": 2026
+  },
+  {
+    "date": "2026-05-24",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "18629505295",
+    "moving_time": 604.0,
+    "name": "Atividade de remo matinal",
+    "raw_activity_type": "Rowing",
+    "raw_type": "Rowing",
+    "start_date_local": "2026-05-24T08:10:19Z",
+    "type": "Rowing",
+    "year": 2026
   }
 ]
