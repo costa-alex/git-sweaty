@@ -56905,5 +56905,44 @@
     "start_date_local": "2026-05-27T12:46:30Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-05-27",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "18678551639",
+    "moving_time": 1559.0,
+    "name": "Evening Weight Training",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-05-27T18:39:06Z",
+    "type": "WeightTraining",
+    "year": 2026
+  },
+  {
+    "date": "2026-05-28",
+    "distance": 33272.0,
+    "elevation_gain": 0.0,
+    "id": "18685099740",
+    "moving_time": 3606.0,
+    "name": "TrainingPeaks Virtual - Workout: Chilly",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-05-28T06:40:36Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-05-28",
+    "distance": 10912.7,
+    "elevation_gain": 170.0,
+    "id": "18685881954",
+    "moving_time": 2065.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-05-28T08:45:40Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
