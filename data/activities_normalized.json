@@ -56957,5 +56957,18 @@
     "start_date_local": "2026-05-28T17:58:08Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-05-30",
+    "distance": 56965.7,
+    "elevation_gain": 585.0,
+    "id": "18718257533",
+    "moving_time": 8068.0,
+    "name": "NBD",
+    "raw_activity_type": "Ride",
+    "raw_type": "Ride",
+    "start_date_local": "2026-05-30T15:15:44Z",
+    "type": "Ride",
+    "year": 2026
   }
 ]

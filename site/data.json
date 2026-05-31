@@ -38030,6 +38030,15 @@
       "type": "EBikeRide",
       "url": "https://www.strava.com/activities/18692932648",
       "year": 2026
+    },
+    {
+      "date": "2026-05-30",
+      "hour": 15,
+      "name": "NBD",
+      "subtype": "Ride",
+      "type": "Ride",
+      "url": "https://www.strava.com/activities/18718257533",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -73092,6 +73101,15 @@
           "distance": 7270.3,
           "elevation_gain": 36.0,
           "moving_time": 1309.0
+        },
+        "2026-05-30": {
+          "activity_ids": [
+            "18718257533"
+          ],
+          "count": 1,
+          "distance": 56965.7,
+          "elevation_gain": 585.0,
+          "moving_time": 8068.0
         }
       },
       "Rowing": {
@@ -74514,7 +74532,7 @@
       }
     }
   },
-  "generated_at": "2026-05-30T16:08:29.983842+00:00",
+  "generated_at": "2026-05-31T16:15:57.356836+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
