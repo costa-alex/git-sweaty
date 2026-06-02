@@ -56996,5 +56996,44 @@
     "start_date_local": "2026-06-01T12:44:58Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-06-02",
+    "distance": 35503.5,
+    "elevation_gain": 0.0,
+    "id": "18751608434",
+    "moving_time": 3624.0,
+    "name": "TrainingPeaks Virtual - Workout: Red Kaweah -2",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-06-02T06:41:04Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-06-02",
+    "distance": 11197.6,
+    "elevation_gain": 185.0,
+    "id": "18752367153",
+    "moving_time": 2337.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-06-02T08:39:05Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-06-02",
+    "distance": 10548.3,
+    "elevation_gain": 157.0,
+    "id": "18759235957",
+    "moving_time": 2105.0,
+    "name": "Commute \ud83c\udfe0",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-06-02T18:08:58Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]

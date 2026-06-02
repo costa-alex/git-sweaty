@@ -38057,6 +38057,33 @@
       "type": "Swim",
       "url": "https://www.strava.com/activities/18741176622",
       "year": 2026
+    },
+    {
+      "date": "2026-06-02",
+      "hour": 6,
+      "name": "TrainingPeaks Virtual - Workout: Red Kaweah -2",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/18751608434",
+      "year": 2026
+    },
+    {
+      "date": "2026-06-02",
+      "hour": 8,
+      "name": "Commute \ud83d\udcbb",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/18752367153",
+      "year": 2026
+    },
+    {
+      "date": "2026-06-02",
+      "hour": 18,
+      "name": "Commute \ud83c\udfe0",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/18759235957",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -73003,6 +73030,16 @@
           "distance": 21443.0,
           "elevation_gain": 315.0,
           "moving_time": 4205.0
+        },
+        "2026-06-02": {
+          "activity_ids": [
+            "18752367153",
+            "18759235957"
+          ],
+          "count": 2,
+          "distance": 21745.9,
+          "elevation_gain": 342.0,
+          "moving_time": 4442.0
         }
       },
       "GravelRide": {
@@ -74353,6 +74390,15 @@
           "distance": 33272.0,
           "elevation_gain": 0.0,
           "moving_time": 3606.0
+        },
+        "2026-06-02": {
+          "activity_ids": [
+            "18751608434"
+          ],
+          "count": 1,
+          "distance": 35503.5,
+          "elevation_gain": 0.0,
+          "moving_time": 3624.0
         }
       },
       "Walk": {
@@ -74568,7 +74614,7 @@
       }
     }
   },
-  "generated_at": "2026-06-01T19:57:02.719568+00:00",
+  "generated_at": "2026-06-02T18:46:17.110036+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
