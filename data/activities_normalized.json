@@ -57061,5 +57061,18 @@
     "start_date_local": "2026-06-03T12:45:26Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-06-04",
+    "distance": 70727.3,
+    "elevation_gain": 1006.0,
+    "id": "18782194083",
+    "moving_time": 9598.0,
+    "name": "J\u00e1 chega de vento? \ud83d\ude11\ud83d\udc4e",
+    "raw_activity_type": "Ride",
+    "raw_type": "Ride",
+    "start_date_local": "2026-06-04T09:38:20Z",
+    "type": "Ride",
+    "year": 2026
   }
 ]

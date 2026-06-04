@@ -38102,6 +38102,15 @@
       "type": "Swim",
       "url": "https://www.strava.com/activities/18769323283",
       "year": 2026
+    },
+    {
+      "date": "2026-06-04",
+      "hour": 9,
+      "name": "J\u00e1 chega de vento? \ud83d\ude11\ud83d\udc4e",
+      "subtype": "Ride",
+      "type": "Ride",
+      "url": "https://www.strava.com/activities/18782194083",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -73183,6 +73192,15 @@
           "distance": 56965.7,
           "elevation_gain": 585.0,
           "moving_time": 8068.0
+        },
+        "2026-06-04": {
+          "activity_ids": [
+            "18782194083"
+          ],
+          "count": 1,
+          "distance": 70727.3,
+          "elevation_gain": 1006.0,
+          "moving_time": 9598.0
         }
       },
       "Rowing": {
@@ -74650,7 +74668,7 @@
       }
     }
   },
-  "generated_at": "2026-06-03T18:50:38.715427+00:00",
+  "generated_at": "2026-06-04T17:47:51.632807+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
