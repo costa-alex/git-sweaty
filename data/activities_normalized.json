@@ -57074,5 +57074,18 @@
     "start_date_local": "2026-06-04T09:38:20Z",
     "type": "Ride",
     "year": 2026
+  },
+  {
+    "date": "2026-06-05",
+    "distance": 26720.0,
+    "elevation_gain": 742.0,
+    "id": "18796345815",
+    "moving_time": 13722.0,
+    "name": "De volta aos trilhos \u26f0\ufe0f",
+    "raw_activity_type": "Run",
+    "raw_type": "TrailRun",
+    "start_date_local": "2026-06-05T09:46:51Z",
+    "type": "TrailRun",
+    "year": 2026
   }
 ]
