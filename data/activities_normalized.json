@@ -57087,5 +57087,44 @@
     "start_date_local": "2026-06-05T09:46:51Z",
     "type": "TrailRun",
     "year": 2026
+  },
+  {
+    "date": "2026-06-06",
+    "distance": 17242.9,
+    "elevation_gain": 0.0,
+    "id": "18807271298",
+    "moving_time": 1818.0,
+    "name": "TrainingPeaks Virtual - Workout: Manly",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-06-06T10:33:25Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-06-06",
+    "distance": 6150.4,
+    "elevation_gain": 93.0,
+    "id": "18812063163",
+    "moving_time": 2341.0,
+    "name": "Afternoon Run",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-06-06T15:56:19Z",
+    "type": "Run",
+    "year": 2026
+  },
+  {
+    "date": "2026-06-07",
+    "distance": 70109.4,
+    "elevation_gain": 586.0,
+    "id": "18822282105",
+    "moving_time": 9446.0,
+    "name": "Volta de bicicleta matinal",
+    "raw_activity_type": "Ride",
+    "raw_type": "Ride",
+    "start_date_local": "2026-06-07T09:28:44Z",
+    "type": "Ride",
+    "year": 2026
   }
 ]
