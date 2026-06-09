@@ -38156,6 +38156,15 @@
       "type": "Swim",
       "url": "https://www.strava.com/activities/18836062178",
       "year": 2026
+    },
+    {
+      "date": "2026-06-09",
+      "hour": 12,
+      "name": "TrainingPeaks Virtual - Workout: Haeckel",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/18849932802",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -74534,6 +74543,15 @@
           "distance": 17242.9,
           "elevation_gain": 0.0,
           "moving_time": 1818.0
+        },
+        "2026-06-09": {
+          "activity_ids": [
+            "18849932802"
+          ],
+          "count": 1,
+          "distance": 62784.1,
+          "elevation_gain": 0.0,
+          "moving_time": 3788.0
         }
       },
       "Walk": {
@@ -74758,7 +74776,7 @@
       }
     }
   },
-  "generated_at": "2026-06-08T18:01:10.691068+00:00",
+  "generated_at": "2026-06-09T17:26:44.161801+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
