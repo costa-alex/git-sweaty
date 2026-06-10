@@ -57152,5 +57152,31 @@
     "start_date_local": "2026-06-09T12:27:52Z",
     "type": "VirtualRide",
     "year": 2026
+  },
+  {
+    "date": "2026-06-10",
+    "distance": 20782.0,
+    "elevation_gain": 0.0,
+    "id": "18862013746",
+    "moving_time": 2795.0,
+    "name": "TrainingPeaks Virtual - N\u00fcrburgring Nordschleife, Germany",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-06-10T09:50:14Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-06-10",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "18862439713",
+    "moving_time": 1229.0,
+    "name": "Morning Weight Training",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-06-10T10:58:01Z",
+    "type": "WeightTraining",
+    "year": 2026
   }
 ]
