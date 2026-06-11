@@ -57178,5 +57178,31 @@
     "start_date_local": "2026-06-10T10:58:01Z",
     "type": "WeightTraining",
     "year": 2026
+  },
+  {
+    "date": "2026-06-11",
+    "distance": 34255.6,
+    "elevation_gain": 0.0,
+    "id": "18877361785",
+    "moving_time": 3620.0,
+    "name": "TrainingPeaks Virtual - Workout: Raymond -1",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-06-11T12:22:48Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-06-11",
+    "distance": 14127.3,
+    "elevation_gain": 0.0,
+    "id": "18880996572",
+    "moving_time": 1382.0,
+    "name": "TrainingPeaks Virtual - Event: Coastal Loop Time Challenge - TPV Career Mode",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-06-11T18:13:20Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
