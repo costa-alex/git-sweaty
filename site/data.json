@@ -38201,6 +38201,24 @@
       "type": "VirtualRide",
       "url": "https://www.strava.com/activities/18880996572",
       "year": 2026
+    },
+    {
+      "date": "2026-06-12",
+      "hour": 12,
+      "name": "Nata\u00e7\u00e3o \ud83c\udfca\u200d\u2642\ufe0f",
+      "subtype": "Swim",
+      "type": "Swim",
+      "url": "https://www.strava.com/activities/18890122226",
+      "year": 2026
+    },
+    {
+      "date": "2026-06-12",
+      "hour": 18,
+      "name": "Commute \ud83d\udeb8",
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "url": "https://www.strava.com/activities/18893408714",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -73157,6 +73175,15 @@
           "distance": 21745.9,
           "elevation_gain": 342.0,
           "moving_time": 4442.0
+        },
+        "2026-06-12": {
+          "activity_ids": [
+            "18893408714"
+          ],
+          "count": 1,
+          "distance": 3816.2,
+          "elevation_gain": 78.0,
+          "moving_time": 844.0
         }
       },
       "GravelRide": {
@@ -73927,6 +73954,15 @@
           "distance": 1850.0,
           "elevation_gain": 0.0,
           "moving_time": 2260.0
+        },
+        "2026-06-12": {
+          "activity_ids": [
+            "18890122226"
+          ],
+          "count": 1,
+          "distance": 1900.0,
+          "elevation_gain": 0.0,
+          "moving_time": 2356.0
         }
       },
       "TrailRun": {
@@ -74840,7 +74876,7 @@
       }
     }
   },
-  "generated_at": "2026-06-11T18:20:28.150783+00:00",
+  "generated_at": "2026-06-12T17:39:54.585957+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
