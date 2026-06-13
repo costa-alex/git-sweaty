@@ -57230,5 +57230,44 @@
     "start_date_local": "2026-06-12T18:10:24Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-06-13",
+    "distance": 60763.2,
+    "elevation_gain": 392.0,
+    "id": "18899578171",
+    "moving_time": 7033.0,
+    "name": "Braaaapp \ud83d\udca8\ud83d\udca8",
+    "raw_activity_type": "Ride",
+    "raw_type": "Ride",
+    "start_date_local": "2026-06-13T07:24:15Z",
+    "type": "Ride",
+    "year": 2026
+  },
+  {
+    "date": "2026-06-13",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "18900796491",
+    "moving_time": 2318.0,
+    "name": "Morning Weight Training",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-06-13T10:19:56Z",
+    "type": "WeightTraining",
+    "year": 2026
+  },
+  {
+    "date": "2026-06-13",
+    "distance": 5094.6,
+    "elevation_gain": 111.0,
+    "id": "18902200006",
+    "moving_time": 927.0,
+    "name": "Commute \ud83d\uded2",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-06-13T11:55:30Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
