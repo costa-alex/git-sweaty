@@ -38264,6 +38264,24 @@
       "type": "Swim",
       "url": "https://www.strava.com/activities/18928547930",
       "year": 2026
+    },
+    {
+      "date": "2026-06-16",
+      "hour": 6,
+      "name": "Threshold",
+      "subtype": "Run",
+      "type": "Run",
+      "url": "https://www.strava.com/activities/18938992290",
+      "year": 2026
+    },
+    {
+      "date": "2026-06-16",
+      "hour": 12,
+      "name": "TrainingPeaks Virtual - Workout: Pioneer -3",
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "url": "https://www.strava.com/activities/18942435674",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -73655,6 +73673,15 @@
           "distance": 12030.1,
           "elevation_gain": 200.0,
           "moving_time": 4415.0
+        },
+        "2026-06-16": {
+          "activity_ids": [
+            "18938992290"
+          ],
+          "count": 1,
+          "distance": 8543.4,
+          "elevation_gain": 14.0,
+          "moving_time": 2704.0
         }
       },
       "Swim": {
@@ -74724,6 +74751,15 @@
           "distance": 48382.899999999994,
           "elevation_gain": 0.0,
           "moving_time": 5002.0
+        },
+        "2026-06-16": {
+          "activity_ids": [
+            "18942435674"
+          ],
+          "count": 1,
+          "distance": 34199.5,
+          "elevation_gain": 0.0,
+          "moving_time": 3620.0
         }
       },
       "Walk": {
@@ -74966,7 +75002,7 @@
       }
     }
   },
-  "generated_at": "2026-06-15T19:06:21.281043+00:00",
+  "generated_at": "2026-06-16T18:56:16.367802+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
