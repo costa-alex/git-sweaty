@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-16T18:56:16.315619+00:00",
+  "generated_at": "2026-06-18T08:59:48.862228+00:00",
   "years": {
     "2012": {
       "Hike": {
@@ -4407,6 +4407,17 @@
       }
     },
     "2016": {
+      "MountainBikeRide": {
+        "2016-05-14": {
+          "activity_ids": [
+            "577643947"
+          ],
+          "count": 1,
+          "distance": 30649.6,
+          "elevation_gain": 520.0,
+          "moving_time": 13300.0
+        }
+      },
       "Ride": {
         "2016-01-12": {
           "activity_ids": [
@@ -4599,15 +4610,6 @@
           "distance": 21271.4,
           "elevation_gain": 503.0,
           "moving_time": 6654.0
-        },
-        "2016-05-14": {
-          "activity_ids": [
-            "577643947"
-          ],
-          "count": 1,
-          "distance": 30649.6,
-          "elevation_gain": 520.0,
-          "moving_time": 13300.0
         },
         "2016-05-15": {
           "activity_ids": [
@@ -35398,6 +35400,15 @@
           "distance": 8543.4,
           "elevation_gain": 14.0,
           "moving_time": 2704.0
+        },
+        "2026-06-18": {
+          "activity_ids": [
+            "18967585086"
+          ],
+          "count": 1,
+          "distance": 8296.9,
+          "elevation_gain": 33.0,
+          "moving_time": 2788.0
         }
       },
       "Swim": {
@@ -35787,6 +35798,15 @@
           "distance": 1600.0,
           "elevation_gain": 0.0,
           "moving_time": 2305.0
+        },
+        "2026-06-17": {
+          "activity_ids": [
+            "18957210497"
+          ],
+          "count": 1,
+          "distance": 1450.0,
+          "elevation_gain": 0.0,
+          "moving_time": 2008.0
         }
       },
       "TrailRun": {
