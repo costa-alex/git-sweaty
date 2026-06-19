@@ -70105,7 +70105,7 @@
       }
     }
   },
-  "generated_at": "2026-06-19T10:06:32.584243+00:00",
+  "generated_at": "2026-06-19T10:50:44.844726+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
@@ -70204,10 +70204,10 @@
     "Yoga"
   ],
   "units": {
-    "distance": "mi",
-    "elevation": "ft"
+    "distance": "km",
+    "elevation": "m"
   },
-  "week_start": "sunday",
+  "week_start": "monday",
   "years": [
     2012,
     2013,
