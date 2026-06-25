@@ -33382,6 +33382,13 @@
       "subtype": "Swim",
       "type": "Swim",
       "year": 2026
+    },
+    {
+      "date": "2026-06-25",
+      "hour": 6,
+      "subtype": "Ride",
+      "type": "Ride",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -68510,6 +68517,15 @@
           "distance": 60763.2,
           "elevation_gain": 392.0,
           "moving_time": 7033.0
+        },
+        "2026-06-25": {
+          "activity_ids": [
+            "19058265384"
+          ],
+          "count": 1,
+          "distance": 32444.1,
+          "elevation_gain": 0.0,
+          "moving_time": 3600.0
         }
       },
       "Rowing": {
@@ -70185,7 +70201,7 @@
       }
     }
   },
-  "generated_at": "2026-06-24T17:08:58.477028+00:00",
+  "generated_at": "2026-06-25T17:17:59.623786+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",

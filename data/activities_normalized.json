@@ -61995,5 +61995,18 @@
     "start_date_local": "2026-06-24T12:45:16Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-06-25",
+    "distance": 32444.1,
+    "elevation_gain": 0.0,
+    "id": "19058265384",
+    "moving_time": 3600.0,
+    "name": "Tray Mountain -2",
+    "raw_activity_type": "Ride",
+    "raw_type": "Ride",
+    "start_date_local": "2026-06-25T06:49:56Z",
+    "type": "Ride",
+    "year": 2026
   }
 ]
