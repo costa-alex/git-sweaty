@@ -62034,5 +62034,31 @@
     "start_date_local": "2026-06-26T12:46:12Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-06-27",
+    "distance": 64053.1,
+    "elevation_gain": 0.0,
+    "id": "19086171326",
+    "moving_time": 7320.0,
+    "name": "Moose's Tooth",
+    "raw_activity_type": "Ride",
+    "raw_type": "Ride",
+    "start_date_local": "2026-06-27T12:45:49Z",
+    "type": "Ride",
+    "year": 2026
+  },
+  {
+    "date": "2026-06-27",
+    "distance": 26939.5,
+    "elevation_gain": 0.0,
+    "id": "19086187221",
+    "moving_time": 7440.0,
+    "name": "TrainingPeaks Virtual - Workout: Moose's Tooth",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-06-27T12:43:59Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
