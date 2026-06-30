@@ -62086,5 +62086,18 @@
     "start_date_local": "2026-06-29T12:45:23Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-06-30",
+    "distance": 3416.6,
+    "elevation_gain": 73.0,
+    "id": "19122849908",
+    "moving_time": 616.0,
+    "name": "Commute \ud83e\udea5\ud83e\uddb7",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-06-30T12:23:02Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
