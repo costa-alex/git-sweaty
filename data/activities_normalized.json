@@ -62177,5 +62177,31 @@
     "start_date_local": "2026-07-03T17:22:33Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-07-06",
+    "distance": 10912.2,
+    "elevation_gain": 158.0,
+    "id": "19197791043",
+    "moving_time": 2133.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-07-06T08:15:52Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-07-06",
+    "distance": 10527.3,
+    "elevation_gain": 134.0,
+    "id": "19203664936",
+    "moving_time": 2081.0,
+    "name": "Commute \ud83c\udfe0",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-07-06T17:38:42Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
