@@ -33494,6 +33494,13 @@
       "subtype": "EBikeRide",
       "type": "EBikeRide",
       "year": 2026
+    },
+    {
+      "date": "2026-07-09",
+      "hour": 8,
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -68508,6 +68515,15 @@
           "distance": 21439.5,
           "elevation_gain": 292.0,
           "moving_time": 4214.0
+        },
+        "2026-07-09": {
+          "activity_ids": [
+            "19239266708"
+          ],
+          "count": 1,
+          "distance": 11313.3,
+          "elevation_gain": 180.0,
+          "moving_time": 2381.0
         }
       },
       "GravelRide": {
@@ -70425,7 +70441,7 @@
       }
     }
   },
-  "generated_at": "2026-07-08T16:43:59.039413+00:00",
+  "generated_at": "2026-07-09T17:24:02.556173+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
