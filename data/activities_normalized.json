@@ -62242,5 +62242,18 @@
     "start_date_local": "2026-07-10T08:35:18Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-07-11",
+    "distance": 8363.4,
+    "elevation_gain": 164.0,
+    "id": "19268724580",
+    "moving_time": 1783.0,
+    "name": "Commute \ud83c\udf82",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-07-11T10:12:19Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
