@@ -33522,6 +33522,27 @@
       "subtype": "EBikeRide",
       "type": "EBikeRide",
       "year": 2026
+    },
+    {
+      "date": "2026-07-13",
+      "hour": 6,
+      "subtype": "Ride",
+      "type": "Ride",
+      "year": 2026
+    },
+    {
+      "date": "2026-07-13",
+      "hour": 8,
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "year": 2026
+    },
+    {
+      "date": "2026-07-13",
+      "hour": 12,
+      "subtype": "Swim",
+      "type": "Swim",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -68564,6 +68585,15 @@
           "distance": 8363.4,
           "elevation_gain": 164.0,
           "moving_time": 1783.0
+        },
+        "2026-07-13": {
+          "activity_ids": [
+            "19291368578"
+          ],
+          "count": 1,
+          "distance": 4903.3,
+          "elevation_gain": 78.0,
+          "moving_time": 1465.0
         }
       },
       "GravelRide": {
@@ -68734,6 +68764,15 @@
           "distance": 64053.1,
           "elevation_gain": 0.0,
           "moving_time": 7320.0
+        },
+        "2026-07-13": {
+          "activity_ids": [
+            "19290691403"
+          ],
+          "count": 1,
+          "distance": 35506.7,
+          "elevation_gain": 218.0,
+          "moving_time": 4252.0
         }
       },
       "Rowing": {
@@ -69487,6 +69526,15 @@
           "distance": 1550.0,
           "elevation_gain": 0.0,
           "moving_time": 2178.0
+        },
+        "2026-07-13": {
+          "activity_ids": [
+            "19294028701"
+          ],
+          "count": 1,
+          "distance": 1550.0,
+          "elevation_gain": 0.0,
+          "moving_time": 2229.0
         }
       },
       "TrailRun": {
@@ -70481,7 +70529,7 @@
       }
     }
   },
-  "generated_at": "2026-07-12T16:03:17.192537+00:00",
+  "generated_at": "2026-07-13T17:18:11.578250+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
