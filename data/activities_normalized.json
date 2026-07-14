@@ -62294,5 +62294,31 @@
     "start_date_local": "2026-07-13T12:45:07Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-07-14",
+    "distance": 34336.3,
+    "elevation_gain": 0.0,
+    "id": "19304531986",
+    "moving_time": 3630.0,
+    "name": "TrainingPeaks Virtual - Workout: Pioneer -3",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-07-14T06:38:06Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-07-14",
+    "distance": 11268.8,
+    "elevation_gain": 170.0,
+    "id": "19305478762",
+    "moving_time": 2258.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-07-14T08:42:23Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
