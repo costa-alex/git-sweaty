@@ -62359,5 +62359,31 @@
     "start_date_local": "2026-07-15T12:45:40Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-07-16",
+    "distance": 34141.3,
+    "elevation_gain": 0.0,
+    "id": "19332551938",
+    "moving_time": 3621.0,
+    "name": "TrainingPeaks Virtual - Workout: Beech",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-07-16T06:34:33Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-07-16",
+    "distance": 10875.0,
+    "elevation_gain": 154.0,
+    "id": "19333397583",
+    "moving_time": 1895.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-07-16T08:55:15Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
