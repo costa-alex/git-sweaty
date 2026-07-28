@@ -33648,6 +33648,27 @@
       "subtype": "Swim",
       "type": "Swim",
       "year": 2026
+    },
+    {
+      "date": "2026-07-27",
+      "hour": 6,
+      "subtype": "Ride",
+      "type": "Ride",
+      "year": 2026
+    },
+    {
+      "date": "2026-07-27",
+      "hour": 12,
+      "subtype": "WeightTraining",
+      "type": "WeightTraining",
+      "year": 2026
+    },
+    {
+      "date": "2026-07-28",
+      "hour": 6,
+      "subtype": "Run",
+      "type": "Run",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -68907,6 +68928,15 @@
           "distance": 35506.7,
           "elevation_gain": 218.0,
           "moving_time": 4252.0
+        },
+        "2026-07-27": {
+          "activity_ids": [
+            "19481726712"
+          ],
+          "count": 1,
+          "distance": 51516.3,
+          "elevation_gain": 352.0,
+          "moving_time": 6156.0
         }
       },
       "Rowing": {
@@ -69262,6 +69292,15 @@
           "distance": 6682.6,
           "elevation_gain": 19.0,
           "moving_time": 2701.0
+        },
+        "2026-07-28": {
+          "activity_ids": [
+            "19495424762"
+          ],
+          "count": 1,
+          "distance": 8356.6,
+          "elevation_gain": 17.0,
+          "moving_time": 2694.0
         }
       },
       "Swim": {
@@ -70749,11 +70788,20 @@
           "distance": 0.0,
           "elevation_gain": 0.0,
           "moving_time": 2036.0
+        },
+        "2026-07-27": {
+          "activity_ids": [
+            "19484168872"
+          ],
+          "count": 1,
+          "distance": 0.0,
+          "elevation_gain": 0.0,
+          "moving_time": 1381.0
         }
       }
     }
   },
-  "generated_at": "2026-07-27T17:02:13.825476+00:00",
+  "generated_at": "2026-07-28T09:18:51.426266+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
