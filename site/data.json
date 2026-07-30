@@ -33669,6 +33669,41 @@
       "subtype": "Run",
       "type": "Run",
       "year": 2026
+    },
+    {
+      "date": "2026-07-28",
+      "hour": 12,
+      "subtype": "WeightTraining",
+      "type": "WeightTraining",
+      "year": 2026
+    },
+    {
+      "date": "2026-07-29",
+      "hour": 6,
+      "subtype": "Ride",
+      "type": "Ride",
+      "year": 2026
+    },
+    {
+      "date": "2026-07-29",
+      "hour": 12,
+      "subtype": "WeightTraining",
+      "type": "WeightTraining",
+      "year": 2026
+    },
+    {
+      "date": "2026-07-30",
+      "hour": 8,
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "year": 2026
+    },
+    {
+      "date": "2026-07-30",
+      "hour": 12,
+      "subtype": "WeightTraining",
+      "type": "WeightTraining",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -68749,6 +68784,15 @@
           "distance": 3062.8,
           "elevation_gain": 56.0,
           "moving_time": 567.0
+        },
+        "2026-07-30": {
+          "activity_ids": [
+            "19525520790"
+          ],
+          "count": 1,
+          "distance": 3854.0,
+          "elevation_gain": 82.0,
+          "moving_time": 922.0
         }
       },
       "GravelRide": {
@@ -68937,6 +68981,15 @@
           "distance": 51516.3,
           "elevation_gain": 352.0,
           "moving_time": 6156.0
+        },
+        "2026-07-29": {
+          "activity_ids": [
+            "19510986711"
+          ],
+          "count": 1,
+          "distance": 51524.8,
+          "elevation_gain": 306.0,
+          "moving_time": 6184.0
         }
       },
       "Rowing": {
@@ -70797,11 +70850,38 @@
           "distance": 0.0,
           "elevation_gain": 0.0,
           "moving_time": 1381.0
+        },
+        "2026-07-28": {
+          "activity_ids": [
+            "19498544792"
+          ],
+          "count": 1,
+          "distance": 0.0,
+          "elevation_gain": 0.0,
+          "moving_time": 1591.0
+        },
+        "2026-07-29": {
+          "activity_ids": [
+            "19513616198"
+          ],
+          "count": 1,
+          "distance": 0.0,
+          "elevation_gain": 0.0,
+          "moving_time": 1293.0
+        },
+        "2026-07-30": {
+          "activity_ids": [
+            "19527875091"
+          ],
+          "count": 1,
+          "distance": 0.0,
+          "elevation_gain": 0.0,
+          "moving_time": 1545.0
         }
       }
     }
   },
-  "generated_at": "2026-07-29T16:25:20.636323+00:00",
+  "generated_at": "2026-07-30T16:39:57.590867+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",

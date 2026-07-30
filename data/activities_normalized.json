@@ -62528,5 +62528,70 @@
     "start_date_local": "2026-07-28T06:53:09Z",
     "type": "Run",
     "year": 2026
+  },
+  {
+    "date": "2026-07-28",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "19498544792",
+    "moving_time": 1591.0,
+    "name": "Lunch Weight Training",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-07-28T12:06:59Z",
+    "type": "WeightTraining",
+    "year": 2026
+  },
+  {
+    "date": "2026-07-29",
+    "distance": 51524.8,
+    "elevation_gain": 306.0,
+    "id": "19510986711",
+    "moving_time": 6184.0,
+    "name": "Volta de bicicleta matinal",
+    "raw_activity_type": "Ride",
+    "raw_type": "Ride",
+    "start_date_local": "2026-07-29T06:44:40Z",
+    "type": "Ride",
+    "year": 2026
+  },
+  {
+    "date": "2026-07-29",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "19513616198",
+    "moving_time": 1293.0,
+    "name": "Lunch Weight Training",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-07-29T12:17:42Z",
+    "type": "WeightTraining",
+    "year": 2026
+  },
+  {
+    "date": "2026-07-30",
+    "distance": 3854.0,
+    "elevation_gain": 82.0,
+    "id": "19525520790",
+    "moving_time": 922.0,
+    "name": "Commute \ud83d\udeb8\ud83d\uded2",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-07-30T08:41:44Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-07-30",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "19527875091",
+    "moving_time": 1545.0,
+    "name": "Treino com pesos na hora de almo\u00e7o",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-07-30T12:26:16Z",
+    "type": "WeightTraining",
+    "year": 2026
   }
 ]
