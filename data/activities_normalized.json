@@ -62593,5 +62593,31 @@
     "start_date_local": "2026-07-30T12:26:16Z",
     "type": "WeightTraining",
     "year": 2026
+  },
+  {
+    "date": "2026-07-30",
+    "distance": 17576.9,
+    "elevation_gain": 0.0,
+    "id": "19532340261",
+    "moving_time": 1816.0,
+    "name": "TrainingPeaks Virtual - Workout: King",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-07-30T18:28:01Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-07-31",
+    "distance": 6522.2,
+    "elevation_gain": 11.0,
+    "id": "19538415599",
+    "moving_time": 2108.0,
+    "name": "35\u201d fartlek",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-07-31T06:52:29Z",
+    "type": "Run",
+    "year": 2026
   }
 ]
