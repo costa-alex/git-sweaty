@@ -33718,6 +33718,13 @@
       "subtype": "Run",
       "type": "Run",
       "year": 2026
+    },
+    {
+      "date": "2026-08-09",
+      "hour": 13,
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -70617,6 +70624,15 @@
           "distance": 17576.9,
           "elevation_gain": 0.0,
           "moving_time": 1816.0
+        },
+        "2026-08-09": {
+          "activity_ids": [
+            "19669536236"
+          ],
+          "count": 1,
+          "distance": 52075.9,
+          "elevation_gain": 0.0,
+          "moving_time": 5427.0
         }
       },
       "Walk": {
@@ -70913,7 +70929,7 @@
       }
     }
   },
-  "generated_at": "2026-08-08T15:35:13.946976+00:00",
+  "generated_at": "2026-08-09T15:37:05.553173+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
