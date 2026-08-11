@@ -33725,6 +33725,20 @@
       "subtype": "VirtualRide",
       "type": "VirtualRide",
       "year": 2026
+    },
+    {
+      "date": "2026-08-11",
+      "hour": 6,
+      "subtype": "Ride",
+      "type": "Ride",
+      "year": 2026
+    },
+    {
+      "date": "2026-08-11",
+      "hour": 9,
+      "subtype": "EBikeRide",
+      "type": "EBikeRide",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -68814,6 +68828,15 @@
           "distance": 3854.0,
           "elevation_gain": 82.0,
           "moving_time": 922.0
+        },
+        "2026-08-11": {
+          "activity_ids": [
+            "19692656925"
+          ],
+          "count": 1,
+          "distance": 11200.3,
+          "elevation_gain": 184.0,
+          "moving_time": 2064.0
         }
       },
       "GravelRide": {
@@ -69011,6 +69034,15 @@
           "distance": 51524.8,
           "elevation_gain": 306.0,
           "moving_time": 6184.0
+        },
+        "2026-08-11": {
+          "activity_ids": [
+            "19691760116"
+          ],
+          "count": 1,
+          "distance": 46087.6,
+          "elevation_gain": 278.0,
+          "moving_time": 5803.0
         }
       },
       "Rowing": {
@@ -70929,7 +70961,7 @@
       }
     }
   },
-  "generated_at": "2026-08-10T16:03:35.752180+00:00",
+  "generated_at": "2026-08-11T16:03:40.982947+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
