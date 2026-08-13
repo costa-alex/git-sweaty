@@ -62684,5 +62684,18 @@
     "start_date_local": "2026-08-12T07:00:06Z",
     "type": "Run",
     "year": 2026
+  },
+  {
+    "date": "2026-08-13",
+    "distance": 61974.2,
+    "elevation_gain": 418.0,
+    "id": "19721616440",
+    "moving_time": 7818.0,
+    "name": "TBW",
+    "raw_activity_type": "Ride",
+    "raw_type": "Ride",
+    "start_date_local": "2026-08-13T06:54:01Z",
+    "type": "Ride",
+    "year": 2026
   }
 ]
