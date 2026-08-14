@@ -62697,5 +62697,44 @@
     "start_date_local": "2026-08-13T06:54:01Z",
     "type": "Ride",
     "year": 2026
+  },
+  {
+    "date": "2026-08-14",
+    "distance": 5194.1,
+    "elevation_gain": 103.0,
+    "id": "19734548065",
+    "moving_time": 1812.0,
+    "name": "Morning Run",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-08-14T06:41:30Z",
+    "type": "Run",
+    "year": 2026
+  },
+  {
+    "date": "2026-08-14",
+    "distance": 10868.4,
+    "elevation_gain": 169.0,
+    "id": "19735481681",
+    "moving_time": 2077.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-08-14T08:24:38Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-08-14",
+    "distance": 12522.2,
+    "elevation_gain": 175.0,
+    "id": "19738510547",
+    "moving_time": 2673.0,
+    "name": "Commute \ud83c\udfe0",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-08-14T12:52:42Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
