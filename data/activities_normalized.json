@@ -62736,5 +62736,18 @@
     "start_date_local": "2026-08-14T12:52:42Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-08-15",
+    "distance": 27275.5,
+    "elevation_gain": 0.0,
+    "id": "19751164333",
+    "moving_time": 7333.0,
+    "name": "TrainingPeaks Virtual - Workout: Gibbs +1",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-08-15T10:32:19Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
