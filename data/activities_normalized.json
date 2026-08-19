@@ -62775,5 +62775,18 @@
     "start_date_local": "2026-08-16T16:39:07Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-08-19",
+    "distance": 6338.7,
+    "elevation_gain": 44.0,
+    "id": "19804219074",
+    "moving_time": 2182.0,
+    "name": "Wien #1 \ud83c\udde6\ud83c\uddf9",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-08-19T07:19:49Z",
+    "type": "Run",
+    "year": 2026
   }
 ]
