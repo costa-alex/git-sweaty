@@ -62788,5 +62788,18 @@
     "start_date_local": "2026-08-19T07:19:49Z",
     "type": "Run",
     "year": 2026
+  },
+  {
+    "date": "2026-08-21",
+    "distance": 5521.4,
+    "elevation_gain": 37.0,
+    "id": "19832683366",
+    "moving_time": 1765.0,
+    "name": "Wien #2 \ud83c\udde6\ud83c\uddf9",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-08-21T07:15:42Z",
+    "type": "Run",
+    "year": 2026
   }
 ]
