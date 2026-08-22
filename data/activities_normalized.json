@@ -62801,5 +62801,31 @@
     "start_date_local": "2026-08-21T07:15:42Z",
     "type": "Run",
     "year": 2026
+  },
+  {
+    "date": "2026-08-21",
+    "distance": 6297.3,
+    "elevation_gain": 38.0,
+    "id": "19839118457",
+    "moving_time": 7882.0,
+    "name": "Bratislava Old Town \ud83c\uddf8\ud83c\uddf0",
+    "raw_activity_type": "Walk",
+    "raw_type": "Walk",
+    "start_date_local": "2026-08-21T11:40:52Z",
+    "type": "Walk",
+    "year": 2026
+  },
+  {
+    "date": "2026-08-22",
+    "distance": 10021.3,
+    "elevation_gain": 90.0,
+    "id": "19845401190",
+    "moving_time": 3868.0,
+    "name": "Wien #3 \ud83c\udde6\ud83c\uddf9",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-08-22T07:02:34Z",
+    "type": "Run",
+    "year": 2026
   }
 ]
