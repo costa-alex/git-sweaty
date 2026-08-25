@@ -62827,5 +62827,31 @@
     "start_date_local": "2026-08-22T07:02:34Z",
     "type": "Run",
     "year": 2026
+  },
+  {
+    "date": "2026-08-24",
+    "distance": 34203.9,
+    "elevation_gain": 0.0,
+    "id": "19882585567",
+    "moving_time": 3646.0,
+    "name": "TrainingPeaks Virtual - Workout: Slide Mountain",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-08-24T18:54:04Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-08-25",
+    "distance": 35121.1,
+    "elevation_gain": 0.0,
+    "id": "19888750407",
+    "moving_time": 3734.0,
+    "name": "TrainingPeaks Virtual - Workout: Merced -2",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-08-25T07:22:43Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
