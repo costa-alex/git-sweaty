@@ -62866,5 +62866,18 @@
     "start_date_local": "2026-08-28T08:20:49Z",
     "type": "TrailRun",
     "year": 2026
+  },
+  {
+    "date": "2026-08-30",
+    "distance": 50782.2,
+    "elevation_gain": 0.0,
+    "id": "19961847650",
+    "moving_time": 5538.0,
+    "name": "TrainingPeaks Virtual - Workout: James",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-08-30T11:02:20Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
