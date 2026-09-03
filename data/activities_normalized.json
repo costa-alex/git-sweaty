@@ -62944,5 +62944,44 @@
     "start_date_local": "2026-09-02T13:06:01Z",
     "type": "WeightTraining",
     "year": 2026
+  },
+  {
+    "date": "2026-09-03",
+    "distance": 26537.6,
+    "elevation_gain": 0.0,
+    "id": "20015735894",
+    "moving_time": 3637.0,
+    "name": "TrainingPeaks Virtual - Workout: Eichorn +1",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-09-03T06:46:39Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-09-03",
+    "distance": 10904.5,
+    "elevation_gain": 159.0,
+    "id": "20016632003",
+    "moving_time": 1990.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-09-03T09:13:44Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-09-03",
+    "distance": 10658.4,
+    "elevation_gain": 113.0,
+    "id": "20023157335",
+    "moving_time": 2199.0,
+    "name": "Commute \ud83c\udfe0",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-09-03T18:00:13Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
