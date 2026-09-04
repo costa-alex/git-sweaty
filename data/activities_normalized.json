@@ -62983,5 +62983,18 @@
     "start_date_local": "2026-09-03T18:00:13Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-09-04",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "20036658672",
+    "moving_time": 2194.0,
+    "name": "Treino com pesos ao entardecer",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-09-04T18:21:43Z",
+    "type": "WeightTraining",
+    "year": 2026
   }
 ]
