@@ -62996,5 +62996,18 @@
     "start_date_local": "2026-09-04T18:21:43Z",
     "type": "WeightTraining",
     "year": 2026
+  },
+  {
+    "date": "2026-09-05",
+    "distance": 35148.3,
+    "elevation_gain": 0.0,
+    "id": "20044007831",
+    "moving_time": 5800.0,
+    "name": "TrainingPeaks Virtual - Workout: Wheel -2",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-09-05T09:17:56Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
