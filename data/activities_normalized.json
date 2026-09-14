@@ -63139,5 +63139,31 @@
     "start_date_local": "2026-09-12T09:18:58Z",
     "type": "Ride",
     "year": 2026
+  },
+  {
+    "date": "2026-09-13",
+    "distance": 26341.1,
+    "elevation_gain": 0.0,
+    "id": "20162775119",
+    "moving_time": 2766.0,
+    "name": "TrainingPeaks Virtual - Workout: Saddleback",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-09-13T19:04:22Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-09-14",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "20167172178",
+    "moving_time": 1530.0,
+    "name": "Morning Weight Training",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-09-14T08:19:53Z",
+    "type": "WeightTraining",
+    "year": 2026
   }
 ]
