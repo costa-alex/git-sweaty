@@ -63165,5 +63165,44 @@
     "start_date_local": "2026-09-14T08:19:53Z",
     "type": "WeightTraining",
     "year": 2026
+  },
+  {
+    "date": "2026-09-15",
+    "distance": 29674.0,
+    "elevation_gain": 0.0,
+    "id": "20180613354",
+    "moving_time": 3613.0,
+    "name": "TrainingPeaks Virtual - Workout: Shortoff",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-09-15T06:37:28Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-09-15",
+    "distance": 10918.3,
+    "elevation_gain": 163.0,
+    "id": "20181425288",
+    "moving_time": 2065.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-09-15T08:46:54Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-09-15",
+    "distance": 10570.5,
+    "elevation_gain": 155.0,
+    "id": "20187874609",
+    "moving_time": 2191.0,
+    "name": "Commute \ud83c\udfe0",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-09-15T17:19:03Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
