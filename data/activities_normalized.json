@@ -63217,5 +63217,44 @@
     "start_date_local": "2026-09-16T12:45:37Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-09-17",
+    "distance": 18137.2,
+    "elevation_gain": 0.0,
+    "id": "20209807720",
+    "moving_time": 3635.0,
+    "name": "TrainingPeaks Virtual - Workout: Galena -2",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-09-17T06:40:16Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-09-17",
+    "distance": 10914.5,
+    "elevation_gain": 154.0,
+    "id": "20210517540",
+    "moving_time": 2032.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-09-17T08:48:05Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-09-17",
+    "distance": 11396.8,
+    "elevation_gain": 176.0,
+    "id": "20216883376",
+    "moving_time": 2408.0,
+    "name": "Commute \ud83c\udfe0",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-09-17T17:49:09Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
