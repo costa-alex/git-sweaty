@@ -63282,5 +63282,57 @@
     "start_date_local": "2026-09-18T18:21:09Z",
     "type": "WeightTraining",
     "year": 2026
+  },
+  {
+    "date": "2026-09-19",
+    "distance": 37118.8,
+    "elevation_gain": 0.0,
+    "id": "20237062799",
+    "moving_time": 5412.0,
+    "name": "TrainingPeaks Virtual - Workout: Nellis Wash",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-09-19T08:41:27Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-09-19",
+    "distance": 3221.6,
+    "elevation_gain": 74.0,
+    "id": "20237949019",
+    "moving_time": 681.0,
+    "name": "Commute",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-09-19T11:02:30Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-09-19",
+    "distance": 5120.1,
+    "elevation_gain": 98.0,
+    "id": "20238826840",
+    "moving_time": 1869.0,
+    "name": "Lunch Run",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-09-19T11:40:00Z",
+    "type": "Run",
+    "year": 2026
+  },
+  {
+    "date": "2026-09-19",
+    "distance": 3253.6,
+    "elevation_gain": 45.0,
+    "id": "20239456923",
+    "moving_time": 620.0,
+    "name": "Commute",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-09-19T12:46:28Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
