@@ -63334,5 +63334,18 @@
     "start_date_local": "2026-09-19T12:46:28Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-09-20",
+    "distance": 11303.5,
+    "elevation_gain": 298.0,
+    "id": "20253397434",
+    "moving_time": 4992.0,
+    "name": "Macumba Trail Run",
+    "raw_activity_type": "Run",
+    "raw_type": "TrailRun",
+    "start_date_local": "2026-09-20T10:58:06Z",
+    "type": "TrailRun",
+    "year": 2026
   }
 ]
