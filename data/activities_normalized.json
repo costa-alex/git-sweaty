@@ -63360,5 +63360,44 @@
     "start_date_local": "2026-09-21T13:00:33Z",
     "type": "WeightTraining",
     "year": 2026
+  },
+  {
+    "date": "2026-09-22",
+    "distance": 29268.0,
+    "elevation_gain": 0.0,
+    "id": "20277539977",
+    "moving_time": 4592.0,
+    "name": "TrainingPeaks Virtual - Workout: Mills",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-09-22T06:43:33Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-09-22",
+    "distance": 10897.0,
+    "elevation_gain": 164.0,
+    "id": "20278372547",
+    "moving_time": 1978.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-09-22T09:17:14Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-09-22",
+    "distance": 11323.2,
+    "elevation_gain": 143.0,
+    "id": "20285353773",
+    "moving_time": 2280.0,
+    "name": "Commute \ud83c\udfe0",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-09-22T17:55:02Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
