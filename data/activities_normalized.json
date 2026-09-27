@@ -63477,5 +63477,18 @@
     "start_date_local": "2026-09-26T09:56:27Z",
     "type": "VirtualRide",
     "year": 2026
+  },
+  {
+    "date": "2026-09-27",
+    "distance": 10014.9,
+    "elevation_gain": 21.0,
+    "id": "20347879638",
+    "moving_time": 3128.0,
+    "name": "Bimbo Global Race",
+    "raw_activity_type": "Run",
+    "raw_type": "Run",
+    "start_date_local": "2026-09-27T09:47:03Z",
+    "type": "Run",
+    "year": 2026
   }
 ]
