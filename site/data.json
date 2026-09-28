@@ -34187,6 +34187,13 @@
       "subtype": "Run",
       "type": "Run",
       "year": 2026
+    },
+    {
+      "date": "2026-09-28",
+      "hour": 12,
+      "subtype": "Swim",
+      "type": "Swim",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -70586,6 +70593,15 @@
           "distance": 1300.0,
           "elevation_gain": 0.0,
           "moving_time": 2008.0
+        },
+        "2026-09-28": {
+          "activity_ids": [
+            "20363517022"
+          ],
+          "count": 1,
+          "distance": 2100.0,
+          "elevation_gain": 0.0,
+          "moving_time": 2552.0
         }
       },
       "TrailRun": {
@@ -71913,7 +71929,7 @@
       }
     }
   },
-  "generated_at": "2026-09-27T18:57:05.301076+00:00",
+  "generated_at": "2026-09-28T21:09:35.409191+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
