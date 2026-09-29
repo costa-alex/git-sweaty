@@ -63503,5 +63503,31 @@
     "start_date_local": "2026-09-28T12:45:11Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-09-29",
+    "distance": 33231.9,
+    "elevation_gain": 0.0,
+    "id": "20377412488",
+    "moving_time": 3617.0,
+    "name": "TrainingPeaks Virtual - Workout: Anticosti",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-09-29T12:22:04Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-09-29",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "20381561661",
+    "moving_time": 1308.0,
+    "name": "Evening Weight Training",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-09-29T18:04:31Z",
+    "type": "WeightTraining",
+    "year": 2026
   }
 ]
