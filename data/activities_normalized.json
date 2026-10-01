@@ -63542,5 +63542,31 @@
     "start_date_local": "2026-09-30T12:45:04Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-10-01",
+    "distance": 34138.5,
+    "elevation_gain": 0.0,
+    "id": "20402681357",
+    "moving_time": 3735.0,
+    "name": "TrainingPeaks Virtual - Workout: Eclipse -3",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-10-01T06:34:03Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-10-01",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "20410163086",
+    "moving_time": 2072.0,
+    "name": "Evening Weight Training",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-10-01T18:15:25Z",
+    "type": "WeightTraining",
+    "year": 2026
   }
 ]
