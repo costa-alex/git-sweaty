@@ -63607,5 +63607,18 @@
     "start_date_local": "2026-10-03T11:45:06Z",
     "type": "VirtualRide",
     "year": 2026
+  },
+  {
+    "date": "2026-10-04",
+    "distance": 48142.2,
+    "elevation_gain": 898.0,
+    "id": "20446222647",
+    "moving_time": 9405.0,
+    "name": "We\u2019re back \ud83d\ude05",
+    "raw_activity_type": "Ride",
+    "raw_type": "GravelRide",
+    "start_date_local": "2026-10-04T09:22:46Z",
+    "type": "GravelRide",
+    "year": 2026
   }
 ]
