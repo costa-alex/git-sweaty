@@ -63620,5 +63620,44 @@
     "start_date_local": "2026-10-04T09:22:46Z",
     "type": "GravelRide",
     "year": 2026
+  },
+  {
+    "date": "2026-10-06",
+    "distance": 34644.6,
+    "elevation_gain": 0.0,
+    "id": "20470010461",
+    "moving_time": 3629.0,
+    "name": "TrainingPeaks Virtual - Workout: Pioneer -3",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-10-06T06:49:12Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-10-06",
+    "distance": 10869.2,
+    "elevation_gain": 156.0,
+    "id": "20470785065",
+    "moving_time": 2049.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-10-06T08:55:54Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-10-06",
+    "distance": 11281.8,
+    "elevation_gain": 163.0,
+    "id": "20477904827",
+    "moving_time": 2341.0,
+    "name": "Commute \ud83c\udfe0",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-10-06T17:47:39Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
