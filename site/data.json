@@ -34306,6 +34306,13 @@
       "subtype": "EBikeRide",
       "type": "EBikeRide",
       "year": 2026
+    },
+    {
+      "date": "2026-10-09",
+      "hour": 12,
+      "subtype": "Swim",
+      "type": "Swim",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -70770,6 +70777,15 @@
           "distance": 1700.0,
           "elevation_gain": 0.0,
           "moving_time": 2175.0
+        },
+        "2026-10-09": {
+          "activity_ids": [
+            "20515061878"
+          ],
+          "count": 1,
+          "distance": 1700.0,
+          "elevation_gain": 0.0,
+          "moving_time": 2284.0
         }
       },
       "TrailRun": {
@@ -72169,7 +72185,7 @@
       }
     }
   },
-  "generated_at": "2026-10-08T20:36:46.791682+00:00",
+  "generated_at": "2026-10-09T20:03:08.861998+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
