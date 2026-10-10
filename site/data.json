@@ -34313,6 +34313,13 @@
       "subtype": "Swim",
       "type": "Swim",
       "year": 2026
+    },
+    {
+      "date": "2026-10-10",
+      "hour": 18,
+      "subtype": "VirtualRide",
+      "type": "VirtualRide",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -71790,6 +71797,15 @@
           "distance": 37194.0,
           "elevation_gain": 0.0,
           "moving_time": 3986.0
+        },
+        "2026-10-10": {
+          "activity_ids": [
+            "20532105831"
+          ],
+          "count": 1,
+          "distance": 51495.4,
+          "elevation_gain": 0.0,
+          "moving_time": 5418.0
         }
       },
       "Walk": {
@@ -72185,7 +72201,7 @@
       }
     }
   },
-  "generated_at": "2026-10-09T20:03:08.861998+00:00",
+  "generated_at": "2026-10-10T19:11:59.880240+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
