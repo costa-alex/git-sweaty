@@ -34320,6 +34320,13 @@
       "subtype": "VirtualRide",
       "type": "VirtualRide",
       "year": 2026
+    },
+    {
+      "date": "2026-10-11",
+      "hour": 10,
+      "subtype": "WeightTraining",
+      "type": "WeightTraining",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -72197,11 +72204,20 @@
           "distance": 0.0,
           "elevation_gain": 0.0,
           "moving_time": 2072.0
+        },
+        "2026-10-11": {
+          "activity_ids": [
+            "20539463342"
+          ],
+          "count": 1,
+          "distance": 0.0,
+          "elevation_gain": 0.0,
+          "moving_time": 2960.0
         }
       }
     }
   },
-  "generated_at": "2026-10-10T19:11:59.880240+00:00",
+  "generated_at": "2026-10-11T19:26:04.655370+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
