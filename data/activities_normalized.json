@@ -63776,5 +63776,44 @@
     "start_date_local": "2026-10-12T18:43:09Z",
     "type": "WeightTraining",
     "year": 2026
+  },
+  {
+    "date": "2026-10-13",
+    "distance": 35551.2,
+    "elevation_gain": 0.0,
+    "id": "20563638973",
+    "moving_time": 3665.0,
+    "name": "TrainingPeaks Virtual - Workout: Cramer",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-10-13T06:39:58Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-10-13",
+    "distance": 10905.1,
+    "elevation_gain": 164.0,
+    "id": "20564511241",
+    "moving_time": 2084.0,
+    "name": "Commute \ud83d\udcbb",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-10-13T09:09:31Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-10-13",
+    "distance": 11332.3,
+    "elevation_gain": 145.0,
+    "id": "20570848242",
+    "moving_time": 2373.0,
+    "name": "Commute \ud83c\udfe0",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-10-13T17:28:56Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
