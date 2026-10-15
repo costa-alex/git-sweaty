@@ -63828,5 +63828,18 @@
     "start_date_local": "2026-10-14T12:45:37Z",
     "type": "Swim",
     "year": 2026
+  },
+  {
+    "date": "2026-10-15",
+    "distance": 36875.6,
+    "elevation_gain": 100.0,
+    "id": "20591571020",
+    "moving_time": 3666.0,
+    "name": "TrainingPeaks Virtual - Workout: Antelope -5",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-10-15T06:38:07Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
