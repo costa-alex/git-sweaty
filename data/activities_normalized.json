@@ -63880,5 +63880,18 @@
     "start_date_local": "2026-10-17T12:23:41Z",
     "type": "Run",
     "year": 2026
+  },
+  {
+    "date": "2026-10-18",
+    "distance": 15306.8,
+    "elevation_gain": 322.0,
+    "id": "20633100064",
+    "moving_time": 5570.0,
+    "name": "Corrida Multicare Vitality 5K",
+    "raw_activity_type": "Run",
+    "raw_type": "TrailRun",
+    "start_date_local": "2026-10-18T09:05:21Z",
+    "type": "TrailRun",
+    "year": 2026
   }
 ]

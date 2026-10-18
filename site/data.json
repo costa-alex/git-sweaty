@@ -34397,6 +34397,13 @@
       "subtype": "Run",
       "type": "Run",
       "year": 2026
+    },
+    {
+      "date": "2026-10-18",
+      "hour": 9,
+      "subtype": "TrailRun",
+      "type": "TrailRun",
+      "year": 2026
     }
   ],
   "aggregates": {
@@ -70981,6 +70988,15 @@
           "distance": 11303.5,
           "elevation_gain": 298.0,
           "moving_time": 4992.0
+        },
+        "2026-10-18": {
+          "activity_ids": [
+            "20633100064"
+          ],
+          "count": 1,
+          "distance": 15306.8,
+          "elevation_gain": 322.0,
+          "moving_time": 5570.0
         }
       },
       "VirtualRide": {
@@ -72369,7 +72385,7 @@
       }
     }
   },
-  "generated_at": "2026-10-17T17:48:58.306595+00:00",
+  "generated_at": "2026-10-18T17:56:10.076240+00:00",
   "other_bucket": "OtherSports",
   "repo": "costa-alex/git-sweaty",
   "source": "strava",
