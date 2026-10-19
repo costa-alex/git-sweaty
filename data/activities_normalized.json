@@ -63893,5 +63893,31 @@
     "start_date_local": "2026-10-18T09:05:21Z",
     "type": "TrailRun",
     "year": 2026
+  },
+  {
+    "date": "2026-10-19",
+    "distance": 4137.6,
+    "elevation_gain": 109.0,
+    "id": "20647842496",
+    "moving_time": 759.0,
+    "name": "Commute \ud83d\udeb8",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-10-19T15:08:23Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-10-19",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "20650999294",
+    "moving_time": 1618.0,
+    "name": "Evening Weight Training",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-10-19T19:02:11Z",
+    "type": "WeightTraining",
+    "year": 2026
   }
 ]
