@@ -63919,5 +63919,18 @@
     "start_date_local": "2026-10-19T19:02:11Z",
     "type": "WeightTraining",
     "year": 2026
+  },
+  {
+    "date": "2026-10-20",
+    "distance": 34666.4,
+    "elevation_gain": 93.0,
+    "id": "20656763670",
+    "moving_time": 3643.0,
+    "name": "TrainingPeaks Virtual - Workout: Barkol",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-10-20T06:44:48Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
