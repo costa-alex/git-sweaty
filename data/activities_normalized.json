@@ -63997,5 +63997,18 @@
     "start_date_local": "2026-10-22T18:03:17Z",
     "type": "WeightTraining",
     "year": 2026
+  },
+  {
+    "date": "2026-10-29",
+    "distance": 3135.8,
+    "elevation_gain": 55.0,
+    "id": "20775420253",
+    "moving_time": 615.0,
+    "name": "Commute \ud83d\udeb8",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-10-29T08:36:24Z",
+    "type": "EBikeRide",
+    "year": 2026
   }
 ]
