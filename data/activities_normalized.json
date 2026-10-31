@@ -64010,5 +64010,31 @@
     "start_date_local": "2026-10-29T08:36:24Z",
     "type": "EBikeRide",
     "year": 2026
+  },
+  {
+    "date": "2026-10-31",
+    "distance": 5541.6,
+    "elevation_gain": 95.0,
+    "id": "20802932032",
+    "moving_time": 1104.0,
+    "name": "Commute",
+    "raw_activity_type": "EBikeRide",
+    "raw_type": "EBikeRide",
+    "start_date_local": "2026-10-31T11:46:29Z",
+    "type": "EBikeRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-10-31",
+    "distance": 50182.7,
+    "elevation_gain": 134.0,
+    "id": "20807835169",
+    "moving_time": 5450.0,
+    "name": "TrainingPeaks Virtual - Workout: Coomnadiha",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-10-31T16:27:46Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
