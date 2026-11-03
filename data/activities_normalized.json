@@ -64075,5 +64075,31 @@
     "start_date_local": "2026-11-02T18:37:11Z",
     "type": "WeightTraining",
     "year": 2026
+  },
+  {
+    "date": "2026-11-03",
+    "distance": 35701.7,
+    "elevation_gain": 97.0,
+    "id": "20838919343",
+    "moving_time": 3726.0,
+    "name": "TrainingPeaks Virtual - Workout: Pioneer -3",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-11-03T06:31:11Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-11-03",
+    "distance": 2841.7,
+    "elevation_gain": 5.0,
+    "id": "20841382723",
+    "moving_time": 311.0,
+    "name": "TrainingPeaks Virtual - Pacing with Oli Obsidian",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-11-03T11:48:59Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
