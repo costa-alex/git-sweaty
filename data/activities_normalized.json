@@ -64218,5 +64218,18 @@
     "start_date_local": "2026-11-10T06:37:39Z",
     "type": "VirtualRide",
     "year": 2026
+  },
+  {
+    "date": "2026-11-11",
+    "distance": 38987.3,
+    "elevation_gain": 249.0,
+    "id": "20943067417",
+    "moving_time": 3906.0,
+    "name": "TrainingPeaks Virtual - Pacing with Anna Amber",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-11-11T06:53:57Z",
+    "type": "VirtualRide",
+    "year": 2026
   }
 ]
