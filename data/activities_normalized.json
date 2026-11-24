@@ -64257,5 +64257,31 @@
     "start_date_local": "2026-11-23T18:59:24Z",
     "type": "VirtualRide",
     "year": 2026
+  },
+  {
+    "date": "2026-11-24",
+    "distance": 42296.0,
+    "elevation_gain": 106.0,
+    "id": "21104007532",
+    "moving_time": 4470.0,
+    "name": "TrainingPeaks Virtual - Workout: Sweet Spot Intervals: 3x12m",
+    "raw_activity_type": "VirtualRide",
+    "raw_type": "VirtualRide",
+    "start_date_local": "2026-11-24T06:38:47Z",
+    "type": "VirtualRide",
+    "year": 2026
+  },
+  {
+    "date": "2026-11-24",
+    "distance": 0.0,
+    "elevation_gain": 0.0,
+    "id": "21111542318",
+    "moving_time": 2591.0,
+    "name": "Evening Weight Training",
+    "raw_activity_type": "WeightTraining",
+    "raw_type": "WeightTraining",
+    "start_date_local": "2026-11-24T18:53:33Z",
+    "type": "WeightTraining",
+    "year": 2026
   }
 ]
